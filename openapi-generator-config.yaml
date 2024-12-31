@@ -1,0 +1,8 @@
+outputDirectory: lib/Data/Services/api
+inputSpec: api-docs.yaml  # Swagger/OpenAPI spec file
+generatorName: dart
+additionalProperties:
+  pubName: api_client
+  pubVersion: 1.0.0
+  sortParamsByRequiredFlag: true
+  ensureUniqueParams: true
