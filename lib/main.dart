@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_client/api.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,6 +67,27 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchApiData();
+  }
+
+  Future<void> _fetchApiData() async {
+    final apiInstance = DefaultApi();
+
+    try {
+      final result = await apiInstance.test11Get();
+      setState(() {
+        _apiResult = result?.foo ?? 'No data';
+      });
+    } catch (e) {
+      setState(() {
+        _apiResult = 'Exception when calling DefaultApi->test11Get: $e';
+      });
+    }
   }
 
   @override
