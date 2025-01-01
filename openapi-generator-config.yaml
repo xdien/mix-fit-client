@@ -1,6 +1,7 @@
-outputDirectory: lib/Data/Services/api
 inputSpec: api-docs.yaml  # Swagger/OpenAPI spec file
 generatorName: dart
+globalProperties:
+  generateGitIgnoreFile: false
 additionalProperties:
   pubName: api_client
   pubVersion: 1.0.0

@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:8000/api
 
 paths:
-  '/test':
+  '/test11':
     get:
       responses:
         '200':
