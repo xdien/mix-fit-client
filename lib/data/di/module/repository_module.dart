@@ -1,16 +1,18 @@
 import 'dart:async';
 
-import 'package:boilerplate/data/local/datasources/post/post_datasource.dart';
-import 'package:boilerplate/data/network/apis/posts/post_api.dart';
-import 'package:boilerplate/data/repository/post/post_repository_impl.dart';
-import 'package:boilerplate/data/repository/setting/setting_repository_impl.dart';
-import 'package:boilerplate/data/repository/user/user_repository_impl.dart';
-import 'package:boilerplate/data/sharedpref/shared_preference_helper.dart';
-import 'package:boilerplate/domain/repository/post/post_repository.dart';
-import 'package:boilerplate/domain/repository/setting/setting_repository.dart';
-import 'package:boilerplate/domain/repository/user/user_repository.dart';
+import 'package:mix_fit/data/local/datasources/post/post_datasource.dart';
+import 'package:mix_fit/data/network/apis/posts/post_api.dart';
+import 'package:mix_fit/data/repository/post/post_repository_impl.dart';
+import 'package:mix_fit/data/repository/setting/setting_repository_impl.dart';
+import 'package:mix_fit/data/repository/user/user_repository_impl.dart';
+import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
+import 'package:mix_fit/domain/repository/post/post_repository.dart';
+import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
+import 'package:mix_fit/domain/repository/user/user_repository.dart';
+import 'package:mix_fit/data/network/constants/endpoints.dart';
 
 import '../../../di/service_locator.dart';
+import 'package:api_client/api.dart';
 
 class RepositoryModule {
   static Future<void> configureRepositoryModuleInjection() async {
@@ -18,9 +20,11 @@ class RepositoryModule {
     getIt.registerSingleton<SettingRepository>(SettingRepositoryImpl(
       getIt<SharedPreferenceHelper>(),
     ));
+    // Register ApiClient
+    getIt.registerSingleton<ApiClient>(ApiClient(basePath: Endpoints.baseUrl));
 
     getIt.registerSingleton<UserRepository>(UserRepositoryImpl(
-      getIt<SharedPreferenceHelper>(),
+      getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
 
     getIt.registerSingleton<PostRepository>(PostRepositoryImpl(

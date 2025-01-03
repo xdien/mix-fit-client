@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:boilerplate/domain/usecase/user/login_usecase.dart';
+import 'package:mix_fit/domain/usecase/user/login_usecase.dart';
 
 import '../../entity/user/user.dart';
 

@@ -1,5 +1,5 @@
-import 'package:boilerplate/core/stores/error/error_store.dart';
-import 'package:boilerplate/domain/repository/setting/setting_repository.dart';
+import 'package:mix_fit/core/stores/error/error_store.dart';
+import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 

@@ -1,4 +1,4 @@
-name: boilerplate
+name: mix_fit
 description: A flutter boilerplate project created using MobX and Provider.
 
 # The following defines the version and build number for your application.
@@ -45,6 +45,8 @@ dependencies:
   mobx: ^2.1.4
   # N
   # O
+  api_client:
+    path: ./lib/data/network/apis
   # P
   path_provider: ^2.0.14
   # Q

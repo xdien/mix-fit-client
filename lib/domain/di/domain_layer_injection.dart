@@ -1,4 +1,4 @@
-import 'package:boilerplate/domain/di/module/usecase_module.dart';
+import 'package:mix_fit/domain/di/module/usecase_module.dart';
 
 class DomainLayerInjection {
   static Future<void> configureDomainLayerInjection() async {

@@ -30,6 +30,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.30"
+  api_client:
+    dependency: "direct main"
+    description:
+      path: "lib/data/network/apis"
+      relative: true
+    source: path
+    version: "1.0.0"
   archive:
     dependency: transitive
     description:

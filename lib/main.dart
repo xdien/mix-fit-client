@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:boilerplate/di/service_locator.dart';
-import 'package:boilerplate/presentation/my_app.dart';
+import 'package:mix_fit/di/service_locator.dart';
+import 'package:mix_fit/presentation/my_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

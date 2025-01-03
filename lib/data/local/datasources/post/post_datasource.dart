@@ -1,7 +1,7 @@
-import 'package:boilerplate/core/data/local/sembast/sembast_client.dart';
-import 'package:boilerplate/data/local/constants/db_constants.dart';
-import 'package:boilerplate/domain/entity/post/post.dart';
-import 'package:boilerplate/domain/entity/post/post_list.dart';
+import 'package:mix_fit/core/data/local/sembast/sembast_client.dart';
+import 'package:mix_fit/data/local/constants/db_constants.dart';
+import 'package:mix_fit/domain/entity/post/post.dart';
+import 'package:mix_fit/domain/entity/post/post_list.dart';
 import 'package:sembast/sembast.dart';
 
 class PostDataSource {
