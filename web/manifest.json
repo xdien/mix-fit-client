@@ -1,6 +1,6 @@
 {
-    "name": "mix_fit_client",
-    "short_name": "mix_fit_client",
+    "name": "flutter_boilerplate_project",
+    "short_name": "flutter_boilerplate_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
