@@ -11,29 +11,32 @@
 part of openapi.api;
 
 
-class DefaultApi {
-  DefaultApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+class CmsApi {
+  CmsApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
   final ApiClient apiClient;
 
-  /// Performs an HTTP 'GET /health' operation and returns the [Response].
-  Future<Response> healthCheckerControllerCheckWithHttpInfo() async {
+  /// Performs an HTTP 'POST /cms-auth/login' operation and returns the [Response].
+  /// Parameters:
+  ///
+  /// * [CmsLoginDto] cmsLoginDto (required):
+  Future<Response> cmsAuthControllerLoginWithHttpInfo(CmsLoginDto cmsLoginDto,) async {
     // ignore: prefer_const_declarations
-    final path = r'/health';
+    final path = r'/cms-auth/login';
 
     // ignore: prefer_final_locals
-    Object? postBody;
+    Object? postBody = cmsLoginDto;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>[];
+    const contentTypes = <String>['application/json'];
 
 
     return apiClient.invokeAPI(
       path,
-      'GET',
+      'POST',
       queryParams,
       postBody,
       headerParams,
@@ -42,8 +45,11 @@ class DefaultApi {
     );
   }
 
-  Future<HealthCheckerControllerCheck200Response?> healthCheckerControllerCheck() async {
-    final response = await healthCheckerControllerCheckWithHttpInfo();
+  /// Parameters:
+  ///
+  /// * [CmsLoginDto] cmsLoginDto (required):
+  Future<CmsLoginPayloadDto?> cmsAuthControllerLogin(CmsLoginDto cmsLoginDto,) async {
+    final response = await cmsAuthControllerLoginWithHttpInfo(cmsLoginDto,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -51,7 +57,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'HealthCheckerControllerCheck200Response',) as HealthCheckerControllerCheck200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CmsLoginPayloadDto',) as CmsLoginPayloadDto;
     
     }
     return null;

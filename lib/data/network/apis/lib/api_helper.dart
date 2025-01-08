@@ -55,6 +55,12 @@ String parameterToString(dynamic value) {
   if (value is DateTime) {
     return value.toUtc().toIso8601String();
   }
+  if (value is Order) {
+    return OrderTypeTransformer().encode(value).toString();
+  }
+  if (value is RoleType) {
+    return RoleTypeTypeTransformer().encode(value).toString();
+  }
   return value.toString();
 }
 

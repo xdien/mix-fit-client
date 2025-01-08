@@ -11,7 +11,7 @@
 part of openapi.api;
 
 class ApiClient {
-  ApiClient({this.basePath = 'http://localhost:8000/api', this.authentication,});
+  ApiClient({this.basePath = 'http://localhost', this.authentication,});
 
   final String basePath;
   final Authentication? authentication;
@@ -182,8 +182,42 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'Test11Get200Response':
-          return Test11Get200Response.fromJson(value);
+        case 'CmsLoginDto':
+          return CmsLoginDto.fromJson(value);
+        case 'CmsLoginPayloadDto':
+          return CmsLoginPayloadDto.fromJson(value);
+        case 'CommandPayloadDto':
+          return CommandPayloadDto.fromJson(value);
+        case 'CommandStatusDto':
+          return CommandStatusDto.fromJson(value);
+        case 'HealthCheckerControllerCheck200Response':
+          return HealthCheckerControllerCheck200Response.fromJson(value);
+        case 'HealthCheckerControllerCheck200ResponseInfoValue':
+          return HealthCheckerControllerCheck200ResponseInfoValue.fromJson(value);
+        case 'HealthCheckerControllerCheck503Response':
+          return HealthCheckerControllerCheck503Response.fromJson(value);
+        case 'LoginPayloadDto':
+          return LoginPayloadDto.fromJson(value);
+        case 'MetricDto':
+          return MetricDto.fromJson(value);
+        case 'Order':
+          return OrderTypeTransformer().decode(value);
+        case 'PageDto':
+          return PageDto.fromJson(value);
+        case 'PageMetaDto':
+          return PageMetaDto.fromJson(value);
+        case 'PageResponseOfUserDto':
+          return PageResponseOfUserDto.fromJson(value);
+        case 'RoleType':
+          return RoleTypeTypeTransformer().decode(value);
+        case 'TelemetryPayloadDto':
+          return TelemetryPayloadDto.fromJson(value);
+        case 'TokenPayloadDto':
+          return TokenPayloadDto.fromJson(value);
+        case 'UserDto':
+          return UserDto.fromJson(value);
+        case 'UserLoginDto':
+          return UserLoginDto.fromJson(value);
         default:
           dynamic match;
           if (value is List && (match = _regList.firstMatch(targetType)?.group(1)) != null) {

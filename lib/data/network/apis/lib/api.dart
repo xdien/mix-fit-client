@@ -28,9 +28,31 @@ part 'auth/oauth.dart';
 part 'auth/http_basic_auth.dart';
 part 'auth/http_bearer_auth.dart';
 
+part 'api/auth_api.dart';
+part 'api/cms_api.dart';
 part 'api/default_api.dart';
+part 'api/io_t_commands_api.dart';
+part 'api/telemetry_api.dart';
+part 'api/users_api.dart';
 
-part 'model/test11_get200_response.dart';
+part 'model/cms_login_dto.dart';
+part 'model/cms_login_payload_dto.dart';
+part 'model/command_payload_dto.dart';
+part 'model/command_status_dto.dart';
+part 'model/health_checker_controller_check200_response.dart';
+part 'model/health_checker_controller_check200_response_info_value.dart';
+part 'model/health_checker_controller_check503_response.dart';
+part 'model/login_payload_dto.dart';
+part 'model/metric_dto.dart';
+part 'model/order.dart';
+part 'model/page_dto.dart';
+part 'model/page_meta_dto.dart';
+part 'model/page_response_of_user_dto.dart';
+part 'model/role_type.dart';
+part 'model/telemetry_payload_dto.dart';
+part 'model/token_payload_dto.dart';
+part 'model/user_dto.dart';
+part 'model/user_login_dto.dart';
 
 
 /// An [ApiClient] instance that uses the default values obtained from

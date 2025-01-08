@@ -5,15 +5,15 @@
 import 'package:api_client/api.dart';
 ```
 
-All URIs are relative to *http://localhost:8000/api*
+All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**test11Get**](DefaultApi.md#test11get) | **GET** /test11 | 
+[**healthCheckerControllerCheck**](DefaultApi.md#healthcheckercontrollercheck) | **GET** /health | 
 
 
-# **test11Get**
-> Test11Get200Response test11Get()
+# **healthCheckerControllerCheck**
+> HealthCheckerControllerCheck200Response healthCheckerControllerCheck()
 
 
 
@@ -24,10 +24,10 @@ import 'package:api_client/api.dart';
 final api_instance = DefaultApi();
 
 try {
-    final result = api_instance.test11Get();
+    final result = api_instance.healthCheckerControllerCheck();
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->test11Get: $e\n');
+    print('Exception when calling DefaultApi->healthCheckerControllerCheck: $e\n');
 }
 ```
 
@@ -36,7 +36,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**Test11Get200Response**](Test11Get200Response.md)
+[**HealthCheckerControllerCheck200Response**](HealthCheckerControllerCheck200Response.md)
 
 ### Authorization
 
