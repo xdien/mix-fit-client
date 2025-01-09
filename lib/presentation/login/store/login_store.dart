@@ -1,10 +1,10 @@
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
-import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/domain/usecase/user/is_logged_in_usecase.dart';
 import 'package:mix_fit/domain/usecase/user/login_usecase.dart';
 import 'package:mix_fit/domain/usecase/user/save_login_in_status_usecase.dart';
 import 'package:mobx/mobx.dart';
+import 'package:api_client/api.dart';
 
 part 'login_store.g.dart';
 
