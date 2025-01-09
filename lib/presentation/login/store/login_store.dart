@@ -1,11 +1,10 @@
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/domain/usecase/user/is_logged_in_usecase.dart';
+import 'package:mix_fit/domain/usecase/user/login_usecase.dart';
 import 'package:mix_fit/domain/usecase/user/save_login_in_status_usecase.dart';
 import 'package:mobx/mobx.dart';
-
-import '../../../domain/entity/user/user.dart';
-import '../../../domain/usecase/user/login_usecase.dart';
 
 part 'login_store.g.dart';
 
@@ -51,7 +50,7 @@ abstract class _UserStore with Store {
   }
 
   // empty responses:-----------------------------------------------------------
-  static ObservableFuture<User?> emptyLoginResponse =
+  static ObservableFuture<LoginPayloadDto?> emptyLoginResponse =
       ObservableFuture.value(null);
 
   // store variables:-----------------------------------------------------------
@@ -61,7 +60,7 @@ abstract class _UserStore with Store {
   bool success = false;
 
   @observable
-  ObservableFuture<User?> loginFuture = emptyLoginResponse;
+  ObservableFuture<LoginPayloadDto?> loginFuture = emptyLoginResponse;
 
   @computed
   bool get isLoading => loginFuture.status == FutureStatus.pending;
@@ -69,8 +68,8 @@ abstract class _UserStore with Store {
   // actions:-------------------------------------------------------------------
   @action
   Future login(String email, String password) async {
-    final LoginParams loginParams =
-        LoginParams(username: email, password: password);
+    final UserLoginDto loginParams =
+        UserLoginDto(email: email, password: password);
     final future = _loginUseCase.call(params: loginParams);
     loginFuture = ObservableFuture(future);
 

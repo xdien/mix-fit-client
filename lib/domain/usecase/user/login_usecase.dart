@@ -1,5 +1,6 @@
+import 'package:mix_fit/data/network/apis/lib/api.dart';
+
 import '../../../core/domain/usecase/use_case.dart';
-import '../../entity/user/user.dart';
 import '../../repository/user/user_repository.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -18,13 +19,13 @@ class LoginParams {
   Map<String, dynamic> toJson() => _$LoginParamsToJson(this);
 }
 
-class LoginUseCase implements UseCase<User?, LoginParams> {
+class LoginUseCase implements UseCase<LoginPayloadDto?, UserLoginDto> {
   final UserRepository _userRepository;
 
   LoginUseCase(this._userRepository);
 
   @override
-  Future<User?> call({required LoginParams params}) async {
+  Future<LoginPayloadDto?> call({required UserLoginDto params}) async {
     return _userRepository.login(params);
   }
 }

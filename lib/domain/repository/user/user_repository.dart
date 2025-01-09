@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:mix_fit/domain/usecase/user/login_usecase.dart';
-
-import '../../entity/user/user.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 
 abstract class UserRepository {
-  Future<User?> login(LoginParams params);
+  Future<LoginPayloadDto?> login(UserLoginDto params);
 
   Future<void> saveIsLoggedIn(bool value);
 
