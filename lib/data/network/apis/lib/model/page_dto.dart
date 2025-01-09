@@ -17,7 +17,7 @@ class PageDto {
     required this.meta,
   });
 
-  List<List<Object>> data;
+  List<List<PageDto>> data;
 
   PageMetaDto meta;
 
@@ -63,7 +63,7 @@ class PageDto {
       return PageDto(
         data: json[r'data'] is List
           ? (json[r'data'] as List).map((e) =>
-              Object.listFromJson(json[r'data'])
+              PageDto.listFromJson(json[r'data'])
             ).toList()
           :  const [],
         meta: PageMetaDto.fromJson(json[r'meta'])!,
