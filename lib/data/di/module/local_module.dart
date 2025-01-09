@@ -29,7 +29,7 @@ class LocalModule {
     // data sources:------------------------------------------------------------
     getIt.registerSingleton(
       PostDataSource(await getIt
-          .getAsync<AppDatabase>()), // Thay đổi SembastClient thành AppDatabase
+          .getAsync<AppDatabase>()),
     );
 
     // keychain:----------------------------------------------------------------
