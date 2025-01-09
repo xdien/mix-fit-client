@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
@@ -31,6 +32,7 @@ class StoreModule {
         getIt<LoginUseCase>(),
         getIt<FormErrorStore>(),
         getIt<ErrorStore>(),
+        getIt<FlutterSecureStorage>(),
       ),
     );
 

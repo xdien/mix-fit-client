@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
 import 'package:mix_fit/domain/usecase/user/is_logged_in_usecase.dart';
@@ -18,6 +19,7 @@ abstract class _UserStore with Store {
     this._loginUseCase,
     this.formErrorStore,
     this.errorStore,
+    this._secureStorage, // Add this line
   ) {
     // setting up disposers
     _setupDisposers();
@@ -39,6 +41,9 @@ abstract class _UserStore with Store {
 
   // store for handling error messages
   final ErrorStore errorStore;
+
+  // secure storage:------------------------------------------------------------
+  final FlutterSecureStorage _secureStorage; // Add this line
 
   // disposers:-----------------------------------------------------------------
   late List<ReactionDisposer> _disposers;
@@ -76,6 +81,7 @@ abstract class _UserStore with Store {
     await future.then((value) async {
       if (value != null) {
         await _saveLoginStatusUseCase.call(params: true);
+        await _secureStorage.write(key: 'token', value: value.token.accessToken);
         this.isLoggedIn = true;
         this.success = true;
       }
@@ -90,6 +96,7 @@ abstract class _UserStore with Store {
   logout() async {
     this.isLoggedIn = false;
     await _saveLoginStatusUseCase.call(params: false);
+    await _secureStorage.delete(key: 'token');
   }
 
   // general methods:-----------------------------------------------------------

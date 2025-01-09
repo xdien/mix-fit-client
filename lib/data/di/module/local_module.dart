@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:drift/drift.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mix_fit/core/data/local/database/database.dart';
 import 'package:mix_fit/data/local/datasources/post/post_datasource.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
@@ -31,6 +30,14 @@ class LocalModule {
     getIt.registerSingleton(
       PostDataSource(await getIt
           .getAsync<AppDatabase>()), // Thay đổi SembastClient thành AppDatabase
+    );
+
+    // keychain:----------------------------------------------------------------
+    getIt.registerSingletonAsync<FlutterSecureStorage>(
+      () async {
+        final storage = FlutterSecureStorage();
+        return storage;
+      },
     );
   }
 }
