@@ -6,7 +6,6 @@ import 'package:mix_fit/data/network/apis/posts/post_api.dart';
 import 'package:mix_fit/domain/entity/post/post.dart';
 import 'package:mix_fit/domain/entity/post/post_list.dart';
 import 'package:mix_fit/domain/repository/post/post_repository.dart';
-import 'package:sembast/sembast.dart';
 
 class PostRepositoryImpl extends PostRepository {
   // data source object

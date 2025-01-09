@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:sembast/sembast.dart';
 import 'package:xxtea/xxtea.dart';
 
 class _XXTeaEncoder extends Converter<Map<String, dynamic>, String> {
