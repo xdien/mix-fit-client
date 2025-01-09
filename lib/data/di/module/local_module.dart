@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart';
 import 'package:mix_fit/core/data/local/database/database.dart';
+import 'package:mix_fit/data/local/datasources/post/post_datasource.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,14 +19,18 @@ class LocalModule {
 
     // database:----------------------------------------------------------------
 
-    getIt.registerSingletonAsync<AppDb>(() async {
-      final db = AppDb();
-      // Optional: You can perform any initial setup here
-      return db;
-    });
+    getIt.registerSingletonAsync<AppDatabase>(
+      () async {
+        final database = AppDatabase();
+        return database;
+      },
+      dispose: (db) => db.close(),
+    );
 
     // data sources:------------------------------------------------------------
-    // getIt.registerSingleton(
-    //     PostDataSource(await getIt.getAsync<SembastClient>()));
+    getIt.registerSingleton(
+      PostDataSource(await getIt
+          .getAsync<AppDatabase>()), // Thay đổi SembastClient thành AppDatabase
+    );
   }
 }

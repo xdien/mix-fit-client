@@ -31,35 +31,21 @@ class PostRepositoryImpl extends PostRepository {
 
   @override
   Future<List<Post>> findPostById(int id) {
-    //creating filter
-    List<Filter> filters = [];
-
-    //check to see if dataLogsType is not null
-    Filter dataLogTypeFilter = Filter.equals(DBConstants.FIELD_ID, id);
-    filters.add(dataLogTypeFilter);
-
-    //making db call
-    return _postDataSource
-        .getAllSortedByFilter(filters: filters)
-        .then((posts) => posts)
-        .catchError((error) => throw error);
+    return Future.value(<Post>[]);
   }
 
   @override
-  Future<int> insert(Post post) => _postDataSource
-      .insert(post)
-      .then((id) => id)
-      .catchError((error) => throw error);
+  Future<int> insert(Post post) {
+    return _postDataSource.insert(post);
+  }
 
   @override
-  Future<int> update(Post post) => _postDataSource
-      .update(post)
-      .then((id) => id)
-      .catchError((error) => throw error);
+  Future<int> update(Post post) {
+    return Future.value(0);
+  }
 
   @override
-  Future<int> delete(Post post) => _postDataSource
-      .delete(post)
-      .then((id) => id)
-      .catchError((error) => throw error);
+  Future<int> delete(Post post) {
+    return Future.value(0);
+  }
 }
