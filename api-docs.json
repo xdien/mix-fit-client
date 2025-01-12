@@ -37,11 +37,16 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["email", "password", "fullName"],
+                "required": ["email", "password", "username"],
                 "properties": {
-                  "fullName": { "type": "string", "example": "John Doe" },
+                  "username": {
+                    "type": "string",
+                    "nullable": false,
+                    "example": "username"
+                  },
                   "email": { "type": "string", "example": "john@example.com" },
                   "password": { "type": "string", "example": "******" },
+                  "fullName": { "type": "string", "example": "John Doe" },
                   "phone": {
                     "type": "string",
                     "nullable": true,

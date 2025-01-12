@@ -70,10 +70,17 @@ class _LoginScreenState extends State<LoginScreen> {
               )
             : Center(child: _buildRightSide()),
         Observer(
-          builder: (context) {
-            return _userStore.success
-                ? navigate(context)
-                : _showErrorMessage(_formStore.errorStore.errorMessage);
+           builder: (context) {
+            if (_userStore.success) {
+              return navigate(context);
+            }
+            
+            // Add this check for error message
+            if (!_userStore.success) {
+              return _showErrorMessage(_userStore.errorStore.errorMessage);
+            }
+            
+            return const SizedBox.shrink();
           },
         ),
         Observer(
