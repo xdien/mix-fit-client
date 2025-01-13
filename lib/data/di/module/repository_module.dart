@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:mix_fit/data/local/datasources/post/post_datasource.dart';
-import 'package:mix_fit/data/network/apis/posts/post_api.dart';
-import 'package:mix_fit/data/repository/post/post_repository_impl.dart';
 import 'package:mix_fit/data/repository/setting/setting_repository_impl.dart';
 import 'package:mix_fit/data/repository/user/user_repository_impl.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
@@ -27,9 +25,5 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
 
-    getIt.registerSingleton<PostRepository>(PostRepositoryImpl(
-      getIt<PostApi>(),
-      getIt<PostDataSource>(),
-    ));
   }
 }

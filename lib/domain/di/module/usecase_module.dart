@@ -26,21 +26,5 @@ class UseCaseModule {
       LoginUseCase(getIt<UserRepository>()),
     );
 
-    // post:--------------------------------------------------------------------
-    getIt.registerSingleton<GetPostUseCase>(
-      GetPostUseCase(getIt<PostRepository>()),
-    );
-    getIt.registerSingleton<FindPostByIdUseCase>(
-      FindPostByIdUseCase(getIt<PostRepository>()),
-    );
-    getIt.registerSingleton<InsertPostUseCase>(
-      InsertPostUseCase(getIt<PostRepository>()),
-    );
-    getIt.registerSingleton<UpdatePostUseCase>(
-      UpdatePostUseCase(getIt<PostRepository>()),
-    );
-    getIt.registerSingleton<DeletePostUseCase>(
-      DeletePostUseCase(getIt<PostRepository>()),
-    );
   }
 }

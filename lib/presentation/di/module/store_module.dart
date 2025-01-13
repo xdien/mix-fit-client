@@ -11,7 +11,6 @@ import 'package:mix_fit/domain/usecase/user/save_login_in_status_usecase.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
-import 'package:mix_fit/presentation/post/store/post_store.dart';
 
 import '../../../di/service_locator.dart';
 
@@ -36,12 +35,6 @@ class StoreModule {
       ),
     );
 
-    getIt.registerSingleton<PostStore>(
-      PostStore(
-        getIt<GetPostUseCase>(),
-        getIt<ErrorStore>(),
-      ),
-    );
 
     getIt.registerSingleton<ThemeStore>(
       ThemeStore(

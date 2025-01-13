@@ -13,16 +13,16 @@ class PostListScreen extends StatefulWidget {
 
 class _PostListScreenState extends State<PostListScreen> {
   //stores:---------------------------------------------------------------------
-  final PostStore _postStore = getIt<PostStore>();
+  // final PostStore _postStore = getIt<PostStore>();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     // check to see if already called api
-    if (!_postStore.loading) {
-      _postStore.getPosts();
-    }
+    // if (!_postStore.loading) {
+    //   _postStore.getPosts();
+    // }
   }
 
   @override
@@ -43,7 +43,7 @@ class _PostListScreenState extends State<PostListScreen> {
   Widget _buildMainContent() {
     return Observer(
       builder: (context) {
-        return _postStore.loading
+        return true
             ? CustomProgressIndicatorWidget()
             : _buildListView();
       },
@@ -51,17 +51,7 @@ class _PostListScreenState extends State<PostListScreen> {
   }
 
   Widget _buildListView() {
-    return _postStore.postList != null
-        ? ListView.separated(
-            itemCount: _postStore.postList!.posts!.length,
-            separatorBuilder: (context, position) {
-              return Divider();
-            },
-            itemBuilder: (context, position) {
-              return _buildListItem(position);
-            },
-          )
-        : Center(
+    return  Center(
             child: Text(
               AppLocalizations.of(context).translate('home_tv_no_post_found'),
             ),
@@ -73,14 +63,14 @@ class _PostListScreenState extends State<PostListScreen> {
       dense: true,
       leading: Icon(Icons.cloud_circle),
       title: Text(
-        '${_postStore.postList?.posts?[position].title}',
+        'title 1',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         softWrap: false,
         style: Theme.of(context).textTheme.titleMedium,
       ),
       subtitle: Text(
-        '${_postStore.postList?.posts?[position].body}',
+        'subtitle 1',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         softWrap: false,
@@ -91,9 +81,9 @@ class _PostListScreenState extends State<PostListScreen> {
   Widget _handleErrorMessage() {
     return Observer(
       builder: (context) {
-        if (_postStore.errorStore.errorMessage.isNotEmpty) {
-          return _showErrorMessage(_postStore.errorStore.errorMessage);
-        }
+        // if (_postStore.errorStore.errorMessage.isNotEmpty) {
+        //   return _showErrorMessage(_postStore.errorStore.errorMessage);
+        // }
 
         return SizedBox.shrink();
       },

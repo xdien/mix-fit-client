@@ -2,7 +2,6 @@ import 'package:mix_fit/core/data/network/dio/configs/dio_configs.dart';
 import 'package:mix_fit/core/data/network/dio/dio_client.dart';
 import 'package:mix_fit/core/data/network/dio/interceptors/auth_interceptor.dart';
 import 'package:mix_fit/core/data/network/dio/interceptors/logging_interceptor.dart';
-import 'package:mix_fit/data/network/apis/posts/post_api.dart';
 import 'package:mix_fit/data/network/constants/endpoints.dart';
 import 'package:mix_fit/data/network/interceptors/error_interceptor.dart';
 import 'package:mix_fit/data/network/rest_client.dart';
@@ -47,7 +46,5 @@ class NetworkModule {
         ),
     );
 
-    // api's:-------------------------------------------------------------------
-    getIt.registerSingleton(PostApi(getIt<DioClient>(), getIt<RestClient>()));
   }
 }
