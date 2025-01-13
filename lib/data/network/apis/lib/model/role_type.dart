@@ -10,7 +10,7 @@
 
 part of openapi.api;
 
-
+/// User roles array
 class RoleType {
   /// Instantiate a new enum with the provided [value].
   const RoleType._(this.value);

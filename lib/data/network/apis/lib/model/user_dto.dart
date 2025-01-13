@@ -18,10 +18,11 @@ class UserDto {
     required this.updatedAt,
     this.fullName,
     required this.username,
-    required this.roles,
+    this.roles = const [],
     required this.email,
     this.avatar,
     this.phone,
+    this.isActive = true,
   });
 
   String id;
@@ -34,13 +35,15 @@ class UserDto {
 
   String username;
 
-  RoleType roles;
+  List<RoleType> roles;
 
   String email;
 
   String? avatar;
 
   String? phone;
+
+  bool isActive;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is UserDto &&
@@ -49,10 +52,11 @@ class UserDto {
     other.updatedAt == updatedAt &&
     other.fullName == fullName &&
     other.username == username &&
-    other.roles == roles &&
+    _deepEquality.equals(other.roles, roles) &&
     other.email == email &&
     other.avatar == avatar &&
-    other.phone == phone;
+    other.phone == phone &&
+    other.isActive == isActive;
 
   @override
   int get hashCode =>
@@ -65,10 +69,11 @@ class UserDto {
     (roles.hashCode) +
     (email.hashCode) +
     (avatar == null ? 0 : avatar!.hashCode) +
-    (phone == null ? 0 : phone!.hashCode);
+    (phone == null ? 0 : phone!.hashCode) +
+    (isActive.hashCode);
 
   @override
-  String toString() => 'UserDto[id=$id, createdAt=$createdAt, updatedAt=$updatedAt, fullName=$fullName, username=$username, roles=$roles, email=$email, avatar=$avatar, phone=$phone]';
+  String toString() => 'UserDto[id=$id, createdAt=$createdAt, updatedAt=$updatedAt, fullName=$fullName, username=$username, roles=$roles, email=$email, avatar=$avatar, phone=$phone, isActive=$isActive]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -93,6 +98,7 @@ class UserDto {
     } else {
       json[r'phone'] = null;
     }
+      json[r'isActive'] = this.isActive;
     return json;
   }
 
@@ -120,10 +126,11 @@ class UserDto {
         updatedAt: mapDateTime(json, r'updatedAt', r'')!,
         fullName: mapValueOfType<String>(json, r'fullName'),
         username: mapValueOfType<String>(json, r'username')!,
-        roles: RoleType.fromJson(json[r'roles'])!,
+        roles: RoleType.listFromJson(json[r'roles']),
         email: mapValueOfType<String>(json, r'email')!,
         avatar: mapValueOfType<String>(json, r'avatar'),
         phone: mapValueOfType<String>(json, r'phone'),
+        isActive: mapValueOfType<bool>(json, r'isActive') ?? true,
       );
     }
     return null;

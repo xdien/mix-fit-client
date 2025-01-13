@@ -13,10 +13,11 @@ Name | Type | Description | Notes
 **updatedAt** | [**DateTime**](DateTime.md) |  | 
 **fullName** | **String** |  | [optional] 
 **username** | **String** |  | 
-**roles** | [**RoleType**](RoleType.md) |  | 
+**roles** | [**List<RoleType>**](RoleType.md) |  | [default to const []]
 **email** | **String** |  | 
 **avatar** | **String** |  | [optional] 
 **phone** | **String** |  | [optional] 
+**isActive** | **bool** |  | [optional] [default to true]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
