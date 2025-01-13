@@ -110,17 +110,19 @@ class AuthApi {
   ///
   /// Parameters:
   ///
-  /// * [String] fullName (required):
+  /// * [String] username (required):
   ///
   /// * [String] email (required):
   ///
   /// * [String] password (required):
   ///
+  /// * [String] fullName:
+  ///
   /// * [String] phone:
   ///
   /// * [MultipartFile] avatar:
   ///   User avatar file
-  Future<Response> authControllerUserRegisterWithHttpInfo(String fullName, String email, String password, { String? phone, MultipartFile? avatar, }) async {
+  Future<Response> authControllerUserRegisterWithHttpInfo(String username, String email, String password, { String? fullName, String? phone, MultipartFile? avatar, }) async {
     // ignore: prefer_const_declarations
     final path = r'/auth/register';
 
@@ -135,9 +137,9 @@ class AuthApi {
 
     bool hasFields = false;
     final mp = MultipartRequest('POST', Uri.parse(path));
-    if (fullName != null) {
+    if (username != null) {
       hasFields = true;
-      mp.fields[r'fullName'] = parameterToString(fullName);
+      mp.fields[r'username'] = parameterToString(username);
     }
     if (email != null) {
       hasFields = true;
@@ -146,6 +148,10 @@ class AuthApi {
     if (password != null) {
       hasFields = true;
       mp.fields[r'password'] = parameterToString(password);
+    }
+    if (fullName != null) {
+      hasFields = true;
+      mp.fields[r'fullName'] = parameterToString(fullName);
     }
     if (phone != null) {
       hasFields = true;
@@ -175,18 +181,20 @@ class AuthApi {
   ///
   /// Parameters:
   ///
-  /// * [String] fullName (required):
+  /// * [String] username (required):
   ///
   /// * [String] email (required):
   ///
   /// * [String] password (required):
   ///
+  /// * [String] fullName:
+  ///
   /// * [String] phone:
   ///
   /// * [MultipartFile] avatar:
   ///   User avatar file
-  Future<UserDto?> authControllerUserRegister(String fullName, String email, String password, { String? phone, MultipartFile? avatar, }) async {
-    final response = await authControllerUserRegisterWithHttpInfo(fullName, email, password,  phone: phone, avatar: avatar, );
+  Future<UserDto?> authControllerUserRegister(String username, String email, String password, { String? fullName, String? phone, MultipartFile? avatar, }) async {
+    final response = await authControllerUserRegisterWithHttpInfo(username, email, password,  fullName: fullName, phone: phone, avatar: avatar, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

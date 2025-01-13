@@ -557,8 +557,7 @@
           "roles": { "$ref": "#/components/schemas/RoleType" },
           "email": { "type": "string" },
           "avatar": { "type": "string", "nullable": true },
-          "phone": { "type": "string", "nullable": true },
-          "isActive": { "type": "boolean" }
+          "phone": { "type": "string", "nullable": true }
         },
         "required": [
           "id",

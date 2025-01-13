@@ -22,7 +22,6 @@ class UserDto {
     required this.email,
     this.avatar,
     this.phone,
-    this.isActive,
   });
 
   String id;
@@ -43,14 +42,6 @@ class UserDto {
 
   String? phone;
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  bool? isActive;
-
   @override
   bool operator ==(Object other) => identical(this, other) || other is UserDto &&
     other.id == id &&
@@ -61,8 +52,7 @@ class UserDto {
     other.roles == roles &&
     other.email == email &&
     other.avatar == avatar &&
-    other.phone == phone &&
-    other.isActive == isActive;
+    other.phone == phone;
 
   @override
   int get hashCode =>
@@ -75,11 +65,10 @@ class UserDto {
     (roles.hashCode) +
     (email.hashCode) +
     (avatar == null ? 0 : avatar!.hashCode) +
-    (phone == null ? 0 : phone!.hashCode) +
-    (isActive == null ? 0 : isActive!.hashCode);
+    (phone == null ? 0 : phone!.hashCode);
 
   @override
-  String toString() => 'UserDto[id=$id, createdAt=$createdAt, updatedAt=$updatedAt, fullName=$fullName, username=$username, roles=$roles, email=$email, avatar=$avatar, phone=$phone, isActive=$isActive]';
+  String toString() => 'UserDto[id=$id, createdAt=$createdAt, updatedAt=$updatedAt, fullName=$fullName, username=$username, roles=$roles, email=$email, avatar=$avatar, phone=$phone]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -103,11 +92,6 @@ class UserDto {
       json[r'phone'] = this.phone;
     } else {
       json[r'phone'] = null;
-    }
-    if (this.isActive != null) {
-      json[r'isActive'] = this.isActive;
-    } else {
-      json[r'isActive'] = null;
     }
     return json;
   }
@@ -140,7 +124,6 @@ class UserDto {
         email: mapValueOfType<String>(json, r'email')!,
         avatar: mapValueOfType<String>(json, r'avatar'),
         phone: mapValueOfType<String>(json, r'phone'),
-        isActive: mapValueOfType<bool>(json, r'isActive'),
       );
     }
     return null;

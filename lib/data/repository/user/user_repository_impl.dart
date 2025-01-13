@@ -19,7 +19,8 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<LoginPayloadDto?> login(UserLoginDto params) async {
     try {
-      return await _userApi.authControllerUserLogin(params);
+      final result = await _userApi.authControllerUserLogin(params);
+      return result;
     } catch (e) {
       throw e;
     }

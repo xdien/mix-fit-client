@@ -86,9 +86,9 @@ abstract class _UserStore with Store {
         this.success = true;
       }
     }).catchError((e) {
-      print(e);
       this.isLoggedIn = false;
       this.success = false;
+      errorStore.setErrorMessage(e.toString());
       throw e;
     });
   }

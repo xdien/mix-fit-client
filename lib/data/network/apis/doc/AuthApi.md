@@ -99,7 +99,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authControllerUserRegister**
-> UserDto authControllerUserRegister(fullName, email, password, phone, avatar)
+> UserDto authControllerUserRegister(username, email, password, fullName, phone, avatar)
 
 Register new user
 
@@ -108,14 +108,15 @@ Register new user
 import 'package:api_client/api.dart';
 
 final api_instance = AuthApi();
-final fullName = fullName_example; // String | 
+final username = username_example; // String | 
 final email = email_example; // String | 
 final password = password_example; // String | 
+final fullName = fullName_example; // String | 
 final phone = phone_example; // String | 
 final avatar = BINARY_DATA_HERE; // MultipartFile | User avatar file
 
 try {
-    final result = api_instance.authControllerUserRegister(fullName, email, password, phone, avatar);
+    final result = api_instance.authControllerUserRegister(username, email, password, fullName, phone, avatar);
     print(result);
 } catch (e) {
     print('Exception when calling AuthApi->authControllerUserRegister: $e\n');
@@ -126,9 +127,10 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **fullName** | **String**|  | 
+ **username** | **String**|  | 
  **email** | **String**|  | 
  **password** | **String**|  | 
+ **fullName** | **String**|  | [optional] 
  **phone** | **String**|  | [optional] 
  **avatar** | **MultipartFile**| User avatar file | [optional] 
 
