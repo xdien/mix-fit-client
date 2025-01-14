@@ -1,7 +1,5 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:mix_fit/core/widgets/progress_indicator_widget.dart';
-import 'package:mix_fit/di/service_locator.dart';
-import 'package:mix_fit/presentation/post/store/post_store.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

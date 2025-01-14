@@ -137,19 +137,13 @@ class AuthApi {
 
     bool hasFields = false;
     final mp = MultipartRequest('POST', Uri.parse(path));
-    if (username != null) {
+    hasFields = true;
+    mp.fields[r'username'] = parameterToString(username);
       hasFields = true;
-      mp.fields[r'username'] = parameterToString(username);
-    }
-    if (email != null) {
+    mp.fields[r'email'] = parameterToString(email);
       hasFields = true;
-      mp.fields[r'email'] = parameterToString(email);
-    }
-    if (password != null) {
-      hasFields = true;
-      mp.fields[r'password'] = parameterToString(password);
-    }
-    if (fullName != null) {
+    mp.fields[r'password'] = parameterToString(password);
+      if (fullName != null) {
       hasFields = true;
       mp.fields[r'fullName'] = parameterToString(fullName);
     }

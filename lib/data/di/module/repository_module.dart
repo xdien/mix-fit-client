@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:mix_fit/data/local/datasources/post/post_datasource.dart';
 import 'package:mix_fit/data/repository/setting/setting_repository_impl.dart';
 import 'package:mix_fit/data/repository/user/user_repository_impl.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
-import 'package:mix_fit/domain/repository/post/post_repository.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:mix_fit/domain/repository/user/user_repository.dart';
 import 'package:mix_fit/data/network/constants/endpoints.dart';

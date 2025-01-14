@@ -40,6 +40,7 @@ dependencies:
   http: ^1.2.2
   # I
   intl: ^0.19.0
+  injectable: ^2.5.0
   # J
   json_serializable: ^6.6.1
   # K
@@ -61,6 +62,7 @@ dependencies:
   # V
   validators: ^3.0.0
   # W
+  web_socket_channel: ^3.0.1
   # X
   xxtea: ^2.1.0
   # Y
