@@ -5,10 +5,15 @@ import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../di/service_locator.dart';
+import '../liquorkiln/liquorkiln_chart.dart';
+import '../store/ui_store.dart';
+
 class AppDrawer extends StatelessWidget {
   final ThemeStore themeStore;
+  final UIStore _uiStore = getIt<UIStore>();
   
-  const AppDrawer({
+  AppDrawer({
     Key? key,
     required this.themeStore,
   }) : super(key: key);
@@ -26,6 +31,16 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.home,
             title: localizations.translate('home_title'),
             onTap: () => Navigator.pop(context),
+          ),
+          _buildMenuItem(
+            context: context,
+            icon: Icons.attractions_sharp,
+            title: "Liquor Kiln",
+            onTap: () {
+              // open liquor kiln screen
+              _uiStore.changeScreen(LiquorKilnScreen());
+              Navigator.pop(context); // Đóng drawer
+            },
           ),
           _buildMenuItem(
             context: context,

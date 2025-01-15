@@ -6,6 +6,7 @@ import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../di/service_locator.dart';
+import '../../../presentation/store/ui_store.dart';
 
 class LocalModule {
   static Future<void> configureLocalModuleInjection() async {
@@ -39,5 +40,8 @@ class LocalModule {
         return storage;
       },
     );
+
+    // UI store:----------------------------------------------------------------
+    getIt.registerSingleton<UIStore>(UIStore());
   }
 }

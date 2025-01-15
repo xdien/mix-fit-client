@@ -2,13 +2,13 @@ import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
-import 'package:mix_fit/presentation/post/post_list.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../store/ui_store.dart';
 import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,13 +20,16 @@ class _HomeScreenState extends State<HomeScreen> {
   //stores:---------------------------------------------------------------------
   final ThemeStore _themeStore = getIt<ThemeStore>();
   final LanguageStore _languageStore = getIt<LanguageStore>();
+  final UIStore _uiStore = getIt<UIStore>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
       drawer: AppDrawer(themeStore: _themeStore),
-      body: PostListScreen(),
+      body: Observer(
+        builder: (_) => _uiStore.currentScreen,
+      ),
     );
   }
 
