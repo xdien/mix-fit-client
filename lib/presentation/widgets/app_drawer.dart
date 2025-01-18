@@ -39,7 +39,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               // open liquor kiln screen
               _uiStore.changeScreen(LiquorKilnScreen());
-              Navigator.pop(context); // Đóng drawer
+              Navigator.pop(context);
             },
           ),
           _buildMenuItem(

@@ -5,6 +5,7 @@ import 'package:mix_fit/core/data/network/dio/interceptors/logging_interceptor.d
 import 'package:mix_fit/data/network/constants/endpoints.dart';
 import 'package:mix_fit/data/network/interceptors/error_interceptor.dart';
 import 'package:mix_fit/data/network/rest_client.dart';
+import 'package:mix_fit/data/network/websocket/websocket_client.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:event_bus/event_bus.dart';
 
@@ -45,6 +46,5 @@ class NetworkModule {
           ],
         ),
     );
-
   }
 }
