@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/domain/usecase/iot/get_temperature_stream_usecase.dart';
+import '../../core/domain/usecase/use_case.dart';
 import '../../data/network/websocket/websocket_client.dart';
 import '../../domain/entity/iot/temperature.dart';
-import '../../domain/usecase/iot/get_connection_status_usecase.dart';
+import '../../domain/usecase/websocket/get_connection_status_usecase.dart';
 
 class LiquorKilnScreen extends StatefulWidget {
   final GetConnectionStatusUseCase getConnectionStatusUseCase = getIt<GetConnectionStatusUseCase>();
@@ -51,7 +52,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
       },
     );
     _connectionSubscription =
-        widget.getConnectionStatusUseCase.execute().listen(
+        widget.getConnectionStatusUseCase.call(params: NoParams()).listen(
       (connected) {
         setState(() {
           isConnected = connected;

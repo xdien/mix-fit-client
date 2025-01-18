@@ -5,13 +5,13 @@ import 'websocket_client.dart';
 
 class WebSocketRepositoryImpl implements WebSocketRepository {
   final WebSocketClient _client;
-  
+
   WebSocketRepositoryImpl(this._client);
 
   @override
   Future<void> connect() => _client.connect(Endpoints.wsUrl);
 
-  @override 
+  @override
   Stream<dynamic> get messages => _client.messages;
 
   @override
@@ -19,4 +19,10 @@ class WebSocketRepositoryImpl implements WebSocketRepository {
 
   @override
   Future<void> disconnect() => _client.disconnect();
+
+  @override
+  Stream<bool> getConnectionStatus() {
+    return _client.connectionStatus
+        .map((status) => status == ConnectionStatus.connected);
+  }
 }

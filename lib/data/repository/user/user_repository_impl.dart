@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:mix_fit/domain/repository/user/user_repository.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 
 import 'package:api_client/api.dart';
 
-class UserRepositoryImpl extends UserRepository {
+import '../../../domain/repository/auth/auth_repository.dart';
+
+class UserRepositoryImpl extends AuthRepository {
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
   final ApiClient _apiClient;

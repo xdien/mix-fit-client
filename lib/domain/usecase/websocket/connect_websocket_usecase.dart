@@ -1,22 +1,16 @@
-import 'package:injectable/injectable.dart';
+
+import 'dart:async';
+
+import '../../../core/domain/usecase/use_case.dart';
 import '../../repository/websocket/websocket_repository.dart';
 
-// Base UseCase interface
-abstract class UseCase<Type, Params> {
-  Future<Type> execute(Params params);
-}
-
-// No params class for use cases that don't need parameters
-class NoParams {}
-
-@injectable
 class ConnectWebSocketUseCase implements UseCase<void, NoParams> {
   final WebSocketRepository _repository;
 
   ConnectWebSocketUseCase(this._repository);
 
   @override
-  Future<void> execute(NoParams params) async {
+  FutureOr<void> call({required NoParams params}) async {
     try {
       await _repository.connect();
     } catch (e) {

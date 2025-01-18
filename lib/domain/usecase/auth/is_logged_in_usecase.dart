@@ -1,8 +1,8 @@
 import '../../../core/domain/usecase/use_case.dart';
-import '../../repository/user/user_repository.dart';
+import '../../repository/auth/auth_repository.dart';
 
 class IsLoggedInUseCase implements UseCase<bool, void> {
-  final UserRepository _userRepository;
+  final AuthRepository _userRepository;
 
   IsLoggedInUseCase(this._userRepository);
 

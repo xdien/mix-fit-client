@@ -1,7 +1,7 @@
 import 'package:api_client/api.dart';
 
 import '../../../core/domain/usecase/use_case.dart';
-import '../../repository/user/user_repository.dart';
+import '../../repository/auth/auth_repository.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'login_usecase.g.dart';
@@ -20,7 +20,7 @@ class LoginParams {
 }
 
 class LoginUseCase implements UseCase<LoginPayloadDto?, UserLoginDto> {
-  final UserRepository _userRepository;
+  final AuthRepository _userRepository;
 
   LoginUseCase(this._userRepository);
 
