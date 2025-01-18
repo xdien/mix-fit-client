@@ -12,7 +12,6 @@ import '../../../di/service_locator.dart';
 import '../../../domain/usecase/auth/is_logged_in_usecase.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/save_login_in_status_usecase.dart';
-
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
     // factories:---------------------------------------------------------------
@@ -48,5 +47,6 @@ class StoreModule {
         getIt<ErrorStore>(),
       ),
     );
+
   }
 }

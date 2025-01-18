@@ -9,6 +9,8 @@ import '../../../di/service_locator.dart';
 import '../../repository/iot/temperature_repository.dart';
 import '../../repository/websocket/websocket_repository.dart';
 import '../../usecase/iot/get_temperature_stream_usecase.dart';
+import '../../usecase/websocket/connect_websocket_usecase.dart';
+import '../../usecase/websocket/disconnect_websocket_usecase.dart';
 import '../../usecase/websocket/get_connection_status_usecase.dart';
 
 class UseCaseModule {
@@ -23,7 +25,17 @@ class UseCaseModule {
     getIt.registerSingleton<LoginUseCase>(
       LoginUseCase(getIt<AuthRepository>()),
     );
-    getIt.registerLazySingleton(() => GetConnectionStatusUseCase(getIt<WebSocketRepository>()));
-    getIt.registerLazySingleton(() => GetTemperatureStreamUseCase(getIt<TemperatureRepository>()));
+
+    // Register use cases
+    getIt.registerSingleton<ConnectWebSocketUseCase>(
+      ConnectWebSocketUseCase(getIt<WebSocketRepository>()),
+    );
+    getIt.registerSingleton(
+        () => DisconnectWebSocketUseCase(getIt<WebSocketRepository>()));
+    getIt.registerLazySingleton(
+        () => GetConnectionStatusUseCase(getIt<WebSocketRepository>()));
+    getIt.registerLazySingleton(
+        () => GetTemperatureStreamUseCase(getIt<TemperatureRepository>()));
+    //
   }
 }

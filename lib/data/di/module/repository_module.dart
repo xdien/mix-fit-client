@@ -12,6 +12,8 @@ import 'package:api_client/api.dart';
 
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
+import '../../../domain/repository/websocket/websocket_repository.dart';
+import '../../network/websocket/websocket_repository_impl.dart';
 import '../../repository/iot/temperature_repository_impl.dart';
 
 class RepositoryModule {
@@ -28,6 +30,10 @@ class RepositoryModule {
     ));
     getIt.registerLazySingleton<TemperatureRepository>(
       () => TemperatureRepositoryImpl(getIt<WebSocketClient>())
+    );
+    // Register WebSocket repository
+    getIt.registerSingleton<WebSocketRepository>(
+      WebSocketRepositoryImpl(getIt<WebSocketClient>()),
     );
   }
 }

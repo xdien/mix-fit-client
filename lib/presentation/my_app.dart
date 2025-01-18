@@ -5,6 +5,7 @@ import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/presentation/login/login.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
+import 'package:mix_fit/presentation/splash/splash_screen.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
             // Built-in localization of basic text for Cupertino widgets
             GlobalCupertinoLocalizations.delegate,
           ],
-          home: _userStore.isLoggedIn ? HomeScreen() : LoginScreen(),
+          home: SplashScreen(),
         );
       },
     );

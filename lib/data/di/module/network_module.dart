@@ -5,11 +5,12 @@ import 'package:mix_fit/core/data/network/dio/interceptors/logging_interceptor.d
 import 'package:mix_fit/data/network/constants/endpoints.dart';
 import 'package:mix_fit/data/network/interceptors/error_interceptor.dart';
 import 'package:mix_fit/data/network/rest_client.dart';
-import 'package:mix_fit/data/network/websocket/websocket_client.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:event_bus/event_bus.dart';
 
 import '../../../di/service_locator.dart';
+import '../../network/websocket/websocket_client.dart';
+import '../../network/websocket/websocket_service.dart';
 
 class NetworkModule {
   static Future<void> configureNetworkModuleInjection() async {
@@ -45,6 +46,14 @@ class NetworkModule {
             getIt<LoggingInterceptor>(),
           ],
         ),
+    );
+     getIt.registerSingleton<WebSocketClient>(
+      WebSocketClient(),
+    );
+    getIt.registerSingleton<WebSocketService>(
+      WebSocketService(
+        webSocketClient: getIt<WebSocketClient>(), url: Endpoints.wsUrl,
+      ),
     );
   }
 }
