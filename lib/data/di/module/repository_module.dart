@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:mix_fit/data/network/websocket/websocket_client.dart';
 import 'package:mix_fit/data/repository/setting/setting_repository_impl.dart';
 import 'package:mix_fit/data/repository/user/user_repository_impl.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
@@ -14,6 +13,7 @@ import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
 import '../../../domain/repository/websocket/websocket_repository.dart';
 import '../../network/websocket/websocket_repository_impl.dart';
+import '../../network/websocket/websocket_service.dart';
 import '../../repository/iot/temperature_repository_impl.dart';
 
 class RepositoryModule {
@@ -29,11 +29,11 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
     getIt.registerLazySingleton<TemperatureRepository>(
-      () => TemperatureRepositoryImpl(getIt<WebSocketClient>())
+      () => TemperatureRepositoryImpl(getIt<WebSocketService>())
     );
     // Register WebSocket repository
     getIt.registerSingleton<WebSocketRepository>(
-      WebSocketRepositoryImpl(getIt<WebSocketClient>()),
+      WebSocketRepositoryImpl(getIt<WebSocketService>()),
     );
   }
 }

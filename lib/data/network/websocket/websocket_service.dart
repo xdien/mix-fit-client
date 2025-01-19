@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:mix_fit/data/network/websocket/websocket_client.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:logging/logging.dart';
 
@@ -28,7 +27,7 @@ class WebSocketService {
   WebSocketService({
     required this.url,
     this.pingInterval = const Duration(seconds: 30),
-    this.reconnectDelay = const Duration(seconds: 5), required WebSocketClient webSocketClient,
+    this.reconnectDelay = const Duration(seconds: 5)
   });
 
   Stream<dynamic> get messageStream => _messageController.stream;
@@ -41,6 +40,7 @@ class WebSocketService {
     try {
       _setStatus(WebSocketStatus.connecting);
       _channel = WebSocketChannel.connect(Uri.parse(url));
+      await _channel?.ready;
       
       _channel!.stream.listen(
         (message) {

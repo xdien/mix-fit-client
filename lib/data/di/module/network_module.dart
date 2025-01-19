@@ -9,7 +9,6 @@ import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:event_bus/event_bus.dart';
 
 import '../../../di/service_locator.dart';
-import '../../network/websocket/websocket_client.dart';
 import '../../network/websocket/websocket_service.dart';
 
 class NetworkModule {
@@ -47,12 +46,9 @@ class NetworkModule {
           ],
         ),
     );
-     getIt.registerSingleton<WebSocketClient>(
-      WebSocketClient(),
-    );
     getIt.registerSingleton<WebSocketService>(
       WebSocketService(
-        webSocketClient: getIt<WebSocketClient>(), url: Endpoints.wsUrl,
+         url: Endpoints.wsUrl,
       ),
     );
   }

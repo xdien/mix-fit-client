@@ -1,28 +1,27 @@
+import 'package:mix_fit/data/network/websocket/websocket_service.dart';
 import 'package:mix_fit/domain/repository/websocket/websocket_repository.dart';
 
-import '../constants/endpoints.dart';
-import 'websocket_client.dart';
-
 class WebSocketRepositoryImpl implements WebSocketRepository {
-  final WebSocketClient _client;
+  final WebSocketService _service;
 
-  WebSocketRepositoryImpl(this._client);
-
-  @override
-  Future<void> connect() => _client.connect(Endpoints.wsUrl);
+  WebSocketRepositoryImpl(this._service);
 
   @override
-  Stream<dynamic> get messages => _client.messages;
+  Future<void> connect() => this._service.connect();
 
   @override
-  Future<void> sendMessage(dynamic message) => _client.sendMessage(message);
+  Stream<dynamic> get messages => _service.messageStream;
 
   @override
-  Future<void> disconnect() => _client.disconnect();
+  Future<void> sendMessage(dynamic message) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> disconnect() => _service.disconnect();
 
   @override
   Stream<bool> getConnectionStatus() {
-    return _client.connectionStatus
-        .map((status) => status == ConnectionStatus.connected);
+    throw UnimplementedError();
   }
 }

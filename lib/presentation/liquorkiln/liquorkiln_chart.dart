@@ -6,7 +6,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/domain/usecase/iot/get_temperature_stream_usecase.dart';
 import '../../core/domain/usecase/use_case.dart';
-import '../../data/network/websocket/websocket_client.dart';
 import '../../domain/entity/iot/temperature.dart';
 import '../../domain/usecase/websocket/get_connection_status_usecase.dart';
 
@@ -20,7 +19,6 @@ class LiquorKilnScreen extends StatefulWidget {
 
 class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   final List<FlSpot> temperatureData = [];
-  final WebSocketClient _webSocketClient = WebSocketClient();
   bool isConnected = false;
   double currentTemperature = 0.0;
 
@@ -232,10 +230,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
 
   void _togglePower() {
     if (isConnected) {
-      _webSocketClient.sendMessage(jsonEncode({
-        'type': 'control',
-        'action': 'power',
-      }));
+      // Implement power toggle
     }
   }
 
@@ -258,7 +253,6 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
 
   @override
   void dispose() {
-    _webSocketClient.dispose();
     super.dispose();
   }
 }
