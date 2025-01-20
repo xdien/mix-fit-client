@@ -9,8 +9,6 @@ import '../../core/domain/usecase/use_case.dart';
 import '../../domain/usecase/websocket/get_connection_status_usecase.dart';
 
 class LiquorKilnScreen extends StatefulWidget {
-  final GetConnectionStatusUseCase getConnectionStatusUseCase = getIt<GetConnectionStatusUseCase>();
-  final GetTemperatureStreamUseCase getTemperatureStreamUseCase = getIt<GetTemperatureStreamUseCase>();
 
   @override
   _LiquorKilnScreenState createState() => _LiquorKilnScreenState();
@@ -23,6 +21,8 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
 
   late final StreamSubscription<OilTemperatureData> _temperatureSubscription;
   late final StreamSubscription<bool> _connectionSubscription;
+  final GetConnectionStatusUseCase getConnectionStatusUseCase = getIt<GetConnectionStatusUseCase>();
+  final GetTemperatureStreamUseCase getTemperatureStreamUseCase = getIt<GetTemperatureStreamUseCase>();
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   void _setupSubscriptions() {
     // Subscribe to temperature updates
     _temperatureSubscription =
-        widget.getTemperatureStreamUseCase.execute().listen(
+        getTemperatureStreamUseCase.execute().listen(
       (temperature) {
         setState(() {
           currentTemperature = temperature.temperature as double;
@@ -49,7 +49,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
       },
     );
     _connectionSubscription =
-        widget.getConnectionStatusUseCase.call(params: NoParams()).listen(
+        getConnectionStatusUseCase.call(params: NoParams()).listen(
       (connected) {
         setState(() {
           isConnected = connected;

@@ -4,4 +4,5 @@ abstract class WebSocketRepository {
   Stream<dynamic> get messages;
   Future<void> sendMessage(dynamic message);
   Stream<bool> getConnectionStatus();
+  Future<bool> isConnected();
 }

@@ -26,4 +26,9 @@ class WebSocketRepositoryImpl implements WebSocketRepository {
       status == WebSocketStatus.connected
     );
   }
+
+  @override
+  Future<bool> isConnected() {
+    throw _service.status == WebSocketStatus.connected;
+  }
 }

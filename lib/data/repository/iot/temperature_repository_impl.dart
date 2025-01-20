@@ -26,7 +26,7 @@ class TemperatureRepositoryImpl implements ITemperatureRepository {
   }
 
   @override
-  Stream<bool> getConnectionStatus() {
+  Stream<bool> getDeviceStatus(String deviceId) {
     throw UnimplementedError();
   }
 }
