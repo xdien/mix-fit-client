@@ -1,25 +1,32 @@
+import 'dart:async';
+
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/data/network/websocket/websocket_service.dart';
-import 'package:mix_fit/domain/entity/iot/temperature.dart';
 
 import '../../../domain/repository/iot/temperature_repository.dart';
 
-class TemperatureRepositoryImpl implements TemperatureRepository {
-  final WebSocketService _client;
-  
-  TemperatureRepositoryImpl(this._client) {
-    // Only set up status listener here, no connection
+class TemperatureRepositoryImpl implements ITemperatureRepository {
+  final WebSocketService _service;
+  final _temperatureController =
+      StreamController<OilTemperatureData>.broadcast();
+
+  TemperatureRepositoryImpl(this._service) {
+    _service.on('sensor.temperature', _handleTemperatureEvent);
   }
-  
+
+  void _handleTemperatureEvent(dynamic event) {
+    final data = OilTemperatureData.fromJson(event);
+    if (data == null) return;
+    _temperatureController.add(data);
+  }
+
   @override
-  Stream<Temperature> getTemperatureStream() {
-    throw UnimplementedError();
+  Stream<OilTemperatureData> getTemperatureStream() {
+    return _temperatureController.stream;
   }
 
   @override
   Stream<bool> getConnectionStatus() {
     throw UnimplementedError();
-
   }
-  
-  // Rest of repository implementation
 }

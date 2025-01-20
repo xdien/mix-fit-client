@@ -132,6 +132,8 @@ Class | Method | HTTP request | Description
  - [HealthCheckerControllerCheck503Response](doc//HealthCheckerControllerCheck503Response.md)
  - [LoginPayloadDto](doc//LoginPayloadDto.md)
  - [MetricDto](doc//MetricDto.md)
+ - [OilTemperatureData](doc//OilTemperatureData.md)
+ - [OilTemperatureEvent](doc//OilTemperatureEvent.md)
  - [Order](doc//Order.md)
  - [PageDto](doc//PageDto.md)
  - [PageMetaDto](doc//PageMetaDto.md)

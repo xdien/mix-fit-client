@@ -10,11 +10,18 @@ import '../../../presentation/store/ui_store.dart';
 
 class LocalModule {
   static Future<void> configureLocalModuleInjection() async {
+    // keychain:----------------------------------------------------------------
+    getIt.registerSingletonAsync<FlutterSecureStorage>(
+      () async {
+        final storage = FlutterSecureStorage();
+        return storage;
+      },
+    );
     // preference manager:------------------------------------------------------
     getIt.registerSingletonAsync<SharedPreferences>(
         SharedPreferences.getInstance);
     getIt.registerSingleton<SharedPreferenceHelper>(
-      SharedPreferenceHelper(await getIt.getAsync<SharedPreferences>()),
+      SharedPreferenceHelper(await getIt.getAsync<SharedPreferences>(), await getIt.getAsync<FlutterSecureStorage>()),
     );
 
     // database:----------------------------------------------------------------
@@ -31,14 +38,6 @@ class LocalModule {
     getIt.registerSingleton(
       PostDataSource(await getIt
           .getAsync<AppDatabase>()),
-    );
-
-    // keychain:----------------------------------------------------------------
-    getIt.registerSingletonAsync<FlutterSecureStorage>(
-      () async {
-        final storage = FlutterSecureStorage();
-        return storage;
-      },
     );
 
     // UI store:----------------------------------------------------------------

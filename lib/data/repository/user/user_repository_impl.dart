@@ -33,4 +33,14 @@ class UserRepositoryImpl extends AuthRepository {
 
   @override
   Future<bool> get isLoggedIn => _sharedPrefsHelper.isLoggedIn;
+
+  @override
+  Future<String?> get accessToken => _sharedPrefsHelper.authToken;
+
+  @override
+  Future<void> saveAuthToken(String authToken) =>
+      _sharedPrefsHelper.saveAuthToken(authToken);
+  
+  @override
+  Future<bool> removeAuthToken() => _sharedPrefsHelper.removeAuthToken();
 }

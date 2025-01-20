@@ -1,11 +1,13 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
 import 'package:mix_fit/domain/usecase/auth/is_logged_in_usecase.dart';
 import 'package:mix_fit/domain/usecase/auth/login_usecase.dart';
+import 'package:mix_fit/domain/usecase/auth/save_auth_token_usecase.dart';
 import 'package:mix_fit/domain/usecase/auth/save_login_in_status_usecase.dart';
 import 'package:mobx/mobx.dart';
 import 'package:api_client/api.dart';
+
+import '../../../domain/usecase/auth/remove_auth_token_usecase.dart';
 
 part 'login_store.g.dart';
 
@@ -16,10 +18,11 @@ abstract class _UserStore with Store {
   _UserStore(
     this._isLoggedInUseCase,
     this._saveLoginStatusUseCase,
+    this._saveAuthTokenUseCase,
+    this._removeAuthTokenUseCase,
     this._loginUseCase,
     this.formErrorStore,
     this.errorStore,
-    this._secureStorage, // Add this line
   ) {
     // setting up disposers
     _setupDisposers();
@@ -33,6 +36,8 @@ abstract class _UserStore with Store {
   // use cases:-----------------------------------------------------------------
   final IsLoggedInUseCase _isLoggedInUseCase;
   final SaveLoginStatusUseCase _saveLoginStatusUseCase;
+  final SaveAuthTokenUseCase _saveAuthTokenUseCase;
+  final RemoveAuthTokenUsecase _removeAuthTokenUseCase;
   final LoginUseCase _loginUseCase;
 
   // stores:--------------------------------------------------------------------
@@ -41,9 +46,6 @@ abstract class _UserStore with Store {
 
   // store for handling error messages
   final ErrorStore errorStore;
-
-  // secure storage:------------------------------------------------------------
-  final FlutterSecureStorage _secureStorage; // Add this line
 
   // disposers:-----------------------------------------------------------------
   late List<ReactionDisposer> _disposers;
@@ -81,7 +83,7 @@ abstract class _UserStore with Store {
     await future.then((value) async {
       if (value != null) {
         await _saveLoginStatusUseCase.call(params: true);
-        await _secureStorage.write(key: 'token', value: value.token.accessToken);
+        await _saveAuthTokenUseCase.call(params: value.token.accessToken);
         this.isLoggedIn = true;
         this.success = true;
       }
@@ -96,7 +98,7 @@ abstract class _UserStore with Store {
   logout() async {
     this.isLoggedIn = false;
     await _saveLoginStatusUseCase.call(params: false);
-    await _secureStorage.delete(key: 'token');
+    await _removeAuthTokenUseCase.call(params: null);
   }
 
   // general methods:-----------------------------------------------------------

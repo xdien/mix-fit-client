@@ -1,12 +1,12 @@
-import '../../entity/iot/temperature.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import '../../repository/iot/temperature_repository.dart';
 
 class GetTemperatureStreamUseCase {
-  final TemperatureRepository _repository;
+  final ITemperatureRepository _repository;
 
   GetTemperatureStreamUseCase(this._repository);
 
-  Stream<Temperature> execute() {
+  Stream<OilTemperatureData> execute() {
     return _repository.getTemperatureStream();
   }
 }

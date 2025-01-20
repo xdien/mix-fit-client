@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/domain/usecase/iot/get_temperature_stream_usecase.dart';
 import '../../core/domain/usecase/use_case.dart';
-import '../../domain/entity/iot/temperature.dart';
 import '../../domain/usecase/websocket/get_connection_status_usecase.dart';
 
 class LiquorKilnScreen extends StatefulWidget {
@@ -22,7 +21,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   bool isConnected = false;
   double currentTemperature = 0.0;
 
-  late final StreamSubscription<Temperature> _temperatureSubscription;
+  late final StreamSubscription<OilTemperatureData> _temperatureSubscription;
   late final StreamSubscription<bool> _connectionSubscription;
 
   @override
@@ -37,7 +36,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
         widget.getTemperatureStreamUseCase.execute().listen(
       (temperature) {
         setState(() {
-          currentTemperature = temperature.oil;
+          currentTemperature = temperature.temperature as double;
           final timestamp =
               temperature.timestamp.millisecondsSinceEpoch.toDouble();
 

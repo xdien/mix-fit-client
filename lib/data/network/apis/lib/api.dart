@@ -44,6 +44,8 @@ part 'model/health_checker_controller_check200_response_info_value.dart';
 part 'model/health_checker_controller_check503_response.dart';
 part 'model/login_payload_dto.dart';
 part 'model/metric_dto.dart';
+part 'model/oil_temperature_data.dart';
+part 'model/oil_temperature_event.dart';
 part 'model/order.dart';
 part 'model/page_dto.dart';
 part 'model/page_meta_dto.dart';

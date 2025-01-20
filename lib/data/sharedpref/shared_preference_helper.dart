@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/preferences.dart';
@@ -8,16 +9,19 @@ class SharedPreferenceHelper {
   // shared pref instance
   final SharedPreferences _sharedPreference;
 
+  // shared secure store instance
+  final FlutterSecureStorage _secureStore;
+
   // constructor
-  SharedPreferenceHelper(this._sharedPreference);
+  SharedPreferenceHelper(this._sharedPreference, this._secureStore);
 
   // General Methods: ----------------------------------------------------------
   Future<String?> get authToken async {
-    return _sharedPreference.getString(Preferences.auth_token);
+    return _secureStore.read(key: Preferences.auth_token);
   }
 
-  Future<bool> saveAuthToken(String authToken) async {
-    return _sharedPreference.setString(Preferences.auth_token, authToken);
+  Future<void> saveAuthToken(String authToken) async {
+    _secureStore.write(key: Preferences.auth_token, value: authToken);
   }
 
   Future<bool> removeAuthToken() async {

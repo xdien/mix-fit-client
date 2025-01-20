@@ -15,6 +15,8 @@ doc/HealthCheckerControllerCheck503Response.md
 doc/IoTCommandsApi.md
 doc/LoginPayloadDto.md
 doc/MetricDto.md
+doc/OilTemperatureData.md
+doc/OilTemperatureEvent.md
 doc/Order.md
 doc/PageDto.md
 doc/PageMetaDto.md
@@ -51,6 +53,8 @@ lib/model/health_checker_controller_check200_response_info_value.dart
 lib/model/health_checker_controller_check503_response.dart
 lib/model/login_payload_dto.dart
 lib/model/metric_dto.dart
+lib/model/oil_temperature_data.dart
+lib/model/oil_temperature_event.dart
 lib/model/order.dart
 lib/model/page_dto.dart
 lib/model/page_meta_dto.dart

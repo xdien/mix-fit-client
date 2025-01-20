@@ -1,34 +1,35 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:logging/logging.dart';
 
-enum WebSocketStatus {
-  connecting,
-  connected,
-  disconnected,
-  error
-}
+enum WebSocketStatus { connecting, connected, disconnected, error }
+
+typedef WebSocketEventHandler = void Function(dynamic event);
 
 class WebSocketService {
   final String url;
+  final AsyncValueGetter<String?> token;
   final Duration pingInterval;
   final Duration reconnectDelay;
-  
+
   WebSocketChannel? _channel;
   Timer? _pingTimer;
   Timer? _reconnectTimer;
   final _logger = Logger('WebSocketService');
-  
+
   final _messageController = StreamController<dynamic>.broadcast();
   final _statusController = StreamController<WebSocketStatus>.broadcast();
-  
+  final Map<String, List<WebSocketEventHandler>> _eventHandlers = {};
+
   WebSocketStatus _status = WebSocketStatus.disconnected;
-  
-  WebSocketService({
-    required this.url,
-    this.pingInterval = const Duration(seconds: 30),
-    this.reconnectDelay = const Duration(seconds: 5)
-  });
+
+  WebSocketService(
+      {required this.url,
+      required this.token,
+      this.pingInterval = const Duration(seconds: 30),
+      this.reconnectDelay = const Duration(seconds: 5)});
 
   Stream<dynamic> get messageStream => _messageController.stream;
   Stream<WebSocketStatus> get statusStream => _statusController.stream;
@@ -36,12 +37,14 @@ class WebSocketService {
 
   Future<void> connect() async {
     if (_status == WebSocketStatus.connected) return;
-    
+
     try {
       _setStatus(WebSocketStatus.connecting);
-      _channel = WebSocketChannel.connect(Uri.parse(url));
+      final String token1 = await token() ?? '';
+      _channel = IOWebSocketChannel.connect(Uri.parse(url),
+          headers: {'Authorization': 'Bearer $token1'});
       await _channel?.ready;
-      
+
       _channel!.stream.listen(
         (message) {
           _messageController.add(message);
@@ -58,7 +61,6 @@ class WebSocketService {
 
       _setStatus(WebSocketStatus.connected);
       _startPingTimer();
-      
     } catch (e) {
       _logger.severe('Failed to connect: $e');
       _handleError(e);
@@ -129,12 +131,23 @@ class WebSocketService {
     await _messageController.close();
     await _statusController.close();
   }
+
+  void on(String eventType, WebSocketEventHandler handler) {
+    _eventHandlers.putIfAbsent(eventType, () => []).add(handler);
+  }
+
+  void off(String eventType, WebSocketEventHandler handler) {
+    _eventHandlers[eventType]?.remove(handler);
+    if (_eventHandlers[eventType]?.isEmpty ?? false) {
+      _eventHandlers.remove(eventType);
+    }
+  }
 }
 
 class WebSocketException implements Exception {
   final String message;
   WebSocketException(this.message);
-  
+
   @override
   String toString() => message;
 }

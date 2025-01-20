@@ -200,6 +200,10 @@ class ApiClient {
           return LoginPayloadDto.fromJson(value);
         case 'MetricDto':
           return MetricDto.fromJson(value);
+        case 'OilTemperatureData':
+          return OilTemperatureData.fromJson(value);
+        case 'OilTemperatureEvent':
+          return OilTemperatureEvent.fromJson(value);
         case 'Order':
           return OrderTypeTransformer().decode(value);
         case 'PageDto':

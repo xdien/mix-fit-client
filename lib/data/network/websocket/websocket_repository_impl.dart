@@ -22,6 +22,8 @@ class WebSocketRepositoryImpl implements WebSocketRepository {
 
   @override
   Stream<bool> getConnectionStatus() {
-    throw UnimplementedError();
+    return _service.statusStream.map((status) => 
+      status == WebSocketStatus.connected
+    );
   }
 }

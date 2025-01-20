@@ -1,9 +1,7 @@
 import 'package:mix_fit/constants/app_theme.dart';
 import 'package:mix_fit/constants/strings.dart';
-import 'package:mix_fit/presentation/home/home.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
-import 'package:mix_fit/presentation/login/login.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
 import 'package:mix_fit/presentation/splash/splash_screen.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';

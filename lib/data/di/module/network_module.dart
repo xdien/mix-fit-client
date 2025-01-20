@@ -49,6 +49,7 @@ class NetworkModule {
     getIt.registerSingleton<WebSocketService>(
       WebSocketService(
          url: Endpoints.wsUrl,
+         token: () async => await getIt<SharedPreferenceHelper>().authToken,
       ),
     );
   }

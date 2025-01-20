@@ -7,5 +7,10 @@ abstract class AuthRepository {
 
   Future<void> saveIsLoggedIn(bool value);
 
+  Future<void> saveAuthToken(String authToken);
+  Future<bool> removeAuthToken();
+  
   Future<bool> get isLoggedIn;
+
+  Future<String?> get accessToken;
 }

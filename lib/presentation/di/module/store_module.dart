@@ -11,6 +11,8 @@ import 'package:mix_fit/presentation/login/store/login_store.dart';
 import '../../../di/service_locator.dart';
 import '../../../domain/usecase/auth/is_logged_in_usecase.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
+import '../../../domain/usecase/auth/remove_auth_token_usecase.dart';
+import '../../../domain/usecase/auth/save_auth_token_usecase.dart';
 import '../../../domain/usecase/auth/save_login_in_status_usecase.dart';
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
@@ -26,10 +28,11 @@ class StoreModule {
       UserStore(
         getIt<IsLoggedInUseCase>(),
         getIt<SaveLoginStatusUseCase>(),
+        getIt<SaveAuthTokenUseCase>(),
+        getIt<RemoveAuthTokenUsecase>(),
         getIt<LoginUseCase>(),
         getIt<FormErrorStore>(),
         getIt<ErrorStore>(),
-        getIt<FlutterSecureStorage>(),
       ),
     );
 
