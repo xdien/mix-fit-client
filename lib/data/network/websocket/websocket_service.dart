@@ -15,23 +15,17 @@ class WebSocketService {
   static const int PING = 0x9; // Binary: 1001
   static const int PONG = 0xA; // Binary: 1010
 
-  // Frame format: FIN + RSV1-3 + OPCODE (4 bits) + MASK + Payload len (7 bits) + Extended payload length (optional)
   static const int FRAME_FIN = 0x80; // 1000 0000 - Final fragment
   static const int FRAME_MASK = 0x80; // 1000 0000 - Mask bit
 
-  // Tạo frame hoàn chỉnh với opcode
   List<int> _createFrame(int opcode, [List<int>? payload]) {
     final List<int> frame = [];
 
-    // Byte đầu tiên: FIN + RSV1-3 + OPCODE
     frame.add(FRAME_FIN | opcode);
-
-    // Byte thứ hai: MASK + Payload length
     int length = payload?.length ?? 0;
     frame
-        .add(length); // Không cần mask bit vì server->client không yêu cầu mask
+        .add(length);
 
-    // Thêm payload nếu có
     if (payload != null && payload.isNotEmpty) {
       frame.addAll(payload);
     }
