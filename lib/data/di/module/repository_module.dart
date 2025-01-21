@@ -29,11 +29,11 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
     getIt.registerLazySingleton<ITemperatureRepository>(
-      () => TemperatureRepositoryImpl(getIt<WebSocketService>())
+      () => TemperatureRepositoryImpl(getIt<SocketService>())
     );
     // Register WebSocket repository
     getIt.registerSingleton<WebSocketRepository>(
-      WebSocketRepositoryImpl(getIt<WebSocketService>()),
+      WebSocketRepositoryImpl(getIt<SocketService>()),
     );
   }
 }

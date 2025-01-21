@@ -3,7 +3,7 @@ class Endpoints {
 
   // base url
   static const String baseUrl = "http://localhost:3000";
-  static const String wsUrl = "ws://localhost:3000/ws";
+  static const String wsUrl = "http://localhost:3000";
 
   // receiveTimeout
   static const int receiveTimeout = 15000;

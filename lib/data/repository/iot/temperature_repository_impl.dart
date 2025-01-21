@@ -6,7 +6,7 @@ import 'package:mix_fit/data/network/websocket/websocket_service.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
 
 class TemperatureRepositoryImpl implements ITemperatureRepository {
-  final WebSocketService _service;
+  final SocketService _service;
   final _temperatureController =
       StreamController<OilTemperatureData>.broadcast();
 

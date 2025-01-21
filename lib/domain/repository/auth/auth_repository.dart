@@ -13,4 +13,5 @@ abstract class AuthRepository {
   Future<bool> get isLoggedIn;
 
   Future<String?> get accessToken;
+  Stream<bool> get authStateChanges;
 }

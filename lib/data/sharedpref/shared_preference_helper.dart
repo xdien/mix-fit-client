@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/preferences.dart';
 
 class SharedPreferenceHelper {
+  final _authStateController = StreamController<bool>.broadcast();
   // shared pref instance
   final SharedPreferences _sharedPreference;
 
@@ -25,12 +26,15 @@ class SharedPreferenceHelper {
   }
 
   Future<bool> removeAuthToken() async {
+    _authStateController.add(false);
     return _sharedPreference.remove(Preferences.auth_token);
   }
 
   // Login:---------------------------------------------------------------------
   Future<bool> get isLoggedIn async {
-    return _sharedPreference.getBool(Preferences.is_logged_in) ?? false;
+    final isLogin =  _sharedPreference.getBool(Preferences.is_logged_in) ?? false;
+    _authStateController.add(isLogin);
+    return isLogin;
   }
 
   Future<bool> saveIsLoggedIn(bool value) async {
@@ -54,4 +58,6 @@ class SharedPreferenceHelper {
   Future<void> changeLanguage(String language) {
     return _sharedPreference.setString(Preferences.current_language, language);
   }
+
+  Stream<bool> get authStateChanges => _authStateController.stream;
 }

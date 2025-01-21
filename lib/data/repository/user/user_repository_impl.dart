@@ -43,4 +43,7 @@ class UserRepositoryImpl extends AuthRepository {
   
   @override
   Future<bool> removeAuthToken() => _sharedPrefsHelper.removeAuthToken();
+  
+  @override
+  Stream<bool> get authStateChanges => _sharedPrefsHelper.authStateChanges;
 }

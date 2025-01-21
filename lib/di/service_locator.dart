@@ -17,7 +17,7 @@ class ServiceLocator {
     // Register ConnectionManager as singleton
     getIt.registerSingleton<ConnectionManager>(
       ConnectionManager(
-        webSocketService: getIt<WebSocketService>(),
+        socketService: getIt<SocketService>(),
         authRepository: getIt<AuthRepository>(),
       ),
     );

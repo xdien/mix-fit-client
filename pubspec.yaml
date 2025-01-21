@@ -59,6 +59,7 @@ dependencies:
   # R
   # S
   shared_preferences: ^2.1.0
+  socket_io_client: ^3.0.2 
   # T
   # U
   # V
