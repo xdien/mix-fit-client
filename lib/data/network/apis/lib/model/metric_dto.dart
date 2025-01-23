@@ -13,34 +13,85 @@ part of openapi.api;
 class MetricDto {
   /// Returns a new [MetricDto] instance.
   MetricDto({
-    required this.name,
+    required this.sensorId,
+    this.name,
     required this.value,
+    this.unit,
+    this.metadata,
   });
 
+  /// Unique identifier of the sensor
+  String sensorId;
+
   /// Name of the metric
-  String name;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? name;
 
   /// Value of the metric
-  num value;
+  Object value;
+
+  /// Unit of the metric
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? unit;
+
+  /// Metadata of the metric
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  Object? metadata;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is MetricDto &&
+    other.sensorId == sensorId &&
     other.name == name &&
-    other.value == value;
+    other.value == value &&
+    other.unit == unit &&
+    other.metadata == metadata;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (name.hashCode) +
-    (value.hashCode);
+    (sensorId.hashCode) +
+    (name == null ? 0 : name!.hashCode) +
+    (value.hashCode) +
+    (unit == null ? 0 : unit!.hashCode) +
+    (metadata == null ? 0 : metadata!.hashCode);
 
   @override
-  String toString() => 'MetricDto[name=$name, value=$value]';
+  String toString() => 'MetricDto[sensorId=$sensorId, name=$name, value=$value, unit=$unit, metadata=$metadata]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'sensorId'] = this.sensorId;
+    if (this.name != null) {
       json[r'name'] = this.name;
+    } else {
+      json[r'name'] = null;
+    }
       json[r'value'] = this.value;
+    if (this.unit != null) {
+      json[r'unit'] = this.unit;
+    } else {
+      json[r'unit'] = null;
+    }
+    if (this.metadata != null) {
+      json[r'metadata'] = this.metadata;
+    } else {
+      json[r'metadata'] = null;
+    }
     return json;
   }
 
@@ -63,8 +114,11 @@ class MetricDto {
       }());
 
       return MetricDto(
-        name: mapValueOfType<String>(json, r'name')!,
-        value: num.parse('${json[r'value']}'),
+        sensorId: mapValueOfType<String>(json, r'sensorId')!,
+        name: mapValueOfType<String>(json, r'name'),
+        value: mapValueOfType<Object>(json, r'value')!,
+        unit: mapValueOfType<String>(json, r'unit'),
+        metadata: mapValueOfType<Object>(json, r'metadata'),
       );
     }
     return null;
@@ -112,7 +166,7 @@ class MetricDto {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'name',
+    'sensorId',
     'value',
   };
 }

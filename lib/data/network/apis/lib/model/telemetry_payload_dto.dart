@@ -45,7 +45,7 @@ class TelemetryPayloadDto {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'device_id'] = this.deviceId;
+      json[r'deviceId'] = this.deviceId;
       json[r'timestamp'] = this.timestamp.toUtc().toIso8601String();
       json[r'metrics'] = this.metrics;
     return json;
@@ -70,7 +70,7 @@ class TelemetryPayloadDto {
       }());
 
       return TelemetryPayloadDto(
-        deviceId: mapValueOfType<String>(json, r'device_id')!,
+        deviceId: mapValueOfType<String>(json, r'deviceId')!,
         timestamp: mapDateTime(json, r'timestamp', r'')!,
         metrics: MetricDto.listFromJson(json[r'metrics']),
       );
@@ -120,7 +120,7 @@ class TelemetryPayloadDto {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'device_id',
+    'deviceId',
     'timestamp',
     'metrics',
   };

@@ -13,6 +13,7 @@ doc/HealthCheckerControllerCheck200Response.md
 doc/HealthCheckerControllerCheck200ResponseInfoValue.md
 doc/HealthCheckerControllerCheck503Response.md
 doc/IoTCommandsApi.md
+doc/IoTEvents.md
 doc/LoginPayloadDto.md
 doc/MetricDto.md
 doc/OilTemperatureData.md
@@ -22,6 +23,7 @@ doc/PageDto.md
 doc/PageMetaDto.md
 doc/PageResponseOfUserDto.md
 doc/RoleType.md
+doc/SensorDataEventDto.md
 doc/TelemetryApi.md
 doc/TelemetryPayloadDto.md
 doc/TokenPayloadDto.md
@@ -51,6 +53,7 @@ lib/model/command_status_dto.dart
 lib/model/health_checker_controller_check200_response.dart
 lib/model/health_checker_controller_check200_response_info_value.dart
 lib/model/health_checker_controller_check503_response.dart
+lib/model/io_t_events.dart
 lib/model/login_payload_dto.dart
 lib/model/metric_dto.dart
 lib/model/oil_temperature_data.dart
@@ -60,6 +63,7 @@ lib/model/page_dto.dart
 lib/model/page_meta_dto.dart
 lib/model/page_response_of_user_dto.dart
 lib/model/role_type.dart
+lib/model/sensor_data_event_dto.dart
 lib/model/telemetry_payload_dto.dart
 lib/model/token_payload_dto.dart
 lib/model/user_dto.dart

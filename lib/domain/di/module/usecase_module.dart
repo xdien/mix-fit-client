@@ -33,7 +33,7 @@ class UseCaseModule {
     getIt.registerLazySingleton(
         () => GetConnectionStatusUseCase(getIt<WebSocketRepository>()));
     getIt.registerLazySingleton(
-        () => GetTemperatureStreamUseCase(getIt<ITemperatureRepository>()));
+        () => GetLiquorKilnStreamUseCase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
         () => SaveAuthTokenUseCase(getIt<AuthRepository>()));
     getIt.registerLazySingleton(

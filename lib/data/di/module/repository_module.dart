@@ -28,7 +28,7 @@ class RepositoryModule {
     getIt.registerSingleton<AuthRepository>(UserRepositoryImpl(
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
-    getIt.registerLazySingleton<ITemperatureRepository>(
+    getIt.registerLazySingleton<ILiquorKilnRepository>(
       () => TemperatureRepositoryImpl(getIt<SocketService>())
     );
     // Register WebSocket repository

@@ -19,10 +19,10 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   bool isConnected = false;
   double currentTemperature = 0.0;
 
-  late final StreamSubscription<OilTemperatureData> _temperatureSubscription;
+  late final StreamSubscription<SensorDataEventDto> _temperatureSubscription;
   late final StreamSubscription<bool> _connectionSubscription;
   final GetConnectionStatusUseCase getConnectionStatusUseCase = getIt<GetConnectionStatusUseCase>();
-  final GetTemperatureStreamUseCase getTemperatureStreamUseCase = getIt<GetTemperatureStreamUseCase>();
+  final GetLiquorKilnStreamUseCase getLiquorKilnStreamUseCase = getIt<GetLiquorKilnStreamUseCase>();
 
   @override
   void initState() {
@@ -30,18 +30,20 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
     _setupSubscriptions();
   }
 
-  void _setupSubscriptions() {
+  void _setupSubscriptions() async{
     // Subscribe to temperature updates
-    _temperatureSubscription =
-        getTemperatureStreamUseCase.execute().listen(
-      (temperature) {
+    _temperatureSubscription = await getLiquorKilnStreamUseCase.call(params: NoParams()).listen(
+      (data) {
         setState(() {
-          currentTemperature = temperature.temperature as double;
-          final timestamp =
-              temperature.timestamp.millisecondsSinceEpoch.toDouble();
-
-          temperatureData.add(FlSpot(timestamp, currentTemperature));
-
+          var metrics = data.telemetryData.metrics;
+          for (var metric in metrics) {
+            if (metric.name == 'oli_temperature') {
+              currentTemperature = (metric.value as num).toDouble();
+              final timestamp = data.telemetryData.timestamp.millisecondsSinceEpoch.toDouble();
+              temperatureData.add(FlSpot(timestamp, currentTemperature));
+              break;
+            }
+          }
           if (temperatureData.length > 60) {
             temperatureData.removeAt(0);
           }
