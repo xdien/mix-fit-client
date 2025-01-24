@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/di/service_locator.dart';
+import 'package:mix_fit/domain/usecase/iot/get_liquorklin_online_steam_usecase.dart';
 import 'package:mix_fit/domain/usecase/iot/get_temperature_stream_usecase.dart';
 import '../../core/domain/usecase/use_case.dart';
 import '../../domain/usecase/websocket/get_connection_status_usecase.dart';
@@ -16,13 +17,16 @@ class LiquorKilnScreen extends StatefulWidget {
 
 class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   final List<FlSpot> temperatureData = [];
-  bool isConnected = false;
+  bool isSocketConnected = false;
+  bool isOnline = false;
   double currentTemperature = 0.0;
 
   late final StreamSubscription<SensorDataEventDto> _temperatureSubscription;
   late final StreamSubscription<bool> _connectionSubscription;
+  late final StreamSubscription<DeviceStatusEventDto> _onlineSubscription;
   final GetConnectionStatusUseCase getConnectionStatusUseCase = getIt<GetConnectionStatusUseCase>();
   final GetLiquorKilnStreamUseCase getLiquorKilnStreamUseCase = getIt<GetLiquorKilnStreamUseCase>();
+  final GetLiquorKilnOnlineStreamUseCase getLiquorKilnOnlineStreamUseCase = getIt<GetLiquorKilnOnlineStreamUseCase>();
 
   @override
   void initState() {
@@ -54,7 +58,14 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
         getConnectionStatusUseCase.call(params: NoParams()).listen(
       (connected) {
         setState(() {
-          isConnected = connected;
+          isSocketConnected = connected;
+        });
+      },
+    );
+    _onlineSubscription = await getLiquorKilnOnlineStreamUseCase.call(params: 'device_id').listen(
+      (deviceStatus) {
+        setState(() {
+          isOnline = deviceStatus.status == DeviceStatusEventDtoStatusEnum.ONLINE;
         });
       },
     );
@@ -96,11 +107,11 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
             height: 12,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isConnected ? Colors.green : Colors.red,
+              color: isSocketConnected ? Colors.green : Colors.red,
             ),
           ),
           SizedBox(width: 8),
-          Text(isConnected ? 'Đã kết nối' : 'Mất kết nối'),
+          Text(isSocketConnected ? 'Online' : 'Offline'),
         ],
       ),
     );
@@ -230,7 +241,7 @@ class _LiquorKilnScreenState extends State<LiquorKilnScreen> {
   }
 
   void _togglePower() {
-    if (isConnected) {
+    if (isOnline) {
       // Implement power toggle
     }
   }
