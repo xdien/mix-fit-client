@@ -190,6 +190,8 @@ class ApiClient {
           return CommandPayloadDto.fromJson(value);
         case 'CommandStatusDto':
           return CommandStatusDto.fromJson(value);
+        case 'DeviceStatusEventDto':
+          return DeviceStatusEventDto.fromJson(value);
         case 'HealthCheckerControllerCheck200Response':
           return HealthCheckerControllerCheck200Response.fromJson(value);
         case 'HealthCheckerControllerCheck200ResponseInfoValue':

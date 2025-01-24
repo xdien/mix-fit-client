@@ -127,6 +127,7 @@ Class | Method | HTTP request | Description
  - [CmsLoginPayloadDto](doc//CmsLoginPayloadDto.md)
  - [CommandPayloadDto](doc//CommandPayloadDto.md)
  - [CommandStatusDto](doc//CommandStatusDto.md)
+ - [DeviceStatusEventDto](doc//DeviceStatusEventDto.md)
  - [HealthCheckerControllerCheck200Response](doc//HealthCheckerControllerCheck200Response.md)
  - [HealthCheckerControllerCheck200ResponseInfoValue](doc//HealthCheckerControllerCheck200ResponseInfoValue.md)
  - [HealthCheckerControllerCheck503Response](doc//HealthCheckerControllerCheck503Response.md)

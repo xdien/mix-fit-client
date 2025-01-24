@@ -9,6 +9,7 @@ doc/CmsLoginPayloadDto.md
 doc/CommandPayloadDto.md
 doc/CommandStatusDto.md
 doc/DefaultApi.md
+doc/DeviceStatusEventDto.md
 doc/HealthCheckerControllerCheck200Response.md
 doc/HealthCheckerControllerCheck200ResponseInfoValue.md
 doc/HealthCheckerControllerCheck503Response.md
@@ -50,6 +51,7 @@ lib/model/cms_login_dto.dart
 lib/model/cms_login_payload_dto.dart
 lib/model/command_payload_dto.dart
 lib/model/command_status_dto.dart
+lib/model/device_status_event_dto.dart
 lib/model/health_checker_controller_check200_response.dart
 lib/model/health_checker_controller_check200_response_info_value.dart
 lib/model/health_checker_controller_check503_response.dart
@@ -69,3 +71,4 @@ lib/model/token_payload_dto.dart
 lib/model/user_dto.dart
 lib/model/user_login_dto.dart
 pubspec.yaml
+test/device_status_event_dto_test.dart

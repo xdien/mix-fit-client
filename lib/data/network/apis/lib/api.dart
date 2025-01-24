@@ -39,6 +39,7 @@ part 'model/cms_login_dto.dart';
 part 'model/cms_login_payload_dto.dart';
 part 'model/command_payload_dto.dart';
 part 'model/command_status_dto.dart';
+part 'model/device_status_event_dto.dart';
 part 'model/health_checker_controller_check200_response.dart';
 part 'model/health_checker_controller_check200_response_info_value.dart';
 part 'model/health_checker_controller_check503_response.dart';
