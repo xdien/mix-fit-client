@@ -11,7 +11,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**ioTCommandControllerGetStatus**](IoTCommandsApi.md#iotcommandcontrollergetstatus) | **GET** /iot/commands/{commandId}/status | Get status of command
 [**ioTCommandControllerSendCommand**](IoTCommandsApi.md#iotcommandcontrollersendcommand) | **POST** /iot/commands/{deviceId} | Send command to device
-[**ioTCommandControllerV1SendCommand**](IoTCommandsApi.md#iotcommandcontrollerv1sendcommand) | **POST** /v1/iot/commands/{deviceId} | Send command to device
+[**ioTCommandV1ControllerSendCommand**](IoTCommandsApi.md#iotcommandv1controllersendcommand) | **POST** /v1/iot/commands/{deviceId} | Send command to device
 
 
 # **ioTCommandControllerGetStatus**
@@ -104,8 +104,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **ioTCommandControllerV1SendCommand**
-> CommandStatusDto ioTCommandControllerV1SendCommand(deviceId, commandPayloadDto)
+# **ioTCommandV1ControllerSendCommand**
+> CommandStatusDto ioTCommandV1ControllerSendCommand(deviceId, commandPayloadDto)
 
 Send command to device
 
@@ -124,10 +124,10 @@ final deviceId = device-123; // String | ID of the device
 final commandPayloadDto = CommandPayloadDto(); // CommandPayloadDto | 
 
 try {
-    final result = api_instance.ioTCommandControllerV1SendCommand(deviceId, commandPayloadDto);
+    final result = api_instance.ioTCommandV1ControllerSendCommand(deviceId, commandPayloadDto);
     print(result);
 } catch (e) {
-    print('Exception when calling IoTCommandsApi->ioTCommandControllerV1SendCommand: $e\n');
+    print('Exception when calling IoTCommandsApi->ioTCommandV1ControllerSendCommand: $e\n');
 }
 ```
 

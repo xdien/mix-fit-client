@@ -46,4 +46,10 @@ class UserRepositoryImpl extends AuthRepository {
   
   @override
   Stream<bool> get authStateChanges => _sharedPrefsHelper.authStateChanges;
+  
+  @override
+  Future<UserDto?> register(params) async {
+    return _userApi.authControllerUserRegister(params.username, params.email, params.password);
+
+  }
 }

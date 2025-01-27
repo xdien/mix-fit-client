@@ -140,7 +140,7 @@ class IoTCommandsApi {
   ///   ID of the device
   ///
   /// * [CommandPayloadDto] commandPayloadDto (required):
-  Future<Response> ioTCommandControllerV1SendCommandWithHttpInfo(String deviceId, CommandPayloadDto commandPayloadDto,) async {
+  Future<Response> ioTCommandV1ControllerSendCommandWithHttpInfo(String deviceId, CommandPayloadDto commandPayloadDto,) async {
     // ignore: prefer_const_declarations
     final path = r'/v1/iot/commands/{deviceId}'
       .replaceAll('{deviceId}', deviceId);
@@ -174,8 +174,8 @@ class IoTCommandsApi {
   ///   ID of the device
   ///
   /// * [CommandPayloadDto] commandPayloadDto (required):
-  Future<CommandStatusDto?> ioTCommandControllerV1SendCommand(String deviceId, CommandPayloadDto commandPayloadDto,) async {
-    final response = await ioTCommandControllerV1SendCommandWithHttpInfo(deviceId, commandPayloadDto,);
+  Future<CommandStatusDto?> ioTCommandV1ControllerSendCommand(String deviceId, CommandPayloadDto commandPayloadDto,) async {
+    final response = await ioTCommandV1ControllerSendCommandWithHttpInfo(deviceId, commandPayloadDto,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

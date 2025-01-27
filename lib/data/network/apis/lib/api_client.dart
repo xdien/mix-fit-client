@@ -228,6 +228,8 @@ class ApiClient {
           return UserDto.fromJson(value);
         case 'UserLoginDto':
           return UserLoginDto.fromJson(value);
+        case 'UserRegisterDto':
+          return UserRegisterDto.fromJson(value);
         default:
           dynamic match;
           if (value is List && (match = _regList.firstMatch(targetType)?.group(1)) != null) {

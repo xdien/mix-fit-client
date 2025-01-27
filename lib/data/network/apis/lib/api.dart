@@ -31,6 +31,7 @@ part 'auth/http_bearer_auth.dart';
 part 'api/auth_api.dart';
 part 'api/cms_api.dart';
 part 'api/default_api.dart';
+part 'api/io_t_api.dart';
 part 'api/io_t_commands_api.dart';
 part 'api/telemetry_api.dart';
 part 'api/users_api.dart';
@@ -58,6 +59,7 @@ part 'model/telemetry_payload_dto.dart';
 part 'model/token_payload_dto.dart';
 part 'model/user_dto.dart';
 part 'model/user_login_dto.dart';
+part 'model/user_register_dto.dart';
 
 
 /// An [ApiClient] instance that uses the default values obtained from

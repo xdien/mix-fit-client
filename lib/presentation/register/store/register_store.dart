@@ -1,6 +1,7 @@
 // register_store.dart
 import 'dart:io';
 
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../core/stores/error/error_store.dart';
@@ -12,7 +13,7 @@ class RegisterStore = _RegisterStore with _$RegisterStore;
 abstract class _RegisterStore with Store {
   // error store for handling errors
   final ErrorStore errorStore;
-  
+
   // disposers:-----------------------------------------------------------------
   late List<ReactionDisposer> _disposers;
 
@@ -96,7 +97,7 @@ abstract class _RegisterStore with Store {
   }
 
   @action
-  Future<bool> register() async {
+  Future<UserDto> register() async {
     isLoading = true;
     try {
     } catch (e) {

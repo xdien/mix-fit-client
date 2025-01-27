@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:api_client/api.dart';
 
@@ -14,5 +13,5 @@ abstract class AuthRepository {
 
   Future<void> saveAuthToken(String authToken);
   Future<bool> removeAuthToken();
-  Future<bool> register(UserRegisterDto params);
+  Future<UserDto?> register(UserRegisterDto params);
 }

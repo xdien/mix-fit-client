@@ -13,6 +13,7 @@ doc/DeviceStatusEventDto.md
 doc/HealthCheckerControllerCheck200Response.md
 doc/HealthCheckerControllerCheck200ResponseInfoValue.md
 doc/HealthCheckerControllerCheck503Response.md
+doc/IoTApi.md
 doc/IoTCommandsApi.md
 doc/IoTEvents.md
 doc/LoginPayloadDto.md
@@ -30,12 +31,14 @@ doc/TelemetryPayloadDto.md
 doc/TokenPayloadDto.md
 doc/UserDto.md
 doc/UserLoginDto.md
+doc/UserRegisterDto.md
 doc/UsersApi.md
 git_push.sh
 lib/api.dart
 lib/api/auth_api.dart
 lib/api/cms_api.dart
 lib/api/default_api.dart
+lib/api/io_t_api.dart
 lib/api/io_t_commands_api.dart
 lib/api/telemetry_api.dart
 lib/api/users_api.dart
@@ -70,5 +73,7 @@ lib/model/telemetry_payload_dto.dart
 lib/model/token_payload_dto.dart
 lib/model/user_dto.dart
 lib/model/user_login_dto.dart
+lib/model/user_register_dto.dart
 pubspec.yaml
-test/device_status_event_dto_test.dart
+test/io_t_api_test.dart
+test/user_register_dto_test.dart

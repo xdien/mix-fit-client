@@ -110,9 +110,10 @@ Class | Method | HTTP request | Description
 *AuthApi* | [**authControllerUserRegister**](doc//AuthApi.md#authcontrolleruserregister) | **POST** /auth/register | Register new user
 *CmsApi* | [**cmsAuthControllerLogin**](doc//CmsApi.md#cmsauthcontrollerlogin) | **POST** /cms-auth/login | 
 *DefaultApi* | [**healthCheckerControllerCheck**](doc//DefaultApi.md#healthcheckercontrollercheck) | **GET** /health | 
+*IoTApi* | [**deviceControllerGetDevices**](doc//IoTApi.md#devicecontrollergetdevices) | **GET** /"devices" | Get all devices
 *IoTCommandsApi* | [**ioTCommandControllerGetStatus**](doc//IoTCommandsApi.md#iotcommandcontrollergetstatus) | **GET** /iot/commands/{commandId}/status | Get status of command
 *IoTCommandsApi* | [**ioTCommandControllerSendCommand**](doc//IoTCommandsApi.md#iotcommandcontrollersendcommand) | **POST** /iot/commands/{deviceId} | Send command to device
-*IoTCommandsApi* | [**ioTCommandControllerV1SendCommand**](doc//IoTCommandsApi.md#iotcommandcontrollerv1sendcommand) | **POST** /v1/iot/commands/{deviceId} | Send command to device
+*IoTCommandsApi* | [**ioTCommandV1ControllerSendCommand**](doc//IoTCommandsApi.md#iotcommandv1controllersendcommand) | **POST** /v1/iot/commands/{deviceId} | Send command to device
 *TelemetryApi* | [**deviceTelemetryControllerGetLatestMetrics**](doc//TelemetryApi.md#devicetelemetrycontrollergetlatestmetrics) | **GET** /telemetry/{deviceId}/latest | Get latest metrics for device
 *TelemetryApi* | [**deviceTelemetryControllerGetMetricHistory**](doc//TelemetryApi.md#devicetelemetrycontrollergetmetrichistory) | **GET** /telemetry/{deviceId}/history/{metricName} | Get metric history for device
 *TelemetryApi* | [**deviceTelemetryControllerSaveTelemetry**](doc//TelemetryApi.md#devicetelemetrycontrollersavetelemetry) | **POST** /telemetry | Save device telemetry data
@@ -146,6 +147,7 @@ Class | Method | HTTP request | Description
  - [TokenPayloadDto](doc//TokenPayloadDto.md)
  - [UserDto](doc//UserDto.md)
  - [UserLoginDto](doc//UserLoginDto.md)
+ - [UserRegisterDto](doc//UserRegisterDto.md)
 
 
 ## Documentation For Authorization
