@@ -11,9 +11,9 @@ class SetLiquorKilnOilDayMinUsecase implements UseCase<void, LiquorKilnTempParam
   @override
   Future<void> call({required LiquorKilnTempParams params}) {
     final payload = CommandPayloadDto(
-      parameters: {
-        LiquorKilnCommandActionDtoActionEnum.SET_DISTILLATION_DAY_TEMP_MAX.value: params as dynamic,
-      }, 
+      parameters: CommandParametersDto(
+        SET_DISTILLATION_DAY_TEMP_MIN: params.temperature,
+      ), 
       deviceType: DeviceTypeDtoTypeEnum.LIQUOR_KILN.value,
     );
     

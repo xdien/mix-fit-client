@@ -20,9 +20,9 @@ class SetLiquorKilnHeating1Usecase implements UseCase<void, HeatingParams> {
   @override
   Future<void> call({required HeatingParams params}) {
     final payload = CommandPayloadDto(
-      parameters: {
-        LiquorKilnCommandActionDtoActionEnum.cMDHEATER1.value: params as dynamic,
-      }, 
+      parameters: CommandParametersDto(
+        cMDHEATER1: params.isOn,
+      ),
       deviceType: DeviceTypeDtoTypeEnum.LIQUOR_KILN.value,
     );
     

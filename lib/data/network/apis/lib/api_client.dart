@@ -186,6 +186,8 @@ class ApiClient {
           return CmsLoginDto.fromJson(value);
         case 'CmsLoginPayloadDto':
           return CmsLoginPayloadDto.fromJson(value);
+        case 'CommandParametersDto':
+          return CommandParametersDto.fromJson(value);
         case 'CommandPayloadDto':
           return CommandPayloadDto.fromJson(value);
         case 'CommandStatusDto':

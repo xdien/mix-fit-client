@@ -7,10 +7,10 @@ abstract class UseCase<T, P> {
 class NoParams {}
 class LiquorKilnTempParams {
   final String deviceId;
-  final double temperatureOverheat;
+  final double temperature;
 
   LiquorKilnTempParams({
     required this.deviceId,
-    required this.temperatureOverheat,
+    required this.temperature,
   });
 }

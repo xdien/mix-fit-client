@@ -6,6 +6,7 @@ doc/AuthApi.md
 doc/CmsApi.md
 doc/CmsLoginDto.md
 doc/CmsLoginPayloadDto.md
+doc/CommandParametersDto.md
 doc/CommandPayloadDto.md
 doc/CommandStatusDto.md
 doc/DefaultApi.md
@@ -54,6 +55,7 @@ lib/auth/http_bearer_auth.dart
 lib/auth/oauth.dart
 lib/model/cms_login_dto.dart
 lib/model/cms_login_payload_dto.dart
+lib/model/command_parameters_dto.dart
 lib/model/command_payload_dto.dart
 lib/model/command_status_dto.dart
 lib/model/device_status_event_dto.dart

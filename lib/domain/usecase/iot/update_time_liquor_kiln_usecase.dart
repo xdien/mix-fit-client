@@ -4,14 +4,21 @@ import 'package:mix_fit/domain/repository/iot/temperature_repository.dart';
 
 import '../../../core/domain/usecase/use_case.dart';
 
-class SetLiquorKilnOverHeatUsecase implements UseCase<void, LiquorKilnTempParams> {
+ class UpdateTimeLiquorKilnPrams {
+  final String deviceId;
+  UpdateTimeLiquorKilnPrams({
+    required this.deviceId,
+  });
+}
+
+class UpdateTimeLiquorKilnUsecase implements UseCase<void, UpdateTimeLiquorKilnPrams> {
   final ILiquorKilnRepository _api;
-  SetLiquorKilnOverHeatUsecase(this._api);
+  UpdateTimeLiquorKilnUsecase(this._api);
 
   @override
-  Future<void> call({required LiquorKilnTempParams params}) {
+  Future<void> call({required UpdateTimeLiquorKilnPrams params}) {
     final CommandParametersDto commandParametersDto = CommandParametersDto(
-      SET_OVERHEAT_TEMP: params.temperature,
+      UPDATE_TIME_NTP: true,
     );
     final payload = CommandPayloadDto(
       parameters: commandParametersDto,

@@ -23,7 +23,9 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),
     ));
     // Register ApiClient
-    getIt.registerSingleton<ApiClient>(ApiClient(basePath: Endpoints.baseUrl));
+    getIt.registerSingleton<ApiClient>(ApiClient(basePath: Endpoints.baseUrl,
+      authentication: OAuth(accessToken: await getIt<SharedPreferenceHelper>().authToken ?? ''))
+    );
 
     getIt.registerSingleton<AuthRepository>(UserRepositoryImpl(
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),

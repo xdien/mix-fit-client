@@ -126,6 +126,7 @@ Class | Method | HTTP request | Description
 
  - [CmsLoginDto](doc//CmsLoginDto.md)
  - [CmsLoginPayloadDto](doc//CmsLoginPayloadDto.md)
+ - [CommandParametersDto](doc//CommandParametersDto.md)
  - [CommandPayloadDto](doc//CommandPayloadDto.md)
  - [CommandStatusDto](doc//CommandStatusDto.md)
  - [DeviceStatusEventDto](doc//DeviceStatusEventDto.md)

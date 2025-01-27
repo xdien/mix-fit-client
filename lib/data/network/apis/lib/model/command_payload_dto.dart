@@ -14,7 +14,7 @@ class CommandPayloadDto {
   /// Returns a new [CommandPayloadDto] instance.
   CommandPayloadDto({
     required this.deviceType,
-    this.parameters = const {},
+    this.parameters,
     this.metadata = const {},
     this.repositoryType,
   });
@@ -23,7 +23,13 @@ class CommandPayloadDto {
   String deviceType;
 
   /// Parameters control device
-  Map<String, Object> parameters;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  CommandParametersDto? parameters;
 
   /// Metadata bổ sung
   Map<String, Object> metadata;
@@ -40,7 +46,7 @@ class CommandPayloadDto {
   @override
   bool operator ==(Object other) => identical(this, other) || other is CommandPayloadDto &&
     other.deviceType == deviceType &&
-    _deepEquality.equals(other.parameters, parameters) &&
+    other.parameters == parameters &&
     _deepEquality.equals(other.metadata, metadata) &&
     other.repositoryType == repositoryType;
 
@@ -48,7 +54,7 @@ class CommandPayloadDto {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (deviceType.hashCode) +
-    (parameters.hashCode) +
+    (parameters == null ? 0 : parameters!.hashCode) +
     (metadata.hashCode) +
     (repositoryType == null ? 0 : repositoryType!.hashCode);
 
@@ -58,7 +64,11 @@ class CommandPayloadDto {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'deviceType'] = this.deviceType;
+    if (this.parameters != null) {
       json[r'parameters'] = this.parameters;
+    } else {
+      json[r'parameters'] = null;
+    }
       json[r'metadata'] = this.metadata;
     if (this.repositoryType != null) {
       json[r'repositoryType'] = this.repositoryType;
@@ -88,7 +98,7 @@ class CommandPayloadDto {
 
       return CommandPayloadDto(
         deviceType: mapValueOfType<String>(json, r'deviceType')!,
-        parameters: mapCastOfType<String, Object>(json, r'parameters') ?? const {},
+        parameters: CommandParametersDto.fromJson(json[r'parameters']),
         metadata: mapCastOfType<String, Object>(json, r'metadata') ?? const {},
         repositoryType: mapValueOfType<String>(json, r'repositoryType'),
       );

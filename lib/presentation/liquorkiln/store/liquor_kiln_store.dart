@@ -1,6 +1,7 @@
 // lib/presentation/liquor_kiln/store/liquor_kiln_store.dart
 import 'package:flutter/material.dart';
 import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:mix_fit/domain/usecase/iot/set_liquor_kiln_oil_day_min_usecase.dart';
 import 'package:mobx/mobx.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -8,7 +9,9 @@ import '../../../core/domain/usecase/use_case.dart';
 import '../../../domain/usecase/iot/get_liquorklin_online_steam_usecase.dart';
 import '../../../domain/usecase/iot/get_temperature_stream_usecase.dart';
 import '../../../domain/usecase/iot/set_liquor_kiln_heating_1_usecase.dart';
+import '../../../domain/usecase/iot/set_liquor_kiln_oil_day_max_usecase.dart';
 import '../../../domain/usecase/iot/set_liquor_kiln_overheat_usecase.dart';
+import '../../../domain/usecase/iot/update_time_liquor_kiln_usecase.dart';
 import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
 // ... other imports
 
@@ -24,6 +27,9 @@ abstract class _LiquorKilnStore with Store {
 
   // test manual 
   final SetLiquorKilnOverHeatUsecase _setLiquorKilnOverHeatUsecase;
+  final SetLiquorKilnOilDayMinUsecase _setLiquorKilnOilDayMinUsecase;
+  final SetLiquorKilnOilDayMaxUsecase _setLiquorKilnOilDayMaxUsecase;
+  final UpdateTimeLiquorKilnUsecase _updateTimeLiquorKilnUsecase;
 
   _LiquorKilnStore(
     this._getConnectionStatusUseCase,
@@ -31,6 +37,9 @@ abstract class _LiquorKilnStore with Store {
     this._getLiquorKilnOnlineStreamUseCase,
     this._setLiquorKilnHeating1Usecase,
     this._setLiquorKilnOverHeatUsecase,
+    this._setLiquorKilnOilDayMinUsecase,
+    this._setLiquorKilnOilDayMaxUsecase,
+    this._updateTimeLiquorKilnUsecase,
   ) {
     _setupSubscriptions();
   }
@@ -96,11 +105,25 @@ abstract class _LiquorKilnStore with Store {
 
   // Private methods
   void _setupSubscriptions() {
-    final params = LiquorKilnTempParams(
-      deviceId: 'esp8266_001',
-      temperatureOverheat: 150,
-    );
-    _setLiquorKilnOverHeatUsecase.call(params: params);
+    // final params = LiquorKilnTempParams(
+    //   deviceId: 'esp8266_001',
+    //   temperature: 145,
+    // );
+    // _setLiquorKilnOverHeatUsecase.call(params: params);
+    // final minParams = LiquorKilnTempParams(
+    //   deviceId: 'esp8266_001',
+    //   temperature: 129,
+    // );
+    // _setLiquorKilnOilDayMinUsecase.call(params: minParams);
+    // final maxParams = LiquorKilnTempParams(
+    //   deviceId: 'esp8266_001',
+    //   temperature: 131,
+    // );
+    // _setLiquorKilnOilDayMaxUsecase.call(params: maxParams);
+     final timeParams = UpdateTimeLiquorKilnPrams(
+        deviceId: 'esp8266_001'
+      );
+    _updateTimeLiquorKilnUsecase.call(params: timeParams);
     _getLiquorKilnStreamUseCase.call(params: NoParams()).listen(
       (data) {
         runInAction(() {

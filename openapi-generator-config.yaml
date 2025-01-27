@@ -3,7 +3,10 @@ inputSpec: http://localhost:3000/documentation-json
 # inputSpec: api-docs.json  # Swagger/OpenAPI spec file
 generatorName: dart
 globalProperties:
-  generateGitIgnoreFile: false
+  generateGitIgnoreFile: true
 additionalProperties:
   pubName: api_client
   pubVersion: 1.0.0
+  ensureUniqueParams: true
+  serializationLibrary: json_serializable
+  dateLibrary: time

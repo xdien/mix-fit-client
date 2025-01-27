@@ -38,6 +38,7 @@ part 'api/users_api.dart';
 
 part 'model/cms_login_dto.dart';
 part 'model/cms_login_payload_dto.dart';
+part 'model/command_parameters_dto.dart';
 part 'model/command_payload_dto.dart';
 part 'model/command_status_dto.dart';
 part 'model/device_status_event_dto.dart';
