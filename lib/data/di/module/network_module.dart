@@ -48,7 +48,7 @@ class NetworkModule {
     );
     getIt.registerSingleton<SocketService>(
       SocketService(
-         url: Endpoints.wsUrl,
+         url: Endpoints.baseUrl,
          tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
       ),
     );

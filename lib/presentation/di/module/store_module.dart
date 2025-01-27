@@ -1,12 +1,11 @@
 import 'dart:async';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mix_fit/core/stores/error/error_store.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
+import 'package:mix_fit/presentation/register/store/register_store.dart';
 
 import '../../../di/service_locator.dart';
 import '../../../domain/usecase/auth/is_logged_in_usecase.dart';
@@ -51,5 +50,8 @@ class StoreModule {
       ),
     );
 
+    getIt.registerLazySingleton<RegisterStore>(
+      () => RegisterStore(getIt<ErrorStore>())
+    );
   }
 }

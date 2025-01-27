@@ -118,12 +118,41 @@ class _LoginScreenState extends State<LoginScreen> {
             _buildUserIdField(),
             _buildPasswordField(),
             _buildForgotPasswordButton(),
-            _buildSignInButton()
+            _buildSignInButton(),
+            _buildRegisterButton(),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildRegisterButton() {
+  return Padding(
+    padding: const EdgeInsets.only(top: 8.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          AppLocalizations.of(context).translate('login_tv_dont_have_account'),
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        MaterialButton(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            AppLocalizations.of(context).translate('login_btn_sign_up'),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.orangeAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed(Routes.register);
+          },
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildUserIdField() {
     return Observer(

@@ -43,6 +43,7 @@ dependencies:
   # I
   intl: ^0.19.0
   injectable: ^2.5.0
+  image_picker: ^1.1.2
   # J
   json_serializable: ^6.6.1
   # K
