@@ -4,5 +4,5 @@ abstract class ILiquorKilnRepository {
   Stream<SensorDataEventDto> getLiquorKilnKStream();
   Stream<bool> getDeviceStatus(String deviceId);
   Stream<DeviceStatusEventDto> getDeviceOnlineStatus(String deviceId);
-  Future<void> setHeating(String deviceId, CommandPayloadDto payload);  
+  Future<void> setLiquorKilnConfigure(String deviceId, CommandPayloadDto payload);  
 }

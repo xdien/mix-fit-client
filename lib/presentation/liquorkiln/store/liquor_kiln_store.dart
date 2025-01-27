@@ -8,6 +8,7 @@ import '../../../core/domain/usecase/use_case.dart';
 import '../../../domain/usecase/iot/get_liquorklin_online_steam_usecase.dart';
 import '../../../domain/usecase/iot/get_temperature_stream_usecase.dart';
 import '../../../domain/usecase/iot/set_liquor_kiln_heating_1_usecase.dart';
+import '../../../domain/usecase/iot/set_liquor_kiln_overheat_usecase.dart';
 import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
 // ... other imports
 
@@ -21,11 +22,15 @@ abstract class _LiquorKilnStore with Store {
   final GetLiquorKilnOnlineStreamUseCase _getLiquorKilnOnlineStreamUseCase;
   final SetLiquorKilnHeating1Usecase _setLiquorKilnHeating1Usecase;
 
+  // test manual 
+  final SetLiquorKilnOverHeatUsecase _setLiquorKilnOverHeatUsecase;
+
   _LiquorKilnStore(
     this._getConnectionStatusUseCase,
     this._getLiquorKilnStreamUseCase,
     this._getLiquorKilnOnlineStreamUseCase,
     this._setLiquorKilnHeating1Usecase,
+    this._setLiquorKilnOverHeatUsecase,
   ) {
     _setupSubscriptions();
   }
@@ -91,6 +96,11 @@ abstract class _LiquorKilnStore with Store {
 
   // Private methods
   void _setupSubscriptions() {
+    final params = LiquorKilnTempParams(
+      deviceId: 'esp8266_001',
+      temperatureOverheat: 150,
+    );
+    _setLiquorKilnOverHeatUsecase.call(params: params);
     _getLiquorKilnStreamUseCase.call(params: NoParams()).listen(
       (data) {
         runInAction(() {

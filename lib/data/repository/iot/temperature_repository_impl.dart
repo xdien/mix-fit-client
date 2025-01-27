@@ -50,7 +50,7 @@ class TemperatureRepositoryImpl implements ILiquorKilnRepository {
   }
   
   @override
-  Future<void> setHeating(String deviceId, CommandPayloadDto payload) async {
+  Future<void> setLiquorKilnConfigure(String deviceId, CommandPayloadDto payload) async {
     _iotApi.ioTCommandControllerSendCommand(deviceId, payload);
   }
 }

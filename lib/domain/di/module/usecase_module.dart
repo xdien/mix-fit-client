@@ -14,6 +14,9 @@ import '../../usecase/auth/save_auth_token_usecase.dart';
 import '../../usecase/iot/get_liquorklin_online_steam_usecase.dart';
 import '../../usecase/iot/get_temperature_stream_usecase.dart';
 import '../../usecase/iot/set_liquor_kiln_heating_1_usecase.dart';
+import '../../usecase/iot/set_liquor_kiln_oil_day_max_usecase.dart';
+import '../../usecase/iot/set_liquor_kiln_oil_day_min_usecase.dart';
+import '../../usecase/iot/set_liquor_kiln_overheat_usecase.dart';
 import '../../usecase/websocket/disconnect_websocket_usecase.dart';
 import '../../usecase/websocket/get_connection_status_usecase.dart';
 
@@ -48,5 +51,11 @@ class UseCaseModule {
         () => RegisterUsecase(getIt<AuthRepository>()));
     getIt.registerLazySingleton(
        () => SetLiquorKilnHeating1Usecase(getIt<ILiquorKilnRepository>()));
+    getIt.registerLazySingleton(
+       () => SetLiquorKilnOilDayMaxUsecase(getIt<ILiquorKilnRepository>()));
+    getIt.registerLazySingleton(
+        () => SetLiquorKilnOilDayMinUsecase(getIt<ILiquorKilnRepository>()));
+    getIt.registerLazySingleton(
+        () => SetLiquorKilnOverHeatUsecase(getIt<ILiquorKilnRepository>()));
   }
 }
