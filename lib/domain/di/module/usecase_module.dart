@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mix_fit/domain/repository/auth/auth_repository.dart';
 import 'package:mix_fit/domain/usecase/auth/is_logged_in_usecase.dart';
 import 'package:mix_fit/domain/usecase/auth/login_usecase.dart';
+import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
 import 'package:mix_fit/domain/usecase/auth/save_login_in_status_usecase.dart';
 
 import '../../../di/service_locator.dart';
@@ -41,7 +42,9 @@ class UseCaseModule {
         () => RemoveAuthTokenUsecase(getIt<AuthRepository>()));
     getIt.registerLazySingleton(
         () => GetLiquorKilnOnlineStreamUseCase(getIt<ILiquorKilnRepository>()));
-  
+
+    getIt.registerLazySingleton(
+        () => RegisterUsecase(getIt<AuthRepository>()));
     //
   }
 }

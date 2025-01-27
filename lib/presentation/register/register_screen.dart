@@ -150,18 +150,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    if (_formKey.currentState?.validate() == true) {
-      final success = await _store.register();
-      if (success) {
-        FlushbarHelper.createSuccess(
-          message: 'Đăng ký thành công!',
-        ).show(context);
+  if (_formKey.currentState?.validate() == true) {
+    final user = await _store.register();
+    if (user != null) {
+      await FlushbarHelper.createSuccess(
+        message: 'Đăng ký thành công!',
+        duration: Duration(seconds: 2),
+      ).show(context);
+      
+      if (context.mounted) {
         Navigator.of(context).pop();
-      } else {
-        FlushbarHelper.createError(
-          message: _store.errorStore.errorMessage,
-        ).show(context);
       }
+    } else {
+      await FlushbarHelper.createError(
+        message: _store.errorStore.errorMessage,
+        duration: Duration(seconds: 2),
+      ).show(context);
     }
   }
+}
 }

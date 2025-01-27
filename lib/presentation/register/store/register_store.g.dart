@@ -17,6 +17,22 @@ mixin _$RegisterStore on _RegisterStore, Store {
               name: '_RegisterStore.canRegister'))
           .value;
 
+  late final _$successAtom =
+      Atom(name: '_RegisterStore.success', context: context);
+
+  @override
+  bool get success {
+    _$successAtom.reportRead();
+    return super.success;
+  }
+
+  @override
+  set success(bool value) {
+    _$successAtom.reportWrite(value, super.success, () {
+      super.success = value;
+    });
+  }
+
   late final _$usernameAtom =
       Atom(name: '_RegisterStore.username', context: context);
 
@@ -147,7 +163,7 @@ mixin _$RegisterStore on _RegisterStore, Store {
       AsyncAction('_RegisterStore.register', context: context);
 
   @override
-  Future<bool> register() {
+  Future<UserDto?> register() {
     return _$registerAsyncAction.run(() => super.register());
   }
 
@@ -234,6 +250,7 @@ mixin _$RegisterStore on _RegisterStore, Store {
   @override
   String toString() {
     return '''
+success: ${success},
 username: ${username},
 email: ${email},
 password: ${password},

@@ -1,7 +1,8 @@
 // register_store.dart
 import 'dart:io';
 
-import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:api_client/api.dart';
+import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../core/stores/error/error_store.dart';
@@ -16,10 +17,11 @@ abstract class _RegisterStore with Store {
 
   // disposers:-----------------------------------------------------------------
   late List<ReactionDisposer> _disposers;
+  final RegisterUsecase _registerUsecase;
 
   @observable
   bool success = false;
-  _RegisterStore(this.errorStore) {
+  _RegisterStore(this.errorStore, this._registerUsecase) {
     _setupDisposers();
   }
 
@@ -97,15 +99,27 @@ abstract class _RegisterStore with Store {
   }
 
   @action
-  Future<UserDto> register() async {
+  Future<UserDto?> register() async {
     isLoading = true;
     try {
+      final user = this._registerUsecase.call(params: this.toDto());
+      return user;
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
-      return false;
+      return null;
     } finally {
       isLoading = false;
     }
+  }
+
+  UserRegisterDto toDto() {
+    return UserRegisterDto(
+      username: username,
+      email: email,
+      password: password,
+      fullName: fullName,
+      phone: phone,
+    );
   }
   // general methods:-----------------------------------------------------------
   void dispose() {
