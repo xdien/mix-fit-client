@@ -37,7 +37,7 @@ class LiquorKilnScreen extends StatelessWidget {
             SizedBox(height: 20),
             Observer(
               builder: (_) => TemperatureChart(
-                data: store.temperatureData,
+                data: store.temperatureData.toList(),
               ),
             ),
             SizedBox(height: 20),

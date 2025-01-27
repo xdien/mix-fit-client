@@ -6,6 +6,7 @@ import 'package:mix_fit/data/network/websocket/websocket_service.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
 
 class TemperatureRepositoryImpl implements ILiquorKilnRepository {
+  final deviceId = "esp8266_001"; // TODO: move to config
   final SocketService _service;
   final _temperatureController =
       StreamController<SensorDataEventDto>.broadcast();
@@ -17,8 +18,8 @@ class TemperatureRepositoryImpl implements ILiquorKilnRepository {
 
   TemperatureRepositoryImpl(this._service, this._apiClient) {
     _iotApi = IoTCommandsApi(_apiClient);
-    _service.on(IoTEvents.sensorDataMonitoring.value+"/dev001", _handleTemperatureEvent);
-    _service.on(IoTEvents.controlStatus.value+"/dev001", _handleOnlineStatusEvent);
+    _service.on(IoTEvents.sensorDataMonitoring.value+"/" + deviceId, _handleTemperatureEvent);
+    _service.on(IoTEvents.controlStatus.value+"/" + deviceId, _handleOnlineStatusEvent);
   }
 
   void _handleTemperatureEvent(dynamic event) {
