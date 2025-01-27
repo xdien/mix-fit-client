@@ -120,10 +120,10 @@ abstract class _LiquorKilnStore with Store {
     //   temperature: 131,
     // );
     // _setLiquorKilnOilDayMaxUsecase.call(params: maxParams);
-     final timeParams = UpdateTimeLiquorKilnPrams(
-        deviceId: 'esp8266_001'
-      );
-    _updateTimeLiquorKilnUsecase.call(params: timeParams);
+    //  final timeParams = UpdateTimeLiquorKilnPrams(
+    //     deviceId: 'esp8266_001'
+    //   );
+    // _updateTimeLiquorKilnUsecase.call(params: timeParams);
     _getLiquorKilnStreamUseCase.call(params: NoParams()).listen(
       (data) {
         runInAction(() {
