@@ -192,6 +192,8 @@ class ApiClient {
           return CommandStatusDto.fromJson(value);
         case 'DeviceStatusEventDto':
           return DeviceStatusEventDto.fromJson(value);
+        case 'DeviceTypeDto':
+          return DeviceTypeDto.fromJson(value);
         case 'HealthCheckerControllerCheck200Response':
           return HealthCheckerControllerCheck200Response.fromJson(value);
         case 'HealthCheckerControllerCheck200ResponseInfoValue':
@@ -200,6 +202,8 @@ class ApiClient {
           return HealthCheckerControllerCheck503Response.fromJson(value);
         case 'IoTEvents':
           return IoTEventsTypeTransformer().decode(value);
+        case 'LiquorKilnCommandActionDto':
+          return LiquorKilnCommandActionDto.fromJson(value);
         case 'LoginPayloadDto':
           return LoginPayloadDto.fromJson(value);
         case 'MetricDto':

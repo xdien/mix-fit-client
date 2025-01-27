@@ -6,7 +6,7 @@ import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../di/service_locator.dart';
-import '../liquorkiln/liquorkiln_chart.dart';
+import '../liquorkiln/view/liquor_kiln_screen.dart';
 import '../store/ui_store.dart';
 
 class AppDrawer extends StatelessWidget {

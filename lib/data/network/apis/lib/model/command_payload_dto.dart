@@ -22,7 +22,7 @@ class CommandPayloadDto {
   /// Loại thiết bị
   String deviceType;
 
-  /// Các tham số bổ sung
+  /// Parameters control device
   Map<String, Object> parameters;
 
   /// Metadata bổ sung

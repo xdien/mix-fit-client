@@ -1,4 +1,4 @@
-import 'package:api_client/api.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 
 import '../../../core/domain/usecase/use_case.dart';
 import '../../repository/auth/auth_repository.dart';

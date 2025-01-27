@@ -7,7 +7,7 @@ import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:mix_fit/data/network/constants/endpoints.dart';
 
 import '../../../di/service_locator.dart';
-import 'package:api_client/api.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
@@ -29,7 +29,7 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
     getIt.registerLazySingleton<ILiquorKilnRepository>(
-      () => TemperatureRepositoryImpl(getIt<SocketService>())
+      () => TemperatureRepositoryImpl(getIt<SocketService>(),getIt<ApiClient>())
     );
     // Register WebSocket repository
     getIt.registerSingleton<WebSocketRepository>(

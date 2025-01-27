@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:api_client/api.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 
 abstract class AuthRepository {
   Future<bool> get isLoggedIn;

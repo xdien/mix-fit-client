@@ -12,7 +12,11 @@ class TemperatureRepositoryImpl implements ILiquorKilnRepository {
   final _onlineStatus =
       StreamController<DeviceStatusEventDto>.broadcast();
 
-  TemperatureRepositoryImpl(this._service) {
+  final ApiClient _apiClient;
+  late final IoTCommandsApi _iotApi;
+
+  TemperatureRepositoryImpl(this._service, this._apiClient) {
+    _iotApi = IoTCommandsApi(_apiClient);
     _service.on(IoTEvents.sensorDataMonitoring.value+"/dev001", _handleTemperatureEvent);
     _service.on(IoTEvents.controlStatus.value+"/dev001", _handleOnlineStatusEvent);
   }
@@ -42,5 +46,10 @@ class TemperatureRepositoryImpl implements ILiquorKilnRepository {
   @override
   Stream<DeviceStatusEventDto> getDeviceOnlineStatus(String deviceId) {
     return _onlineStatus.stream;
+  }
+  
+  @override
+  Future<void> setHeating(String deviceId, CommandPayloadDto payload) async {
+    _iotApi.ioTCommandControllerSendCommand(deviceId, payload);
   }
 }

@@ -22,6 +22,12 @@ Get status of command
 ### Example
 ```dart
 import 'package:api_client/api.dart';
+// TODO Configure HTTP Bearer authorization: bearer
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearer').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearer').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = IoTCommandsApi();
 final commandId = cmd-123; // String | ID of the command
@@ -46,7 +52,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

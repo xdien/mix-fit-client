@@ -14,6 +14,11 @@ import '../../../domain/usecase/auth/register_usecase.dart';
 import '../../../domain/usecase/auth/remove_auth_token_usecase.dart';
 import '../../../domain/usecase/auth/save_auth_token_usecase.dart';
 import '../../../domain/usecase/auth/save_login_in_status_usecase.dart';
+import '../../../domain/usecase/iot/get_liquorklin_online_steam_usecase.dart';
+import '../../../domain/usecase/iot/get_temperature_stream_usecase.dart';
+import '../../../domain/usecase/iot/set_liquor_kiln_heating_1_usecase.dart';
+import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
+import '../../liquorkiln/store/liquor_kiln_store.dart';
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
     // factories:---------------------------------------------------------------
@@ -54,5 +59,14 @@ class StoreModule {
     getIt.registerLazySingleton<RegisterStore>(
       () => RegisterStore(getIt<ErrorStore>(), getIt<RegisterUsecase>()),
     );
+
+    getIt.registerFactory(
+    () => LiquorKilnStore(
+      getIt<GetConnectionStatusUseCase>(),
+      getIt<GetLiquorKilnStreamUseCase>(),
+      getIt<GetLiquorKilnOnlineStreamUseCase>(),
+      getIt<SetLiquorKilnHeating1Usecase>(),
+    ),
+  );
   }
 }

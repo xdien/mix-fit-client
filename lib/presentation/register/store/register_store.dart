@@ -1,7 +1,7 @@
 // register_store.dart
 import 'dart:io';
 
-import 'package:api_client/api.dart';
+import 'package:mix_fit/data/network/apis/lib/api.dart';
 import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
 import 'package:mobx/mobx.dart';
 

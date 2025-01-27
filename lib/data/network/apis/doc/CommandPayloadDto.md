@@ -9,7 +9,7 @@ import 'package:api_client/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **deviceType** | **String** | Loại thiết bị | 
-**parameters** | [**Map<String, Object>**](Object.md) | Các tham số bổ sung | [optional] [default to const {}]
+**parameters** | [**Map<String, Object>**](Object.md) | Parameters control device | [optional] [default to const {}]
 **metadata** | [**Map<String, Object>**](Object.md) | Metadata bổ sung | [optional] [default to const {}]
 **repositoryType** | **String** | Loại repository | [optional] 
 

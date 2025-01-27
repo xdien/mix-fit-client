@@ -10,12 +10,14 @@ doc/CommandPayloadDto.md
 doc/CommandStatusDto.md
 doc/DefaultApi.md
 doc/DeviceStatusEventDto.md
+doc/DeviceTypeDto.md
 doc/HealthCheckerControllerCheck200Response.md
 doc/HealthCheckerControllerCheck200ResponseInfoValue.md
 doc/HealthCheckerControllerCheck503Response.md
 doc/IoTApi.md
 doc/IoTCommandsApi.md
 doc/IoTEvents.md
+doc/LiquorKilnCommandActionDto.md
 doc/LoginPayloadDto.md
 doc/MetricDto.md
 doc/OilTemperatureData.md
@@ -55,10 +57,12 @@ lib/model/cms_login_payload_dto.dart
 lib/model/command_payload_dto.dart
 lib/model/command_status_dto.dart
 lib/model/device_status_event_dto.dart
+lib/model/device_type_dto.dart
 lib/model/health_checker_controller_check200_response.dart
 lib/model/health_checker_controller_check200_response_info_value.dart
 lib/model/health_checker_controller_check503_response.dart
 lib/model/io_t_events.dart
+lib/model/liquor_kiln_command_action_dto.dart
 lib/model/login_payload_dto.dart
 lib/model/metric_dto.dart
 lib/model/oil_temperature_data.dart
@@ -75,5 +79,3 @@ lib/model/user_dto.dart
 lib/model/user_login_dto.dart
 lib/model/user_register_dto.dart
 pubspec.yaml
-test/io_t_api_test.dart
-test/user_register_dto_test.dart

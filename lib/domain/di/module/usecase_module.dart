@@ -13,6 +13,7 @@ import '../../usecase/auth/remove_auth_token_usecase.dart';
 import '../../usecase/auth/save_auth_token_usecase.dart';
 import '../../usecase/iot/get_liquorklin_online_steam_usecase.dart';
 import '../../usecase/iot/get_temperature_stream_usecase.dart';
+import '../../usecase/iot/set_liquor_kiln_heating_1_usecase.dart';
 import '../../usecase/websocket/disconnect_websocket_usecase.dart';
 import '../../usecase/websocket/get_connection_status_usecase.dart';
 
@@ -45,6 +46,7 @@ class UseCaseModule {
 
     getIt.registerLazySingleton(
         () => RegisterUsecase(getIt<AuthRepository>()));
-    //
+    getIt.registerLazySingleton(
+       () => SetLiquorKilnHeating1Usecase(getIt<ILiquorKilnRepository>()));
   }
 }
