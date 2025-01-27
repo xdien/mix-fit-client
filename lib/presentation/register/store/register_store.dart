@@ -1,7 +1,6 @@
 // register_store.dart
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../core/stores/error/error_store.dart';
@@ -13,8 +12,21 @@ class RegisterStore = _RegisterStore with _$RegisterStore;
 abstract class _RegisterStore with Store {
   // error store for handling errors
   final ErrorStore errorStore;
+  
+  // disposers:-----------------------------------------------------------------
+  late List<ReactionDisposer> _disposers;
 
-  _RegisterStore(this.errorStore);
+  @observable
+  bool success = false;
+  _RegisterStore(this.errorStore) {
+    _setupDisposers();
+  }
+
+  void _setupDisposers() {
+    _disposers = [
+      reaction((_) => success, (_) => success = false, delay: 200),
+    ];
+  }
 
   @observable
   String username = '';
@@ -87,31 +99,17 @@ abstract class _RegisterStore with Store {
   Future<bool> register() async {
     isLoading = true;
     try {
-      final dio = Dio();
-      final formData = FormData.fromMap({
-        'username': username,
-        'email': email,
-        'password': password,
-        'fullName': fullName,
-        'phone': phone,
-        if (avatar != null)
-          'avatar': await MultipartFile.fromFile(avatar!.path),
-      });
-
-      final response = await dio.post(
-        'http://localhost:3000/auth/register',
-        data: formData,
-      );
-
-      if (response.statusCode == 200) {
-        return true;
-      }
-      return false;
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
       return false;
     } finally {
       isLoading = false;
+    }
+  }
+  // general methods:-----------------------------------------------------------
+  void dispose() {
+    for (final d in _disposers) {
+      d();
     }
   }
 }

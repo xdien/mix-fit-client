@@ -2,8 +2,8 @@ class Endpoints {
   Endpoints._();
 
   // base url
-  static const String baseUrl = "https://iot.canthotouring.com:3000";
-  // static const String baseUrl = "http://localhost:3000";
+  // static const String baseUrl = "https://iot.canthotouring.com:3000";
+  static const String baseUrl = "http://localhost:3000";
 
   // receiveTimeout
   static const int receiveTimeout = 15000;
