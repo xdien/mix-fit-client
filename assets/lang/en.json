@@ -17,6 +17,13 @@
   "home_title": "Home",
   "home_settings": "Settings",
   "home_logout": "Logout",
-  "home_end": "-------------------------------------------------------------------------------------"
+  "home_end": "-------------------------------------------------------------------------------------",
+
+  "app_drawer_start": "Below are list of strings for app drawer",
+  "app_drawer_home": "Home",
+  "app_drawer_settings": "Settings",
+  "app_drawer_logout": "Logout",
+  "app_drawer_liquor_kiln": "Liquor Kiln",
+  "app_drawer_end": "-------------------------------------------------------------------------------------"
 
 }

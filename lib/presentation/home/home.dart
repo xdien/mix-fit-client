@@ -1,12 +1,13 @@
+import 'package:mix_fit/constants/app_routes.dart';
 import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
-import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 import '../store/ui_store.dart';
 import '../widgets/app_drawer.dart';
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {
         SharedPreferences.getInstance().then((preference) {
           preference.setBool(Preferences.is_logged_in, false);
-          Navigator.of(context).pushReplacementNamed(Routes.login);
+          context.go(AppRoutes.login);
         });
       },
       icon: Icon(

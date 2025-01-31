@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../di/service_locator.dart';
+import '../../home/store/theme/theme_store.dart';
+import '../../widgets/app_drawer.dart';
 import '../store/liquor_kiln_store.dart';
 import '../widgets/temperature_chart.dart';
 import '../widgets/connection_status.dart';
@@ -8,11 +10,13 @@ import '../widgets/current_temperature.dart';
 import '../widgets/temperature_controls.dart';
 
 class LiquorKilnScreen extends StatelessWidget {
+  final ThemeStore _themeStore = getIt<ThemeStore>();
   final LiquorKilnStore store = getIt<LiquorKilnStore>(); 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(themeStore: _themeStore),
       appBar: AppBar(
         title: Text('Điều khiển lò rượu'),
         actions: [

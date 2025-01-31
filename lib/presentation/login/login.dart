@@ -1,4 +1,5 @@
 import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mix_fit/constants/assets.dart';
 import 'package:mix_fit/core/stores/form/form_store.dart';
 import 'package:mix_fit/core/widgets/app_icon_widget.dart';
@@ -11,11 +12,11 @@ import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
 import 'package:mix_fit/utils/device/device_utils.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
-import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants/app_routes.dart';
 import '../../di/service_locator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -146,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
           ),
           onPressed: () {
-            Navigator.of(context).pushNamed(Routes.register);
+            // Navigator.of(context).pushNamed(AppRoutes.register);
+            context.push(AppRoutes.register);
           },
         ),
       ],
@@ -237,8 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     Future.delayed(Duration(milliseconds: 0), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          Routes.home, (Route<dynamic> route) => false);
+      context.go(AppRoutes.home);
     });
 
     return Container();

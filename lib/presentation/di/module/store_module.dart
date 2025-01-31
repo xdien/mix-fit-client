@@ -23,11 +23,13 @@ import '../../../domain/usecase/iot/set_liquor_kiln_overheat_usecase.dart';
 import '../../../domain/usecase/iot/update_time_liquor_kiln_usecase.dart';
 import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
 import '../../liquorkiln/store/liquor_kiln_store.dart';
+import '../../store/navigation_store.dart';
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
     // factories:---------------------------------------------------------------
     getIt.registerFactory(() => ErrorStore());
     getIt.registerFactory(() => FormErrorStore());
+    getIt.registerFactory(() => NavigationStore());
     getIt.registerFactory(
       () => FormStore(getIt<FormErrorStore>(), getIt<ErrorStore>()),
     );
