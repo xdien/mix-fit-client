@@ -1,0 +1,728 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_userLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserLoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User info with access token",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginPayloadDto" }
+              }
+            }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_userRegister",
+        "summary": "Register new user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "username"],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "nullable": false,
+                    "example": "username"
+                  },
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "******" },
+                  "fullName": { "type": "string", "example": "John Doe" },
+                  "phone": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "+1234567890"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "User avatar file"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully Registered",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserDto" }
+              }
+            }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_getCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "current user info",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["auth"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/users/admin": {
+      "get": {
+        "operationId": "UserController_admin",
+        "parameters": [],
+        "responses": { "401": { "description": "Unauthorized" } },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "UserController_getUsers",
+        "summary": "Get users list",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "schema": { "$ref": "#/components/schemas/Order" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "take",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get users list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "PageResponseOfUserDto",
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/UserDto" }
+                        },
+                        "meta": { "$ref": "#/components/schemas/PageMetaDto" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get users list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["users"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthCheckerController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "info": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "info": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": { "status": "up" },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": ["status"],
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cms-auth/login": {
+      "post": {
+        "operationId": "CmsAuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CmsLoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User info with access token",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CmsLoginPayloadDto" }
+              }
+            }
+          }
+        },
+        "tags": ["cms"]
+      }
+    },
+    "/iot/commands/{deviceId}": {
+      "post": {
+        "operationId": "IoTCommandController_sendCommand",
+        "summary": "Send command to device",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the device",
+            "example": "device-123",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommandPayloadDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Command sent successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommandStatusDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["IoT Commands"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/iot/commands/{commandId}/status": {
+      "get": {
+        "operationId": "IoTCommandController_getStatus",
+        "summary": "Get status of command",
+        "parameters": [
+          {
+            "name": "commandId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the command",
+            "example": "cmd-123",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status of the command",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommandStatusDto" }
+              }
+            }
+          }
+        },
+        "tags": ["IoT Commands"]
+      }
+    },
+    "/v1/iot/commands/{deviceId}": {
+      "post": {
+        "operationId": "IoTCommandControllerV1_sendCommand",
+        "summary": "Send command to device",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "description": "ID of the device",
+            "example": "device-123",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommandPayloadDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Command has been sent successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommandStatusDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["IoT Commands"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/telemetry": {
+      "post": {
+        "operationId": "DeviceTelemetryController_saveTelemetry",
+        "summary": "Save device telemetry data",
+        "description": "Saves a batch of telemetry data for a specific device including multiple metrics",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TelemetryPayloadDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The telemetry data has been successfully saved"
+          },
+          "400": { "description": "Invalid payload format" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal server error" }
+        },
+        "tags": ["Telemetry"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/telemetry/{deviceId}/latest": {
+      "get": {
+        "operationId": "DeviceTelemetryController_getLatestMetrics",
+        "summary": "Get latest metrics for device",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "metrics",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "401": { "description": "Unauthorized" } },
+        "tags": ["Telemetry"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/telemetry/{deviceId}/history/{metricName}": {
+      "get": {
+        "operationId": "DeviceTelemetryController_getMetricHistory",
+        "summary": "Get metric history for device",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "metricName",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "endTime",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregateMinutes",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "401": { "description": "Unauthorized" } },
+        "tags": ["Telemetry"],
+        "security": [{ "bearer": [] }]
+      }
+    }
+  },
+  "info": {
+    "title": "API",
+    "description": "### REST\n\nRoutes is following REST standard (Richardson level 3)\n\n<details><summary>Detailed specification</summary>\n<p>\n\n**List:**\n  - `GET /<resources>/`\n    - Get the list of **<resources>** as admin\n  - `GET /user/<user_id>/<resources>/`\n    - Get the list of **<resources>** for a given **<user_id>**\n    - Output a **403** if logged user is not **<user_id>**\n\n**Detail:**\n  - `GET /<resources>/<resource_id>`\n    - Get the detail for **<resources>** of id **<resource_id>**\n    - Output a **404** if not found\n  - `GET /user/<user_id>/<resources>/<resource_id>`\n    - Get the list of **<resources>** for a given **user_id**\n    - Output a **404** if not found\n    - Output a **403** if:\n      - Logged user is not **<user_id>**\n      - The **<user_id>** have no access to **<resource_id>**\n\n**Creation / Edition / Replacement / Suppression:**\n  - `<METHOD>` is:\n    - **POST** for creation\n    - **PATCH** for update (one or more fields)\n    - **PUT** for replacement (all fields, not used)\n    - **DELETE** for suppression (all fields, not used)\n  - `<METHOD> /<resources>/<resource_id>`\n    - Create **<resources>** with id **<resource_id>** as admin\n    - Output a **400** if **<resource_id>** conflicts with existing **<resources>**\n  - `<METHOD> /user/<user_id>/<resources>/<resource_id>`\n    - Create **<resources>** with id **<resource_id>** as a given **user_id**\n    - Output a **409** if **<resource_id>** conflicts with existing **<resources>**\n    - Output a **403** if:\n      - Logged user is not **<user_id>**\n      - The **<user_id>** have no access to **<resource_id>**\n</p>\n</details>",
+    "version": "v1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "UserLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "RoleType": {
+        "type": "string",
+        "enum": ["SUPER_ADMIN", "ADMIN", "IOT_ADMIN", "USER", "GUEST"]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "fullName": { "type": "string", "nullable": true },
+          "username": { "type": "string" },
+          "roles": { "$ref": "#/components/schemas/RoleType" },
+          "email": { "type": "string" },
+          "avatar": { "type": "string", "nullable": true },
+          "phone": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "username",
+          "roles",
+          "email"
+        ]
+      },
+      "TokenPayloadDto": {
+        "type": "object",
+        "properties": {
+          "expiresIn": { "type": "number" },
+          "accessToken": { "type": "string" }
+        },
+        "required": ["expiresIn", "accessToken"]
+      },
+      "LoginPayloadDto": {
+        "type": "object",
+        "properties": {
+          "user": { "$ref": "#/components/schemas/UserDto" },
+          "token": { "$ref": "#/components/schemas/TokenPayloadDto" }
+        },
+        "required": ["user", "token"]
+      },
+      "PageMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number" },
+          "take": { "type": "number" },
+          "itemCount": { "type": "number" },
+          "pageCount": { "type": "number" },
+          "hasPreviousPage": { "type": "boolean" },
+          "hasNextPage": { "type": "boolean" }
+        },
+        "required": [
+          "page",
+          "take",
+          "itemCount",
+          "pageCount",
+          "hasPreviousPage",
+          "hasNextPage"
+        ]
+      },
+      "PageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": { "$ref": "#/components/schemas/PageDto" }
+            }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "Order": { "type": "string", "enum": ["ASC", "DESC"] },
+      "CmsLoginDto": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["username", "password"]
+      },
+      "TaiKhoanEntity": { "type": "object", "properties": {} },
+      "CmsLoginPayloadDto": {
+        "type": "object",
+        "properties": {
+          "user": { "$ref": "#/components/schemas/TaiKhoanEntity" },
+          "token": { "$ref": "#/components/schemas/TokenPayloadDto" }
+        },
+        "required": ["user", "token"]
+      },
+      "CommandPayloadDto": {
+        "type": "object",
+        "properties": {
+          "deviceType": {
+            "type": "string",
+            "description": "Loại thiết bị",
+            "example": "LIQUOR-KILN"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Các tham số bổ sung",
+            "example": { "temperature": 25, "humidity": 80 },
+            "additionalProperties": true
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadata bổ sung",
+            "example": { "location": "warehouse-1", "floor": "2nd" },
+            "additionalProperties": true
+          },
+          "repositoryType": {
+            "type": "string",
+            "description": "Loại repository",
+            "example": "mongodb"
+          }
+        },
+        "required": ["deviceType"]
+      },
+      "CommandStatusDto": {
+        "type": "object",
+        "properties": {
+          "commandId": {
+            "type": "object",
+            "description": "ID của lệnh",
+            "example": "cmd-123"
+          },
+          "status": {
+            "type": "string",
+            "description": "Trạng thái của lệnh",
+            "enum": ["PENDING", "EXECUTING", "COMPLETED", "FAILED"],
+            "example": "COMPLETED"
+          },
+          "executedAt": {
+            "type": "object",
+            "description": "Thời gian thực thi",
+            "example": "2024-03-15T10:30:00Z"
+          }
+        },
+        "required": ["commandId", "status", "executedAt"]
+      },
+      "MetricDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the metric",
+            "example": "temperature"
+          },
+          "value": {
+            "type": "number",
+            "description": "Value of the metric",
+            "example": 25.5
+          }
+        },
+        "required": ["name", "value"]
+      },
+      "TelemetryPayloadDto": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "description": "Unique identifier of the device",
+            "example": "device-001"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when the telemetry data was collected",
+            "example": "2024-03-10T15:30:00Z"
+          },
+          "metrics": {
+            "description": "Array of metrics with their values",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MetricDto" }
+          }
+        },
+        "required": ["device_id", "timestamp", "metrics"]
+      }
+    }
+  }
+}
