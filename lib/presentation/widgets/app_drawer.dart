@@ -47,6 +47,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.settings,
             title: localizations.translate('home_settings') ,
             onTap: () {
+              context.go(AppRoutes.settings);
               context.canPop();
             },
           ),

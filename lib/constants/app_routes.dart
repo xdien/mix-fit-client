@@ -6,6 +6,7 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const liquorKiln = '/liquorKiln';
+  static const settings = '/settings';
   // ...
   
   // Helper method để tạo path với params

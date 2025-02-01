@@ -14,6 +14,7 @@ import '../../presentation/home/store/theme/theme_store.dart';
 import '../../presentation/liquorkiln/view/liquor_kiln_screen.dart';
 import '../../presentation/login/login.dart';
 import '../../presentation/register/register_screen.dart';
+import '../../presentation/settings/setting_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
 
 class AppRouter {
@@ -44,8 +45,6 @@ class AppRouter {
         path: AppRoutes.postDetail,
         builder: (context, state) {
           UnimplementedError('Not implemented yet');
-          // final postId = state.pathParameters['id']!;
-          // return PostDetailScreen(id: postId);
           return Container();
         },
       ),
@@ -53,7 +52,12 @@ class AppRouter {
         path: AppRoutes.liquorKiln,
         builder: (context, state) => LiquorKilnScreen(),
       ),
-      // Thêm các protected routes khác ở đây
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) {
+          return SettingsScreen();
+        },
+      ),
     ],
   );
 
@@ -114,12 +118,6 @@ class AppRouter {
     observers: [
       GoRouterObserver(),
     ],
-
-    // Custom error handling
-    // errorPageBuilder: (context, state) {
-    //   _logger.log(Level.SEVERE,'Navigation error: ${state.error}');
-    //   return null;
-    // },
 
     // Debug logging
     debugLogDiagnostics: true,
