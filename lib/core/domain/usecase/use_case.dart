@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../../../constants/iot_param.dart';
+
 abstract class UseCase<T, P> {
   FutureOr<T> call({ required P params});
 }
@@ -12,5 +14,12 @@ class LiquorKilnTempParams {
   LiquorKilnTempParams({
     required this.deviceId,
     required this.temperature,
+  });
+}
+
+class IoTParams implements IIotParam {
+  final String deviceId;
+  IoTParams({
+    required this.deviceId,
   });
 }

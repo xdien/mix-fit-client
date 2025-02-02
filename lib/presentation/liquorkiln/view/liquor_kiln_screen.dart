@@ -11,7 +11,7 @@ import '../widgets/temperature_controls.dart';
 
 class LiquorKilnScreen extends StatelessWidget {
   final ThemeStore _themeStore = getIt<ThemeStore>();
-  final LiquorKilnStore store = getIt<LiquorKilnStore>(); 
+  final LiquorKilnStore store = getIt<LiquorKilnStore>(param1: 'esp8266_001'); 
 
   @override
   Widget build(BuildContext context) {

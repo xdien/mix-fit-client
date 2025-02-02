@@ -24,6 +24,7 @@ import '../../../domain/usecase/iot/update_time_liquor_kiln_usecase.dart';
 import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
 import '../../liquorkiln/store/liquor_kiln_store.dart';
 import '../../store/navigation_store.dart';
+
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
     // factories:---------------------------------------------------------------
@@ -47,7 +48,6 @@ class StoreModule {
       ),
     );
 
-
     getIt.registerSingleton<ThemeStore>(
       ThemeStore(
         getIt<SettingRepository>(),
@@ -66,17 +66,18 @@ class StoreModule {
       () => RegisterStore(getIt<ErrorStore>(), getIt<RegisterUsecase>()),
     );
 
-    getIt.registerFactory(
-    () => LiquorKilnStore(
-      getIt<GetConnectionStatusUseCase>(),
-      getIt<GetLiquorKilnStreamUseCase>(),
-      getIt<GetLiquorKilnOnlineStreamUseCase>(),
-      getIt<SetLiquorKilnHeating1Usecase>(),
-      getIt<SetLiquorKilnOverHeatUsecase>(),
-      getIt<SetLiquorKilnOilDayMinUsecase>(),
-      getIt<SetLiquorKilnOilDayMaxUsecase>(),
-      getIt<UpdateTimeLiquorKilnUsecase>(),
-    ),
-  );
+    getIt.registerFactoryParam<LiquorKilnStore, String, void>(
+      (deviceId, _) => LiquorKilnStore(
+        getIt<GetConnectionStatusUseCase>(),
+        getIt<GetLiquorKilnStreamUseCase>(),
+        getIt<GetLiquorKilnOnlineStreamUseCase>(),
+        getIt<SetLiquorKilnHeating1Usecase>(),
+        getIt<SetLiquorKilnOverHeatUsecase>(),
+        getIt<SetLiquorKilnOilDayMinUsecase>(),
+        getIt<SetLiquorKilnOilDayMaxUsecase>(),
+        getIt<UpdateTimeLiquorKilnUsecase>(),
+        deviceId,
+      ),
+    );
   }
 }
