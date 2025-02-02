@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mix_fit/core/domain/usecase/use_case.dart';
 import 'package:mix_fit/presentation/home/home.dart';
 import 'package:logging/logging.dart';
-import 'package:mix_fit/presentation/post/post_list.dart';
 import 'package:mix_fit/presentation/widgets/app_drawer.dart';
 
 import '../../constants/app_routes.dart';
@@ -36,10 +35,6 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => HomeScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.post,
-        builder: (context, state) => PostListScreen(),
       ),
       GoRoute(
         path: AppRoutes.postDetail,

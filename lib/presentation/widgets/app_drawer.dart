@@ -7,12 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../di/service_locator.dart';
 import '../store/navigation_store.dart';
-import '../store/ui_store.dart';
 import 'package:go_router/go_router.dart';
 
 class AppDrawer extends StatelessWidget {
   final ThemeStore themeStore;
-  final UIStore _uiStore = getIt<UIStore>();
   final NavigationStore navigationStore = getIt<NavigationStore>();
   
   AppDrawer({

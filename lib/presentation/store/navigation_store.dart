@@ -8,12 +8,7 @@ class NavigationStore = _NavigationStore with _$NavigationStore;
 
 abstract class _NavigationStore with Store {
   @observable 
-  String currentRoute = AppRoutes.post;
-
-  @computed
-  bool get isPostRoute => 
-    currentRoute == AppRoutes.post || 
-    currentRoute.startsWith('${AppRoutes.post}/');
+  String currentRoute = AppRoutes.home;
 
   @action
   void setCurrentRoute(String route) {
