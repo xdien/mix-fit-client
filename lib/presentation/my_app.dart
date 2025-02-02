@@ -2,7 +2,6 @@ import 'package:mix_fit/constants/app_theme.dart';
 import 'package:mix_fit/constants/strings.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
-import 'package:mix_fit/presentation/splash/splash_screen.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

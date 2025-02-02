@@ -21,10 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _checkAuthAndNavigate() async {
     final ConnectionManager connectionManager = getIt<ConnectionManager>();
-    connectionManager.initialize();
     await Future.delayed(Duration(seconds: 2));
 
     if (_userStore.isLoggedIn) {
+      connectionManager.initialize();
       context.go(AppRoutes.home);
     } else {
       context.go(AppRoutes.login);

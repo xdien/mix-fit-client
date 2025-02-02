@@ -57,7 +57,7 @@ class AppRouter {
   );
 
   static final router = GoRouter(
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.splash,
 
     // Redirect logic
     redirect: (BuildContext context, GoRouterState state) async {
