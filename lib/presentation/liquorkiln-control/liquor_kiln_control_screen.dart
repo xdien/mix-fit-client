@@ -5,6 +5,7 @@ import '../home/store/theme/theme_store.dart';
 import '../liquorkiln/widgets/connection_status.dart';
 import 'store/liquor_kiln_control_store.dart';
 import '../../di/service_locator.dart';
+import 'widgets/system_control_section.dart';
 
 class LiquorKilnControlScreen extends StatelessWidget {
   final String deviceId;
@@ -48,7 +49,7 @@ class LiquorKilnControlScreen extends StatelessWidget {
               // DistillationControlSection(store: store),
               
               // System Control Section
-              // SystemControlSection(store: store),
+              SystemControlSection(store: store),
             ],
           ),
         ),
