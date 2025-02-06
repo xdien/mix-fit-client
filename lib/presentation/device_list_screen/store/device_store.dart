@@ -1,4 +1,3 @@
-import 'package:mix_fit/core/data/local/entity/devices_entity.dart';
 import 'package:mix_fit/core/data/local/models/device.dart';
 import 'package:mobx/mobx.dart';
 
