@@ -16,7 +16,7 @@ class LiquorKilnScreen extends StatelessWidget {
   final LiquorKilnStore store = getIt<LiquorKilnStore>(param1: 'esp8266_001'); 
 
   void _openControlScreen(BuildContext context) {
-    context.go(AppRoutes.liquorKilnControlPath(store.deviceId));
+    context.push(AppRoutes.liquorKilnControlPath(store.deviceId));
   }
 
   @override

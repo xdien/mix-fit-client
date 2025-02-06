@@ -3,7 +3,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../home/store/theme/theme_store.dart';
 import '../liquorkiln/widgets/connection_status.dart';
-import '../widgets/app_drawer.dart';
 import 'store/liquor_kiln_control_store.dart';
 import '../../di/service_locator.dart';
 
@@ -22,7 +21,6 @@ class LiquorKilnControlScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: AppDrawer(themeStore: _themeStore),
       appBar: AppBar(
         title: Text('Điều khiển lò rượu'),
         actions: [
