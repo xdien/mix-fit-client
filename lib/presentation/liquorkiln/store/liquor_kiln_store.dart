@@ -20,7 +20,7 @@ part 'liquor_kiln_store.g.dart';
 class LiquorKilnStore = _LiquorKilnStore with _$LiquorKilnStore;
 
 abstract class _LiquorKilnStore with Store {
-  final String _deviceId;
+  final String deviceId;
   final GetConnectionStatusUseCase _getConnectionStatusUseCase;
   final GetLiquorKilnStreamUseCase _getLiquorKilnStreamUseCase;
   final GetLiquorKilnOnlineStreamUseCase _getLiquorKilnOnlineStreamUseCase;
@@ -41,9 +41,9 @@ abstract class _LiquorKilnStore with Store {
     this._setLiquorKilnOilDayMinUsecase,
     this._setLiquorKilnOilDayMaxUsecase,
     this._updateTimeLiquorKilnUsecase,
-    this._deviceId,
+    this.deviceId,
   ) {
-    _setupSubscriptions(this._deviceId);
+    _setupSubscriptions(this.deviceId);
   }
 
   // Observables
@@ -82,7 +82,7 @@ abstract class _LiquorKilnStore with Store {
     try {
       await _setLiquorKilnHeating1Usecase.call(
         params: HeatingParams(
-          deviceId: this._deviceId,
+          deviceId: this.deviceId,
           isOn: !currentState,
         ),
       );

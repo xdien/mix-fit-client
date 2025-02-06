@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mix_fit/core/domain/usecase/use_case.dart';
 import 'package:mix_fit/presentation/home/home.dart';
 import 'package:logging/logging.dart';
+import 'package:mix_fit/presentation/liquorkiln-control/liquor_kiln_control_screen.dart';
 import 'package:mix_fit/presentation/widgets/app_drawer.dart';
 
 import '../../constants/app_routes.dart';
@@ -47,6 +48,10 @@ class AppRouter {
         path: AppRoutes.liquorKiln,
         builder: (context, state) => LiquorKilnScreen(),
       ),
+      GoRoute(path: AppRoutes.liquorKilnControl, builder: (context, state) {
+        final deviceId = state.pathParameters['deviceId']!;
+        return LiquorKilnControlScreen(deviceId: deviceId);
+      }),
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) {

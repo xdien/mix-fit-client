@@ -5,9 +5,11 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const liquorKiln = '/liquorKiln';
+  static const liquorKilnControl = '/liquorKilnControl/:deviceId';
   static const settings = '/settings';
   // ...
   
-  // Helper method để tạo path với params
   static String postDetailPath(String id) => '/post/$id';
+  static String liquorKilnControlPath(String id) => '/liquorKilnControl/$id';
+
 }
