@@ -71,7 +71,7 @@ In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `F
 * Splash
 * Login
 * Home
-* Routing
+* Routing (using goRouter)
 * Theme
 * Dio
 * Database
@@ -83,9 +83,12 @@ In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `F
 * User Notifications
 * Logging
 * Dependency Injection
-* Dark Theme Support (new)
-* Multilingual Support (new)
-* Provider example (new)
+* Dark Theme Support
+* Multilingual Support
+* Provider example
+* OpenAPI Generator
+* Web Support (new)
+* Socket IO (new)
 
 ### Up-Coming Features:
 
