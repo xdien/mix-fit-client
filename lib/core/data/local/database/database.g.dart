@@ -741,6 +741,308 @@ class PostCompanion extends UpdateCompanion<PostData> {
   }
 }
 
+class $DeviceTableTable extends DeviceTable
+    with TableInfo<$DeviceTableTable, DeviceTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DeviceTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isOnlineMeta =
+      const VerificationMeta('isOnline');
+  @override
+  late final GeneratedColumn<bool> isOnline = GeneratedColumn<bool>(
+      'is_online', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_online" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _lastSeenMeta =
+      const VerificationMeta('lastSeen');
+  @override
+  late final GeneratedColumn<DateTime> lastSeen = GeneratedColumn<DateTime>(
+      'last_seen', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, deviceId, name, isOnline, lastSeen];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'device_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<DeviceTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_online')) {
+      context.handle(_isOnlineMeta,
+          isOnline.isAcceptableOrUnknown(data['is_online']!, _isOnlineMeta));
+    }
+    if (data.containsKey('last_seen')) {
+      context.handle(_lastSeenMeta,
+          lastSeen.isAcceptableOrUnknown(data['last_seen']!, _lastSeenMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DeviceTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DeviceTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      isOnline: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_online'])!,
+      lastSeen: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_seen']),
+    );
+  }
+
+  @override
+  $DeviceTableTable createAlias(String alias) {
+    return $DeviceTableTable(attachedDatabase, alias);
+  }
+}
+
+class DeviceTableData extends DataClass implements Insertable<DeviceTableData> {
+  final int id;
+  final String deviceId;
+  final String name;
+  final bool isOnline;
+  final DateTime? lastSeen;
+  const DeviceTableData(
+      {required this.id,
+      required this.deviceId,
+      required this.name,
+      required this.isOnline,
+      this.lastSeen});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['device_id'] = Variable<String>(deviceId);
+    map['name'] = Variable<String>(name);
+    map['is_online'] = Variable<bool>(isOnline);
+    if (!nullToAbsent || lastSeen != null) {
+      map['last_seen'] = Variable<DateTime>(lastSeen);
+    }
+    return map;
+  }
+
+  DeviceTableCompanion toCompanion(bool nullToAbsent) {
+    return DeviceTableCompanion(
+      id: Value(id),
+      deviceId: Value(deviceId),
+      name: Value(name),
+      isOnline: Value(isOnline),
+      lastSeen: lastSeen == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSeen),
+    );
+  }
+
+  factory DeviceTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DeviceTableData(
+      id: serializer.fromJson<int>(json['id']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      name: serializer.fromJson<String>(json['name']),
+      isOnline: serializer.fromJson<bool>(json['isOnline']),
+      lastSeen: serializer.fromJson<DateTime?>(json['lastSeen']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'name': serializer.toJson<String>(name),
+      'isOnline': serializer.toJson<bool>(isOnline),
+      'lastSeen': serializer.toJson<DateTime?>(lastSeen),
+    };
+  }
+
+  DeviceTableData copyWith(
+          {int? id,
+          String? deviceId,
+          String? name,
+          bool? isOnline,
+          Value<DateTime?> lastSeen = const Value.absent()}) =>
+      DeviceTableData(
+        id: id ?? this.id,
+        deviceId: deviceId ?? this.deviceId,
+        name: name ?? this.name,
+        isOnline: isOnline ?? this.isOnline,
+        lastSeen: lastSeen.present ? lastSeen.value : this.lastSeen,
+      );
+  DeviceTableData copyWithCompanion(DeviceTableCompanion data) {
+    return DeviceTableData(
+      id: data.id.present ? data.id.value : this.id,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      name: data.name.present ? data.name.value : this.name,
+      isOnline: data.isOnline.present ? data.isOnline.value : this.isOnline,
+      lastSeen: data.lastSeen.present ? data.lastSeen.value : this.lastSeen,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeviceTableData(')
+          ..write('id: $id, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('name: $name, ')
+          ..write('isOnline: $isOnline, ')
+          ..write('lastSeen: $lastSeen')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, deviceId, name, isOnline, lastSeen);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DeviceTableData &&
+          other.id == this.id &&
+          other.deviceId == this.deviceId &&
+          other.name == this.name &&
+          other.isOnline == this.isOnline &&
+          other.lastSeen == this.lastSeen);
+}
+
+class DeviceTableCompanion extends UpdateCompanion<DeviceTableData> {
+  final Value<int> id;
+  final Value<String> deviceId;
+  final Value<String> name;
+  final Value<bool> isOnline;
+  final Value<DateTime?> lastSeen;
+  const DeviceTableCompanion({
+    this.id = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isOnline = const Value.absent(),
+    this.lastSeen = const Value.absent(),
+  });
+  DeviceTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String deviceId,
+    required String name,
+    this.isOnline = const Value.absent(),
+    this.lastSeen = const Value.absent(),
+  })  : deviceId = Value(deviceId),
+        name = Value(name);
+  static Insertable<DeviceTableData> custom({
+    Expression<int>? id,
+    Expression<String>? deviceId,
+    Expression<String>? name,
+    Expression<bool>? isOnline,
+    Expression<DateTime>? lastSeen,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceId != null) 'device_id': deviceId,
+      if (name != null) 'name': name,
+      if (isOnline != null) 'is_online': isOnline,
+      if (lastSeen != null) 'last_seen': lastSeen,
+    });
+  }
+
+  DeviceTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? deviceId,
+      Value<String>? name,
+      Value<bool>? isOnline,
+      Value<DateTime?>? lastSeen}) {
+    return DeviceTableCompanion(
+      id: id ?? this.id,
+      deviceId: deviceId ?? this.deviceId,
+      name: name ?? this.name,
+      isOnline: isOnline ?? this.isOnline,
+      lastSeen: lastSeen ?? this.lastSeen,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isOnline.present) {
+      map['is_online'] = Variable<bool>(isOnline.value);
+    }
+    if (lastSeen.present) {
+      map['last_seen'] = Variable<DateTime>(lastSeen.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DeviceTableCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('name: $name, ')
+          ..write('isOnline: $isOnline, ')
+          ..write('lastSeen: $lastSeen')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -756,6 +1058,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE TRIGGER todos_update AFTER UPDATE ON todo_entries BEGIN INSERT INTO text_entries (text_entries, "rowid", description) VALUES (\'delete\', new.id, new.description);INSERT INTO text_entries ("rowid", description) VALUES (new.id, new.description);END',
       'todos_update');
   late final $PostTable post = $PostTable(this);
+  late final $DeviceTableTable deviceTable = $DeviceTableTable(this);
   Selectable<CategoriesWithCountResult> _categoriesWithCount() {
     return customSelect(
         'SELECT c.*, (SELECT COUNT(*) FROM todo_entries WHERE category = c.id) AS amount FROM categories AS c UNION ALL SELECT NULL, NULL, NULL, (SELECT COUNT(*) FROM todo_entries WHERE category IS NULL)',
@@ -791,8 +1094,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [categories, todoEntries, todosInsert, todosDelete, todosUpdate, post];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        categories,
+        todoEntries,
+        todosInsert,
+        todosDelete,
+        todosUpdate,
+        post,
+        deviceTable
+      ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -838,7 +1148,7 @@ final class $$CategoriesTableReferences
 
   $$TodoEntriesTableProcessedTableManager get todoEntriesRefs {
     final manager = $$TodoEntriesTableTableManager($_db, $_db.todoEntries)
-        .filter((f) => f.category.id($_item.id));
+        .filter((f) => f.category.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_todoEntriesRefsTable($_db));
     return ProcessedTableManager(
@@ -1057,9 +1367,10 @@ final class $$TodoEntriesTableReferences
           $_aliasNameGenerator(db.todoEntries.category, db.categories.id));
 
   $$CategoriesTableProcessedTableManager? get category {
-    if ($_item.category == null) return null;
+    final $_column = $_itemColumn<int>('category');
+    if ($_column == null) return null;
     final manager = $$CategoriesTableTableManager($_db, $_db.categories)
-        .filter((f) => f.id($_item.category!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_categoryTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -1428,6 +1739,173 @@ typedef $$PostTableProcessedTableManager = ProcessedTableManager<
     (PostData, BaseReferences<_$AppDatabase, $PostTable, PostData>),
     PostData,
     PrefetchHooks Function()>;
+typedef $$DeviceTableTableCreateCompanionBuilder = DeviceTableCompanion
+    Function({
+  Value<int> id,
+  required String deviceId,
+  required String name,
+  Value<bool> isOnline,
+  Value<DateTime?> lastSeen,
+});
+typedef $$DeviceTableTableUpdateCompanionBuilder = DeviceTableCompanion
+    Function({
+  Value<int> id,
+  Value<String> deviceId,
+  Value<String> name,
+  Value<bool> isOnline,
+  Value<DateTime?> lastSeen,
+});
+
+class $$DeviceTableTableFilterComposer
+    extends Composer<_$AppDatabase, $DeviceTableTable> {
+  $$DeviceTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isOnline => $composableBuilder(
+      column: $table.isOnline, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastSeen => $composableBuilder(
+      column: $table.lastSeen, builder: (column) => ColumnFilters(column));
+}
+
+class $$DeviceTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $DeviceTableTable> {
+  $$DeviceTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isOnline => $composableBuilder(
+      column: $table.isOnline, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastSeen => $composableBuilder(
+      column: $table.lastSeen, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DeviceTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DeviceTableTable> {
+  $$DeviceTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isOnline =>
+      $composableBuilder(column: $table.isOnline, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSeen =>
+      $composableBuilder(column: $table.lastSeen, builder: (column) => column);
+}
+
+class $$DeviceTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DeviceTableTable,
+    DeviceTableData,
+    $$DeviceTableTableFilterComposer,
+    $$DeviceTableTableOrderingComposer,
+    $$DeviceTableTableAnnotationComposer,
+    $$DeviceTableTableCreateCompanionBuilder,
+    $$DeviceTableTableUpdateCompanionBuilder,
+    (
+      DeviceTableData,
+      BaseReferences<_$AppDatabase, $DeviceTableTable, DeviceTableData>
+    ),
+    DeviceTableData,
+    PrefetchHooks Function()> {
+  $$DeviceTableTableTableManager(_$AppDatabase db, $DeviceTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DeviceTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DeviceTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DeviceTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<bool> isOnline = const Value.absent(),
+            Value<DateTime?> lastSeen = const Value.absent(),
+          }) =>
+              DeviceTableCompanion(
+            id: id,
+            deviceId: deviceId,
+            name: name,
+            isOnline: isOnline,
+            lastSeen: lastSeen,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String deviceId,
+            required String name,
+            Value<bool> isOnline = const Value.absent(),
+            Value<DateTime?> lastSeen = const Value.absent(),
+          }) =>
+              DeviceTableCompanion.insert(
+            id: id,
+            deviceId: deviceId,
+            name: name,
+            isOnline: isOnline,
+            lastSeen: lastSeen,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DeviceTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $DeviceTableTable,
+    DeviceTableData,
+    $$DeviceTableTableFilterComposer,
+    $$DeviceTableTableOrderingComposer,
+    $$DeviceTableTableAnnotationComposer,
+    $$DeviceTableTableCreateCompanionBuilder,
+    $$DeviceTableTableUpdateCompanionBuilder,
+    (
+      DeviceTableData,
+      BaseReferences<_$AppDatabase, $DeviceTableTable, DeviceTableData>
+    ),
+    DeviceTableData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1437,6 +1915,8 @@ class $AppDatabaseManager {
   $$TodoEntriesTableTableManager get todoEntries =>
       $$TodoEntriesTableTableManager(_db, _db.todoEntries);
   $$PostTableTableManager get post => $$PostTableTableManager(_db, _db.post);
+  $$DeviceTableTableTableManager get deviceTable =>
+      $$DeviceTableTableTableManager(_db, _db.deviceTable);
 }
 
 class CategoriesWithCountResult {

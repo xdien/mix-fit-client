@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
+import '../../../constants/app_routes.dart';
 import '../../../di/service_locator.dart';
+import '../../home/store/theme/theme_store.dart';
+import '../../widgets/app_drawer.dart';
+import '../../widgets/vintage_control_button.dart';
 import '../store/liquor_kiln_store.dart';
 import '../widgets/temperature_chart.dart';
 import '../widgets/connection_status.dart';
 import '../widgets/current_temperature.dart';
-import '../widgets/temperature_controls.dart';
 
 class LiquorKilnScreen extends StatelessWidget {
-  final LiquorKilnStore store = getIt<LiquorKilnStore>(); 
+  final ThemeStore _themeStore = getIt<ThemeStore>();
+  final LiquorKilnStore store = getIt<LiquorKilnStore>(param1: 'esp8266_001'); 
+
+  void _openControlScreen(BuildContext context) {
+    context.push(AppRoutes.liquorKilnControlPath(store.deviceId));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(themeStore: _themeStore),
       appBar: AppBar(
         title: Text('Điều khiển lò rượu'),
         actions: [
@@ -40,14 +50,10 @@ class LiquorKilnScreen extends StatelessWidget {
                 data: store.temperatureData.toList(),
               ),
             ),
-            SizedBox(height: 20),
-            Observer(
-              builder: (_) => TemperatureControls(
-                isControl1On: store.isControl1On,
-                isControl2On: store.isControl2On,
-                isControl3On: store.isControl3On,
-                onToggleControl: store.toggleControl,
-                isOnline: store.isOnline,
+            SizedBox(height: 40),
+            Center(
+              child: VintageControlButton(
+                onPressed: () => _openControlScreen(context),
               ),
             ),
           ],

@@ -17,6 +17,26 @@
   "home_title": "Home",
   "home_settings": "Settings",
   "home_logout": "Logout",
-  "home_end": "-------------------------------------------------------------------------------------"
+  "home_tv_welcome": "Welcome",
+  "home_end": "-------------------------------------------------------------------------------------",
+
+  "app_drawer_start": "Below are list of strings for app drawer",
+  "app_drawer_home": "Home",
+  "app_drawer_settings": "Settings",
+  "app_drawer_logout": "Logout",
+  "app_drawer_liquor_kiln": "Liquor Kiln",
+  "app_drawer_end": "-------------------------------------------------------------------------------------",
+
+  "settings_start": "Below are list of strings for settings",
+  "settings_title": "Settings",
+  "settings_language": "Language",
+  "settings_theme": "Theme",
+  "settings_light": "Light",
+  "settings_dark": "Dark",
+  "settings_dark_mode": "Dark Mode",
+  "settings_system_default": "System Default",
+  "settings_current_language": "Current Language",
+  "settings_choose_language": "Choose Language",
+  "settings_end": "-------------------------------------------------------------------------------------"
 
 }

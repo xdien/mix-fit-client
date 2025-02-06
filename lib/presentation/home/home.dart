@@ -1,14 +1,13 @@
+import 'package:mix_fit/constants/app_routes.dart';
 import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
-import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../store/ui_store.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,16 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
   //stores:---------------------------------------------------------------------
   final ThemeStore _themeStore = getIt<ThemeStore>();
   final LanguageStore _languageStore = getIt<LanguageStore>();
-  final UIStore _uiStore = getIt<UIStore>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
       drawer: AppDrawer(themeStore: _themeStore),
-      body: Observer(
-        builder: (_) => _uiStore.currentScreen,
-      ),
+      body: _bodyBuilder(),
     );
   }
 
@@ -37,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).translate('home_tv_posts')),
-      actions: _buildActions(context),
+      // actions: _buildActions(context),
     );
   }
 
@@ -69,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {
         SharedPreferences.getInstance().then((preference) {
           preference.setBool(Preferences.is_logged_in, false);
-          Navigator.of(context).pushReplacementNamed(Routes.login);
+          context.go(AppRoutes.login);
         });
       },
       icon: Icon(
@@ -142,5 +138,23 @@ class _HomeScreenState extends State<HomeScreen> {
     ).then<void>((T? value) {
       // The value passed to Navigator.pop() or null.
     });
+  }
+
+  _bodyBuilder() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            AppLocalizations.of(context).translate('home_tv_welcome'),
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20.0)
+        ],
+      ),
+    );
   }
 }

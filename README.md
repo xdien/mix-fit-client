@@ -1,6 +1,5 @@
 # This branch is still under development
 
-
 # Boilerplate Project
 
 A boilerplate project created in flutter using MobX and Provider. Boilerplate supports both web and mobile, clone the appropriate branches mentioned below:
@@ -66,12 +65,12 @@ In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `F
 **/*.g.dart
 ```
 
-## Boilerplate Features:
+## Features:
 
 * Splash
 * Login
 * Home
-* Routing
+* Routing (using goRouter)
 * Theme
 * Dio
 * Database
@@ -83,9 +82,12 @@ In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `F
 * User Notifications
 * Logging
 * Dependency Injection
-* Dark Theme Support (new)
-* Multilingual Support (new)
-* Provider example (new)
+* Dark Theme Support
+* Multilingual Support
+* Provider example
+* OpenAPI Generator
+* Web Support (new)
+* Socket IO (new)
 
 ### Up-Coming Features:
 
@@ -95,7 +97,7 @@ In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `F
 ### Libraries & Tools Used
 
 * [Dio](https://github.com/flutterchina/dio)
-* [Database](https://github.com/tekartik/sembast.dart)
+* [Database](https://github.com/simolus3/drift)
 * [MobX](https://github.com/mobxjs/mobx.dart) (to connect the reactive data of your application with the UI)
 * [Provider](https://github.com/rrousselGit/provider) (State Management)
 * [Encryption](https://github.com/xxtea/xxtea-dart)

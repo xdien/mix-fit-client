@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mix_fit/constants/app_routes.dart';
 import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
-import 'package:mix_fit/utils/routes/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../di/service_locator.dart';
-import '../liquorkiln/view/liquor_kiln_screen.dart';
-import '../store/ui_store.dart';
+import '../store/navigation_store.dart';
+import 'package:go_router/go_router.dart';
 
 class AppDrawer extends StatelessWidget {
   final ThemeStore themeStore;
-  final UIStore _uiStore = getIt<UIStore>();
+  final NavigationStore navigationStore = getIt<NavigationStore>();
   
   AppDrawer({
     Key? key,
@@ -30,16 +30,14 @@ class AppDrawer extends StatelessWidget {
             context: context,
             icon: Icons.home,
             title: localizations.translate('home_title'),
-            onTap: () => Navigator.pop(context),
+            onTap: () => context.canPop(),
           ),
           _buildMenuItem(
             context: context,
             icon: Icons.attractions_sharp,
-            title: "Liquor Kiln",
+            title: localizations.translate('app_drawer_liquor_kiln'),
             onTap: () {
-              // open liquor kiln screen
-              _uiStore.changeScreen(LiquorKilnScreen());
-              Navigator.pop(context);
+              context.go(AppRoutes.liquorKiln);
             },
           ),
           _buildMenuItem(
@@ -47,7 +45,8 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.settings,
             title: localizations.translate('home_settings') ,
             onTap: () {
-              Navigator.pop(context);
+              context.go(AppRoutes.settings);
+              context.canPop();
             },
           ),
           Divider(),
@@ -102,9 +101,8 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _handleLogout(BuildContext context) async {
-    Navigator.pop(context); // Close drawer
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(Preferences.is_logged_in, false);
-    Navigator.of(context).pushReplacementNamed(Routes.login);
+    context.go(AppRoutes.login);
   }
 }

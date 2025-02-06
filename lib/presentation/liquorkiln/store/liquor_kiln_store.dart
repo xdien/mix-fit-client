@@ -20,6 +20,7 @@ part 'liquor_kiln_store.g.dart';
 class LiquorKilnStore = _LiquorKilnStore with _$LiquorKilnStore;
 
 abstract class _LiquorKilnStore with Store {
+  final String deviceId;
   final GetConnectionStatusUseCase _getConnectionStatusUseCase;
   final GetLiquorKilnStreamUseCase _getLiquorKilnStreamUseCase;
   final GetLiquorKilnOnlineStreamUseCase _getLiquorKilnOnlineStreamUseCase;
@@ -40,8 +41,9 @@ abstract class _LiquorKilnStore with Store {
     this._setLiquorKilnOilDayMinUsecase,
     this._setLiquorKilnOilDayMaxUsecase,
     this._updateTimeLiquorKilnUsecase,
+    this.deviceId,
   ) {
-    _setupSubscriptions();
+    _setupSubscriptions(this.deviceId);
   }
 
   // Observables
@@ -80,7 +82,7 @@ abstract class _LiquorKilnStore with Store {
     try {
       await _setLiquorKilnHeating1Usecase.call(
         params: HeatingParams(
-          deviceId: 'esp8266_001',
+          deviceId: this.deviceId,
           isOn: !currentState,
         ),
       );
@@ -104,7 +106,7 @@ abstract class _LiquorKilnStore with Store {
   }
 
   // Private methods
-  void _setupSubscriptions() {
+  void _setupSubscriptions(String forDeviceId) {
     // final params = LiquorKilnTempParams(
     //   deviceId: 'esp8266_001',
     //   temperature: 145,
@@ -124,7 +126,7 @@ abstract class _LiquorKilnStore with Store {
     //     deviceId: 'esp8266_001'
     //   );
     // _updateTimeLiquorKilnUsecase.call(params: timeParams);
-    _getLiquorKilnStreamUseCase.call(params: NoParams()).listen(
+    _getLiquorKilnStreamUseCase.call(params: IoTParams(deviceId: forDeviceId)).listen(
       (data) {
         runInAction(() {
           var metrics = data.telemetryData.metrics;
