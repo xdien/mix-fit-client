@@ -14,12 +14,22 @@ class TelemetryPayloadDto {
   /// Returns a new [TelemetryPayloadDto] instance.
   TelemetryPayloadDto({
     required this.deviceId,
+    this.deviceType,
     required this.timestamp,
     this.metrics = const [],
   });
 
   /// Unique identifier of the device
   String deviceId;
+
+  /// Type of the device to which the telemetry data belongs
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? deviceType;
 
   /// Timestamp when the telemetry data was collected
   DateTime timestamp;
@@ -30,6 +40,7 @@ class TelemetryPayloadDto {
   @override
   bool operator ==(Object other) => identical(this, other) || other is TelemetryPayloadDto &&
     other.deviceId == deviceId &&
+    other.deviceType == deviceType &&
     other.timestamp == timestamp &&
     _deepEquality.equals(other.metrics, metrics);
 
@@ -37,15 +48,21 @@ class TelemetryPayloadDto {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (deviceId.hashCode) +
+    (deviceType == null ? 0 : deviceType!.hashCode) +
     (timestamp.hashCode) +
     (metrics.hashCode);
 
   @override
-  String toString() => 'TelemetryPayloadDto[deviceId=$deviceId, timestamp=$timestamp, metrics=$metrics]';
+  String toString() => 'TelemetryPayloadDto[deviceId=$deviceId, deviceType=$deviceType, timestamp=$timestamp, metrics=$metrics]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'deviceId'] = this.deviceId;
+    if (this.deviceType != null) {
+      json[r'deviceType'] = this.deviceType;
+    } else {
+      json[r'deviceType'] = null;
+    }
       json[r'timestamp'] = this.timestamp.toUtc().toIso8601String();
       json[r'metrics'] = this.metrics;
     return json;
@@ -71,6 +88,7 @@ class TelemetryPayloadDto {
 
       return TelemetryPayloadDto(
         deviceId: mapValueOfType<String>(json, r'deviceId')!,
+        deviceType: mapValueOfType<String>(json, r'deviceType'),
         timestamp: mapDateTime(json, r'timestamp', r'')!,
         metrics: MetricDto.listFromJson(json[r'metrics']),
       );

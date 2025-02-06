@@ -16,7 +16,7 @@ void main() {
   // final instance = PageDto();
 
   group('test PageDto', () {
-    // List<List<Object>> data (default value: const [])
+    // List<List<PageDto>> data (default value: const [])
     test('to test the property `data`', () async {
       // TODO
     });

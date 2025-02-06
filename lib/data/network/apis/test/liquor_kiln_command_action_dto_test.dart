@@ -16,7 +16,7 @@ void main() {
   // final instance = LiquorKilnCommandActionDto();
 
   group('test LiquorKilnCommandActionDto', () {
-    // Available command actions
+    // Available command actions for liquor kiln
     // String action
     test('to test the property `action`', () async {
       // TODO

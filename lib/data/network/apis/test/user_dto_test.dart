@@ -41,7 +41,7 @@ void main() {
       // TODO
     });
 
-    // RoleType roles
+    // List<RoleType> roles (default value: const [])
     test('to test the property `roles`', () async {
       // TODO
     });
@@ -61,7 +61,7 @@ void main() {
       // TODO
     });
 
-    // bool isActive
+    // bool isActive (default value: true)
     test('to test the property `isActive`', () async {
       // TODO
     });

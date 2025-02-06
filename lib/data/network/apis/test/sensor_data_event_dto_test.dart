@@ -21,21 +21,9 @@ void main() {
       // TODO
     });
 
-    // Unique identifier of the device
-    // String deviceId
-    test('to test the property `deviceId`', () async {
-      // TODO
-    });
-
-    // Sensor metrics
-    // List<String> metrics (default value: const [])
-    test('to test the property `metrics`', () async {
-      // TODO
-    });
-
-    // Event timestamp
-    // DateTime timestamp
-    test('to test the property `timestamp`', () async {
+    // Telemetry data
+    // TelemetryPayloadDto telemetryData
+    test('to test the property `telemetryData`', () async {
       // TODO
     });
 

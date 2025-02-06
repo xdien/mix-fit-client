@@ -17,8 +17,8 @@ void main() {
   // final instance = DefaultApi();
 
   group('tests for DefaultApi', () {
-    //Future<Test11Get200Response> test11Get() async
-    test('test test11Get', () async {
+    //Future<HealthCheckerControllerCheck200Response> healthCheckerControllerCheck() async
+    test('test healthCheckerControllerCheck', () async {
       // TODO
     });
 

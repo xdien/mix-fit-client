@@ -29,7 +29,7 @@ void main() {
 
     // Register new user
     //
-    //Future<UserDto> authControllerUserRegister(String fullName, String email, String password, { String phone, MultipartFile avatar }) async
+    //Future<UserDto> authControllerUserRegister(String username, String email, String password, { String fullName, String phone, MultipartFile avatar }) async
     test('test authControllerUserRegister', () async {
       // TODO
     });
