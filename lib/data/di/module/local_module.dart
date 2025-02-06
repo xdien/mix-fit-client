@@ -24,7 +24,7 @@ class LocalModule {
 
     // database:----------------------------------------------------------------
 
-    getIt.registerSingletonAsync<AppDatabase>(
+    getIt.registerLazySingletonAsync<AppDatabase>(
       () async {
         final database = AppDatabase();
         return database;
