@@ -22,6 +22,12 @@ void main() {
       // TODO
     });
 
+    // Type of the device to which the telemetry data belongs
+    // String deviceType
+    test('to test the property `deviceType`', () async {
+      // TODO
+    });
+
     // Timestamp when the telemetry data was collected
     // DateTime timestamp
     test('to test the property `timestamp`', () async {

@@ -16,6 +16,12 @@ void main() {
   // final instance = MetricDto();
 
   group('test MetricDto', () {
+    // Unique identifier of the sensor
+    // String sensorId
+    test('to test the property `sensorId`', () async {
+      // TODO
+    });
+
     // Name of the metric
     // String name
     test('to test the property `name`', () async {
@@ -23,8 +29,20 @@ void main() {
     });
 
     // Value of the metric
-    // num value
+    // Object value
     test('to test the property `value`', () async {
+      // TODO
+    });
+
+    // Unit of the metric
+    // String unit
+    test('to test the property `unit`', () async {
+      // TODO
+    });
+
+    // Metadata of the metric
+    // Object metadata
+    test('to test the property `metadata`', () async {
       // TODO
     });
 

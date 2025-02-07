@@ -14,18 +14,24 @@ class CommandStatusDto {
   /// Returns a new [CommandStatusDto] instance.
   CommandStatusDto({
     required this.commandId,
-    required this.status,
-    required this.executedAt,
+    this.status,
+    this.executedAt,
   });
 
   /// ID của lệnh
   Object commandId;
 
   /// Trạng thái của lệnh
-  CommandStatusDtoStatusEnum status;
+  CommandStatusDtoStatusEnum? status;
 
   /// Thời gian thực thi
-  Object executedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  Object? executedAt;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is CommandStatusDto &&
@@ -37,8 +43,8 @@ class CommandStatusDto {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (commandId.hashCode) +
-    (status.hashCode) +
-    (executedAt.hashCode);
+    (status == null ? 0 : status!.hashCode) +
+    (executedAt == null ? 0 : executedAt!.hashCode);
 
   @override
   String toString() => 'CommandStatusDto[commandId=$commandId, status=$status, executedAt=$executedAt]';
@@ -46,8 +52,16 @@ class CommandStatusDto {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'commandId'] = this.commandId;
+    if (this.status != null) {
       json[r'status'] = this.status;
+    } else {
+      json[r'status'] = null;
+    }
+    if (this.executedAt != null) {
       json[r'executedAt'] = this.executedAt;
+    } else {
+      json[r'executedAt'] = null;
+    }
     return json;
   }
 
@@ -71,8 +85,8 @@ class CommandStatusDto {
 
       return CommandStatusDto(
         commandId: mapValueOfType<Object>(json, r'commandId')!,
-        status: CommandStatusDtoStatusEnum.fromJson(json[r'status'])!,
-        executedAt: mapValueOfType<Object>(json, r'executedAt')!,
+        status: CommandStatusDtoStatusEnum.fromJson(json[r'status']),
+        executedAt: mapValueOfType<Object>(json, r'executedAt'),
       );
     }
     return null;
@@ -121,8 +135,6 @@ class CommandStatusDto {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'commandId',
-    'status',
-    'executedAt',
   };
 }
 

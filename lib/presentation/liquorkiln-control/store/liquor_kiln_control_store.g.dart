@@ -105,12 +105,44 @@ mixin _$LiquorKilnControlStore on _LiquorKilnControlStore, Store {
     });
   }
 
+  late final _$isWaterPumpOnAtom =
+      Atom(name: '_LiquorKilnControlStore.isWaterPumpOn', context: context);
+
+  @override
+  bool get isWaterPumpOn {
+    _$isWaterPumpOnAtom.reportRead();
+    return super.isWaterPumpOn;
+  }
+
+  @override
+  set isWaterPumpOn(bool value) {
+    _$isWaterPumpOnAtom.reportWrite(value, super.isWaterPumpOn, () {
+      super.isWaterPumpOn = value;
+    });
+  }
+
   late final _$resetWifiAsyncAction =
       AsyncAction('_LiquorKilnControlStore.resetWifi', context: context);
 
   @override
   Future<void> resetWifi() {
     return _$resetWifiAsyncAction.run(() => super.resetWifi());
+  }
+
+  late final _$updateSystemTimeAsyncAction =
+      AsyncAction('_LiquorKilnControlStore.updateSystemTime', context: context);
+
+  @override
+  Future<void> updateSystemTime() {
+    return _$updateSystemTimeAsyncAction.run(() => super.updateSystemTime());
+  }
+
+  late final _$toggleWaterPumpAsyncAction =
+      AsyncAction('_LiquorKilnControlStore.toggleWaterPump', context: context);
+
+  @override
+  Future<void> toggleWaterPump() {
+    return _$toggleWaterPumpAsyncAction.run(() => super.toggleWaterPump());
   }
 
   @override
@@ -121,7 +153,8 @@ isHeater1On: ${isHeater1On},
 isHeater2On: ${isHeater2On},
 isHeater3On: ${isHeater3On},
 overHeatTemp: ${overHeatTemp},
-coolingTemp: ${coolingTemp}
+coolingTemp: ${coolingTemp},
+isWaterPumpOn: ${isWaterPumpOn}
     ''';
   }
 }

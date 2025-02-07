@@ -9,6 +9,7 @@ import 'package:api_client/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **deviceId** | **String** | Unique identifier of the device | 
+**deviceType** | **String** | Type of the device to which the telemetry data belongs | [optional] 
 **timestamp** | [**DateTime**](DateTime.md) | Timestamp when the telemetry data was collected | 
 **metrics** | [**List<MetricDto>**](MetricDto.md) | Array of metrics with their values | [default to const []]
 

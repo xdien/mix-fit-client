@@ -22,8 +22,8 @@ void main() {
       // TODO
     });
 
-    // Các tham số bổ sung
-    // Map<String, Object> parameters (default value: const {})
+    // Parameters control device
+    // CommandParametersDto parameters
     test('to test the property `parameters`', () async {
       // TODO
     });

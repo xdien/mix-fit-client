@@ -110,7 +110,6 @@ Class | Method | HTTP request | Description
 *AuthApi* | [**authControllerUserRegister**](doc//AuthApi.md#authcontrolleruserregister) | **POST** /auth/register | Register new user
 *CmsApi* | [**cmsAuthControllerLogin**](doc//CmsApi.md#cmsauthcontrollerlogin) | **POST** /cms-auth/login | 
 *DefaultApi* | [**healthCheckerControllerCheck**](doc//DefaultApi.md#healthcheckercontrollercheck) | **GET** /health | 
-*IoTApi* | [**deviceControllerGetDevices**](doc//IoTApi.md#devicecontrollergetdevices) | **GET** /"devices" | Get all devices
 *IoTCommandsApi* | [**ioTCommandControllerGetStatus**](doc//IoTCommandsApi.md#iotcommandcontrollergetstatus) | **GET** /iot/commands/{commandId}/status | Get status of command
 *IoTCommandsApi* | [**ioTCommandControllerSendCommand**](doc//IoTCommandsApi.md#iotcommandcontrollersendcommand) | **POST** /iot/commands/{deviceId} | Send command to device
 *IoTCommandsApi* | [**ioTCommandV1ControllerSendCommand**](doc//IoTCommandsApi.md#iotcommandv1controllersendcommand) | **POST** /v1/iot/commands/{deviceId} | Send command to device
@@ -138,8 +137,6 @@ Class | Method | HTTP request | Description
  - [LiquorKilnCommandActionDto](doc//LiquorKilnCommandActionDto.md)
  - [LoginPayloadDto](doc//LoginPayloadDto.md)
  - [MetricDto](doc//MetricDto.md)
- - [OilTemperatureData](doc//OilTemperatureData.md)
- - [OilTemperatureEvent](doc//OilTemperatureEvent.md)
  - [Order](doc//Order.md)
  - [PageDto](doc//PageDto.md)
  - [PageMetaDto](doc//PageMetaDto.md)

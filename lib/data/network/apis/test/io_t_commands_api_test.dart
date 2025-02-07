@@ -33,8 +33,8 @@ void main() {
 
     // Send command to device
     //
-    //Future<CommandStatusDto> ioTCommandControllerV1SendCommand(String deviceId, CommandPayloadDto commandPayloadDto) async
-    test('test ioTCommandControllerV1SendCommand', () async {
+    //Future<CommandStatusDto> ioTCommandV1ControllerSendCommand(String deviceId, CommandPayloadDto commandPayloadDto) async
+    test('test ioTCommandV1ControllerSendCommand', () async {
       // TODO
     });
 
