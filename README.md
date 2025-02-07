@@ -1,6 +1,6 @@
 # Mit-Fix Project
 
-Mit-Fix is a Flutter boilerplate project demonstrating clean architecture principles and best practices in mobile application development. The project serves as a template for building scalable, maintainable, and testable applications.
+Mit-Fix is a personal Flutter project that implements clean architecture principles and industry best practices in mobile development. Built upon established architectural patterns, this project showcases how to structure a real-world application that is scalable, maintainable, and testable.
 
 ## 🎯 Project Overview
 
@@ -137,6 +137,3 @@ Clean Architecture provides several benefits:
 ## 🔍 Documentation
 
 For detailed documentation about the architecture and implementation details, check the `/docs` folder in the repository.
-
----
-⭐️ If you find this template useful, don't forget to give it a star!
