@@ -74,7 +74,7 @@ lib/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/mit-fix.git
+git clone https://github.com/xdien/mit-fix.git
 ```
 
 2. Install dependencies:
