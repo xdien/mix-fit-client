@@ -73,21 +73,25 @@ lib/
 ## 🏁 Getting Started
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/xdien/mit-fix.git
 ```
 
 2. Install dependencies:
+
 ```bash
 flutter pub get
 ```
 
 3. Run code generation:
+
 ```bash
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
 4. Run the app:
+
 ```bash
 flutter run
 ```
@@ -95,11 +99,13 @@ flutter run
 ## 🧪 Testing
 
 Run tests using:
+
 ```bash
 flutter test
 ```
 
 The project includes:
+
 * Unit Tests
 * Widget Tests
 * Integration Tests
@@ -128,6 +134,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🎯 Why Clean Architecture?
 
 Clean Architecture provides several benefits:
+
 * **Independence of Framework**: The business logic doesn't depend on Flutter or any external framework
 * **Testability**: Easy to test due to separation of concerns
 * **Independence of UI**: The UI can change without affecting business logic
