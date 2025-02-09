@@ -21,6 +21,7 @@ import '../../../domain/usecase/iot/set_liquor_kiln_oil_day_max_usecase.dart';
 import '../../../domain/usecase/iot/set_liquor_kiln_oil_day_min_usecase.dart';
 import '../../../domain/usecase/iot/set_liquor_kiln_overheat_usecase.dart';
 import '../../../domain/usecase/iot/set_liquorklin_wifi_reset_usecase.dart';
+import '../../../domain/usecase/iot/toggle_liquor_kiln_water_bump_usecase.dart';
 import '../../../domain/usecase/iot/update_time_liquor_kiln_usecase.dart';
 import '../../../domain/usecase/websocket/get_connection_status_usecase.dart';
 import '../../liquorkiln-control/store/liquor_kiln_control_store.dart';
@@ -85,6 +86,8 @@ class StoreModule {
     getIt.registerFactoryParam<LiquorKilnControlStore, String, void>(
       (deviceId, _) => LiquorKilnControlStore(
         getIt<SetLiquorklinWifiResetUsecase>(),
+        getIt<UpdateTimeLiquorKilnUsecase>(),
+        getIt<ToggleLiquorKilnWaterBumpUsecase>(),
         deviceId,
       ),
     );

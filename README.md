@@ -1,308 +1,146 @@
-# This branch is still under development
+# Mix-Fit Project
 
-# Boilerplate Project
+Mix-Fit is a personal Flutter project that implements clean architecture principles and industry best practices in mobile development. Built upon established architectural patterns, this project showcases how to structure a real-world application that is scalable, maintainable, and testable.
 
-A boilerplate project created in flutter using MobX and Provider. Boilerplate supports both web and mobile, clone the appropriate branches mentioned below:
+## 🎯 Project Overview
 
-* For Mobile: https://github.com/zubairehman/flutter-boilerplate-project/tree/master (stable channel)
-* For Web: https://github.com/zubairehman/flutter-boilerplate-project/tree/feature/web-support (beta channel)
+This project adheres to Clean Architecture principles, separating the codebase into distinct layers with clear responsibilities:
 
-## Getting Started
+* **Domain Layer**: Business logic and entities
+* **Data Layer**: Data sources, repositories, and models
+* **Presentation Layer**: UI components and state management
+* **Core Layer**: Common utilities and configurations
 
-The Boilerplate contains the minimal implementation required to create a new library or project. The repository code is preloaded with some basic components like basic app architecture, app theme, constants and required dependencies to create a new project. By using boiler plate code as standard initializer, we can have same patterns in all the projects that will inherit it. This will also help in reducing setup & development time by allowing you to use same code pattern and avoid re-writing from scratch.
+## 🏛 Architecture Principles
 
-## How to Use 
+* **Separation of Concerns**: Each layer has its specific responsibility
+* **Dependency Rule**: Dependencies point inward, with the domain layer at the center
+* **SOLID Principles**: Following all SOLID principles for better maintainability
+* **Testability**: Architecture designed for easy unit testing and integration testing
 
-**Step 1:**
+## 🚀 Features
 
-Download or clone this repo by using the link below:
+* Clean Architecture implementation
+* Dependency Injection
+* State Management with MobX
+* Repository Pattern
+* Unit Testing Setup
+* Error Handling
+* API Integration
+* Local Storage
+* Logging System
+* Authentication Flow
+
+## 🛠 Technical Stack
+
+* **Framework**: Flutter
+* **State Management**: MobX
+* **Dependency Injection**: GetIt
+* **Local Database**: Drift
+* **Network**: Dio
+* **Code Generation**: build_runner
+* **Testing**: flutter_test
+* **API Documentation**: OpenAPI Generator
+
+## 📁 Project Structure
 
 ```
-https://github.com/zubairehman/flutter-boilerplate-project.git
+lib/
+├── core/                 # Core functionality, utilities, and constants
+│   ├── config/          # App configuration
+│   ├── error/           # Error handling
+│   ├── network/         # Network utilities
+│   └── utils/           # Common utilities
+│
+├── data/                # Data layer
+│   ├── datasources/     # Remote and local data sources
+│   ├── models/          # Data models
+│   └── repositories/    # Repository implementations
+│
+├── domain/              # Domain layer
+│   ├── entities/        # Business objects
+│   ├── repositories/    # Repository interfaces
+│   └── usecases/       # Business logic
+│
+├── presentation/        # Presentation layer
+│   ├── pages/          # Screen implementations
+│   ├── stores/         # MobX stores
+│   └── widgets/        # Reusable widgets
+│
+└── main.dart           # Application entry point
 ```
 
-**Step 2:**
+## 🏁 Getting Started
 
-Go to project root and execute the following command in console to get the required dependencies: 
+1. Clone the repository:
 
+```bash
+git clone https://github.com/xdien/mit-fix.git
 ```
-flutter pub get 
+
+2. Install dependencies:
+
+```bash
+flutter pub get
 ```
 
-**Step 3:**
-
-This project uses `inject` library that works with code generation, execute the following command to generate files:
+3. Run code generation:
 
 ```bash
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
-or watch command in order to keep the source code synced automatically:
+4. Run the app:
 
 ```bash
-flutter packages pub run build_runner watch
+flutter run
 ```
 
-**Step 4:**
-Gen swagger client
+## 🧪 Testing
+
+Run tests using:
 
 ```bash
-openapi-generator-cli generate -c openapi-generator-config.yaml
+flutter test
 ```
 
-## Hide Generated Files
+The project includes:
 
-In-order to hide generated files, navigate to `Android Studio` -> `Preferences` -> `Editor` -> `File Types` and paste the below lines under `ignore files and folders` section:
+* Unit Tests
+* Widget Tests
+* Integration Tests
 
-```
-*.inject.summary;*.inject.dart;*.g.dart;
-```
+## 📚 Best Practices
 
-In Visual Studio Code, navigate to `Preferences` -> `Settings` and search for `Files:Exclude`. Add the following patterns:
-```
-**/*.inject.summary
-**/*.inject.dart
-**/*.g.dart
-```
+* **Dependency Injection**: Using GetIt for service location
+* **Repository Pattern**: Abstracting data sources
+* **Error Handling**: Centralized error handling system
+* **Logging**: Structured logging system
+* **Code Style**: Following Flutter's style guide
+* **Documentation**: Comprehensive code documentation
 
-## Features:
+## 🤝 Contributing
 
-* Splash
-* Login
-* Home
-* Routing (using goRouter)
-* Theme
-* Dio
-* Database
-* MobX (to connect the reactive data of your application with the UI)
-* Provider (State Management)
-* Encryption
-* Validation
-* Code Generation
-* User Notifications
-* Logging
-* Dependency Injection
-* Dark Theme Support
-* Multilingual Support
-* Provider example
-* OpenAPI Generator
-* Web Support (new)
-* Socket IO (new)
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Up-Coming Features:
+## 📝 License
 
-* Connectivity Support
-* Background Fetch Support
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Libraries & Tools Used
+## 🎯 Why Clean Architecture?
 
-* [Dio](https://github.com/flutterchina/dio)
-* [Database](https://github.com/simolus3/drift)
-* [MobX](https://github.com/mobxjs/mobx.dart) (to connect the reactive data of your application with the UI)
-* [Provider](https://github.com/rrousselGit/provider) (State Management)
-* [Encryption](https://github.com/xxtea/xxtea-dart)
-* [Validation](https://github.com/dart-league/validators)
-* [Logging](https://github.com/zubairehman/Flogs)
-* [Notifications](https://github.com/AndreHaueisen/flushbar)
-* [Json Serialization](https://github.com/dart-lang/json_serializable)
-* [Dependency Injection](https://github.com/fluttercommunity/get_it)
+Clean Architecture provides several benefits:
 
-### Folder Structure
-Here is the core folder structure which flutter provides.
+* **Independence of Framework**: The business logic doesn't depend on Flutter or any external framework
+* **Testability**: Easy to test due to separation of concerns
+* **Independence of UI**: The UI can change without affecting business logic
+* **Independence of Database**: Your choice of database can be changed without affecting the business logic
+* **Independence of External Agency**: Business rules don't know anything about the outside world
 
-```
-flutter-app/
-|- android
-|- build
-|- ios
-|- lib
-|- test
-```
+## 🔍 Documentation
 
-Here is the folder structure we have been using in this project
-
-```
-lib/
-|- constants/
-|- data/
-|- stores/
-|- ui/
-|- utils/
-|- widgets/
-|- main.dart
-|- routes.dart
-```
-
-Now, lets dive into the lib folder which has the main code for the application.
-
-```
-1- constants - All the application level constants are defined in this directory with-in their respective files. This directory contains the constants for `theme`, `dimentions`, `api endpoints`, `preferences` and `strings`.
-2- data - Contains the data layer of your project, includes directories for local, network and shared pref/cache.
-3- stores - Contains store(s) for state-management of your application, to connect the reactive data of your application with the UI. 
-4- ui — Contains all the ui of your project, contains sub directory for each screen.
-5- util — Contains the utilities/common functions of your application.
-6- widgets — Contains the common widgets for your applications. For example, Button, TextField etc.
-7- routes.dart — This file contains all the routes for your application.
-8- main.dart - This is the starting point of the application. All the application level configurations are defined in this file i.e, theme, routes, title, orientation etc.
-```
-
-### Constants
-
-This directory contains all the application level constants. A separate file is created for each type as shown in example below:
-
-```
-constants/
-|- app_theme.dart
-|- dimens.dart
-|- endpoints.dart
-|- preferences.dart
-|- strings.dart
-```
-
-### Data
-
-All the business logic of your application will go into this directory, it represents the data layer of your application. It is sub-divided into three directories `local`, `network` and `sharedperf`, each containing the domain specific logic. Since each layer exists independently, that makes it easier to unit test. The communication between UI and data layer is handled by using central repository.
-
-```
-data/
-|- local/
-    |- constants/
-    |- datasources/
-    |- app_database.dart
-   
-|- network/
-    |- constants/
-    |- exceptions/
-    |- rest_client.dart
-    
-|- sharedpref
-    |- constants/
-    |- shared_preference_helper.dart
-    
-|- repository.dart
-
-```
-
-### Stores
-
-The store is where all your application state lives in flutter. The Store is basically a widget that stands at the top of the widget tree and passes it's data down using special methods. In-case of multiple stores, a separate folder for each store is created as shown in the example below:
-
-```
-stores/
-|- login/
-    |- login_store.dart
-    |- form_validator.dart
-```
-
-### UI
-
-This directory contains all the ui of your application. Each screen is located in a separate folder making it easy to combine group of files related to that particular screen. All the screen specific widgets will be placed in `widgets` directory as shown in the example below:
-
-```
-ui/
-|- login
-   |- login_screen.dart
-   |- widgets
-      |- login_form.dart
-      |- login_button.dart
-```
-
-### Utils
-
-Contains the common file(s) and utilities used in a project. The folder structure is as follows: 
-
-```
-utils/
-|- encryption
-   |- xxtea.dart
-|- date
-  |- date_time.dart
-```
-
-### Widgets
-
-Contains the common widgets that are shared across multiple screens. For example, Button, TextField etc.
-
-```
-widgets/
-|- app_icon_widget.dart
-|- empty_app_bar.dart
-|- progress_indicator.dart
-```
-
-### Routes
-
-This file contains all the routes for your application.
-
-```dart
-import 'package:flutter/material.dart';
-
-import 'ui/post/post_list.dart';
-import 'ui/login/login.dart';
-import 'ui/splash/splash.dart';
-
-class Routes {
-  Routes._();
-
-  //static variables
-  static const String splash = '/splash';
-  static const String login = '/login';
-  static const String home = '/post';
-
-  static final routes = <String, WidgetBuilder>{
-    splash: (BuildContext context) => SplashScreen(),
-    login: (BuildContext context) => LoginScreen(),
-    home: (BuildContext context) => HomeScreen(),
-  };
-}
-```
-
-### Main
-
-This is the starting point of the application. All the application level configurations are defined in this file i.e, theme, routes, title, orientation etc.
-
-```dart
-import 'package:mix_fit/routes.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'constants/app_theme.dart';
-import 'constants/strings.dart';
-import 'ui/splash/splash.dart';
-
-void main() {
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeRight,
-    DeviceOrientation.landscapeLeft,
-  ]).then((_) {
-    runApp(MyApp());
-  });
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: Strings.appName,
-      theme: themeData,
-      routes: Routes.routes,
-      home: SplashScreen(),
-    );
-  }
-}
-```
-
-## Wiki
-
-Checkout [wiki](https://github.com/zubairehman/flutter-boilerplate-project/wiki) for more info
-
-## Conclusion
-
-I will be happy to answer any questions that you may have on this approach, and if you want to lend a hand with the boilerplate then please feel free to submit an issue and/or pull request 🙂
-
-Again to note, this is example can appear as over-architectured for what it is - but it is an example only. If you liked my work, don’t forget to ⭐ star the repo to show your support.
-
+For detailed documentation about the architecture and implementation details, check the `/docs` folder in the repository.

@@ -18,6 +18,7 @@ import '../../usecase/iot/set_liquor_kiln_oil_day_max_usecase.dart';
 import '../../usecase/iot/set_liquor_kiln_oil_day_min_usecase.dart';
 import '../../usecase/iot/set_liquor_kiln_overheat_usecase.dart';
 import '../../usecase/iot/set_liquorklin_wifi_reset_usecase.dart';
+import '../../usecase/iot/toggle_liquor_kiln_water_bump_usecase.dart';
 import '../../usecase/iot/update_time_liquor_kiln_usecase.dart';
 import '../../usecase/websocket/disconnect_websocket_usecase.dart';
 import '../../usecase/websocket/get_connection_status_usecase.dart';
@@ -63,5 +64,7 @@ class UseCaseModule {
         () => UpdateTimeLiquorKilnUsecase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
         () => SetLiquorklinWifiResetUsecase(getIt<ILiquorKilnRepository>()));
+    getIt.registerLazySingleton(
+        () => ToggleLiquorKilnWaterBumpUsecase(getIt<ILiquorKilnRepository>()));
   }
 }
