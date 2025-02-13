@@ -1,10 +1,10 @@
 import 'dart:async';
 import '../../data/network/websocket/websocket_service.dart';
-import '../../domain/repository/auth/auth_repository.dart';
+import '../../data/sharedpref/shared_preference_helper.dart';
 
 class ConnectionManager {
   final SocketService _socketService;
-  final AuthRepository _authRepository;
+  final SharedPreferenceHelper _sharedPreferenceHelper;
 
   StreamSubscription? _connectionSubscription;
   Timer? _reconnectTimer;
@@ -14,15 +14,15 @@ class ConnectionManager {
 
   ConnectionManager({
     required SocketService socketService,
-    required AuthRepository authRepository,
+    required SharedPreferenceHelper sharedPreferenceHelper,
   })  : _socketService = socketService,
-        _authRepository = authRepository;
+        _sharedPreferenceHelper = sharedPreferenceHelper;
 
   Future<void> initialize() async {
     if (_isInitialized) return;
     _isInitialized = true;
 
-    _authRepository.authStateChanges.listen((isAuthenticated) {
+    _sharedPreferenceHelper.authStateChanges.listen((isAuthenticated) {
       if (isAuthenticated) {
         _setupConnectionMonitoring();
       } else {
@@ -35,7 +35,7 @@ class ConnectionManager {
 
   Future<void> _checkAndHandleAuthStatus() async {
     try {
-      final isAuthenticated = await _authRepository.isLoggedIn;
+      final isAuthenticated = await _sharedPreferenceHelper.isLoggedIn;
       if (isAuthenticated) {
         _setupConnectionMonitoring();
       } else {

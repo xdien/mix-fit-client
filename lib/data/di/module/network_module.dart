@@ -8,6 +8,7 @@ import 'package:mix_fit/data/network/rest_client.dart';
 import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:event_bus/event_bus.dart';
 
+import '../../../core/managers/connection_manager.dart';
 import '../../../di/service_locator.dart';
 import '../../network/websocket/websocket_service.dart';
 
@@ -50,6 +51,13 @@ class NetworkModule {
       SocketService(
          url: Endpoints.baseUrl,
          tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
+      ),
+    );
+    // Register ConnectionManager as singleton
+    getIt.registerSingleton<ConnectionManager>(
+      ConnectionManager(
+        socketService: getIt<SocketService>(),
+        sharedPreferenceHelper: getIt<SharedPreferenceHelper>(),
       ),
     );
   }
