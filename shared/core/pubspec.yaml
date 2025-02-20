@@ -1,0 +1,21 @@
+name: core
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  dio: ^5.1.1
+  drift: ^2.23.0
+  drift_flutter: ^0.2.4
+  freezed: ^2.5.7
+  socket_io_client: ^3.0.2 
+  validators: ^3.0.0
+  data:
+    path: ../data
+
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  drift_dev: ^2.23.0
+  mobx_codegen: ^2.2.0

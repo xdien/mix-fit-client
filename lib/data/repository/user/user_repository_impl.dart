@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
-
-import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:api_client/api.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 
 import '../../../domain/repository/auth/auth_repository.dart';
 

@@ -1,7 +1,7 @@
-import 'package:mix_fit/data/di/data_layer_injection.dart';
 import 'package:mix_fit/domain/di/domain_layer_injection.dart';
 import 'package:mix_fit/presentation/di/presentation_layer_injection.dart';
 import 'package:get_it/get_it.dart';
+import '../data/di/data_layer_injection.dart';
 
 
 final getIt = GetIt.instance;

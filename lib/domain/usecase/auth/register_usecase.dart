@@ -1,6 +1,5 @@
-import 'package:mix_fit/data/network/apis/lib/api.dart';
-
-import '../../../core/domain/usecase/use_case.dart';
+import 'package:api_client/api.dart';
+import 'package:core/domain/usecase/use_case.dart';
 import '../../repository/auth/auth_repository.dart';
 
 class RegisterUsecase implements UseCase<UserDto?, UserRegisterDto> {

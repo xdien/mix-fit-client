@@ -1,6 +1,6 @@
 import 'dart:async';
-import '../../data/network/websocket/websocket_service.dart';
-import '../../data/sharedpref/shared_preference_helper.dart';
+import 'package:core/network/websocket/websocket_service.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 
 class ConnectionManager {
   final SocketService _socketService;

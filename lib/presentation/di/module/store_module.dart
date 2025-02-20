@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:mix_fit/core/stores/error/error_store.dart';
-import 'package:mix_fit/core/stores/form/form_store.dart';
+import 'package:core/stores/error/error_store.dart';
+import 'package:core/stores/form/form_store.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';

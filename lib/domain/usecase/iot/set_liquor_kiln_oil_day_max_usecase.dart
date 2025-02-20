@@ -1,7 +1,6 @@
-import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:api_client/api.dart';
+import 'package:core/domain/usecase/use_case.dart';
 import 'package:mix_fit/domain/repository/iot/temperature_repository.dart';
-
-import '../../../core/domain/usecase/use_case.dart';
 
 class SetLiquorKilnOilDayMaxUsecase
     implements UseCase<void, LiquorKilnTempParams> {

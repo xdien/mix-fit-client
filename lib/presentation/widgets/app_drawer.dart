@@ -1,6 +1,6 @@
+import 'package:constants/app_routes.dart';
+import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:mix_fit/constants/app_routes.dart';
-import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/utils/locale/app_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';

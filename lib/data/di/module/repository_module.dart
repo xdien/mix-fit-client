@@ -1,20 +1,17 @@
 import 'dart:async';
-
-import 'package:mix_fit/data/repository/setting/setting_repository_impl.dart';
-import 'package:mix_fit/data/repository/user/user_repository_impl.dart';
-import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
+import 'package:api_client/api.dart';
+import 'package:core/domain/repository/websocket_repository.dart';
+import 'package:core/network/websocket/websocket_repository_impl.dart';
+import 'package:core/network/websocket/websocket_service.dart';
+import 'package:data/network/constants/endpoints.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
-import 'package:mix_fit/data/network/constants/endpoints.dart';
-
 import '../../../di/service_locator.dart';
-import 'package:mix_fit/data/network/apis/lib/api.dart';
-
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
-import '../../../domain/repository/websocket/websocket_repository.dart';
-import '../../network/websocket/websocket_repository_impl.dart';
-import '../../network/websocket/websocket_service.dart';
 import '../../repository/iot/temperature_repository_impl.dart';
+import '../../repository/setting/setting_repository_impl.dart';
+import '../../repository/user/user_repository_impl.dart';
 
 class RepositoryModule {
   static Future<void> configureRepositoryModuleInjection() async {

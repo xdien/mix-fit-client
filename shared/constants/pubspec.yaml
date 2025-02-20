@@ -1,0 +1,9 @@
+name: constants
+publish_to: 'none' 
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1

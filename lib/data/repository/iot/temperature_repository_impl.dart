@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:mix_fit/data/network/apis/lib/api.dart';
-import 'package:mix_fit/data/network/websocket/websocket_service.dart';
-
+import 'package:api_client/api.dart';
+import 'package:core/network/websocket/websocket_service.dart';
 import '../../../domain/repository/iot/temperature_repository.dart';
 
 class TemperatureRepositoryImpl implements ILiquorKilnRepository {

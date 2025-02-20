@@ -1,7 +1,7 @@
+import 'package:core/domain/usecase/use_case.dart';
 import 'package:mix_fit/domain/usecase/iot/toggle_liquor_kiln_water_bump_usecase.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../core/domain/usecase/use_case.dart';
 import '../../../domain/usecase/iot/set_liquorklin_wifi_reset_usecase.dart';
 import '../../../domain/usecase/iot/update_time_liquor_kiln_usecase.dart';
 part 'liquor_kiln_control_store.g.dart';

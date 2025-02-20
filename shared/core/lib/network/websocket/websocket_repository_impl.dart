@@ -1,5 +1,5 @@
-import 'package:mix_fit/data/network/websocket/websocket_service.dart';
-import 'package:mix_fit/domain/repository/websocket/websocket_repository.dart';
+import '../../domain/repository/websocket_repository.dart';
+import 'websocket_service.dart';
 
 class WebSocketRepositoryImpl implements WebSocketRepository {
   final SocketService _service;

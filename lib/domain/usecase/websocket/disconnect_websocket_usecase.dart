@@ -1,6 +1,7 @@
 import 'dart:async';
-import '../../../core/domain/usecase/use_case.dart';
-import '../../repository/websocket/websocket_repository.dart';
+
+import 'package:core/domain/repository/websocket_repository.dart';
+import 'package:core/domain/usecase/use_case.dart';
 
 
 class DisconnectWebSocketUseCase extends UseCase<void, NoParams> {

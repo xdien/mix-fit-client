@@ -1,9 +1,8 @@
 import 'dart:async';
+import 'package:core/local/database/database.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mix_fit/core/data/local/database/database.dart';
-import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../di/service_locator.dart';
 
 class LocalModule {

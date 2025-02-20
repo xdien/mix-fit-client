@@ -1,7 +1,8 @@
-import 'package:mix_fit/core/stores/error/error_store.dart';
-import 'package:mix_fit/domain/entity/language/Language.dart';
+import 'package:core/stores/error/error_store.dart';
 import 'package:mix_fit/domain/repository/setting/setting_repository.dart';
 import 'package:mobx/mobx.dart';
+
+import '../../../../domain/entities/language/Language.dart';
 
 part 'language_store.g.dart';
 

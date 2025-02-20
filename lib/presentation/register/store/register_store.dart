@@ -1,12 +1,9 @@
 // register_store.dart
 import 'dart:io';
-
-import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:api_client/api.dart';
+import 'package:core/stores/error/error_store.dart';
 import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
 import 'package:mobx/mobx.dart';
-
-import '../../../core/stores/error/error_store.dart';
-
 part 'register_store.g.dart';
 
 class RegisterStore = _RegisterStore with _$RegisterStore;

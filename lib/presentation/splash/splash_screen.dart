@@ -1,8 +1,7 @@
+import 'package:constants/app_routes.dart';
+import 'package:core/managers/connection_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mix_fit/constants/app_routes.dart';
-
-import '../../core/managers/connection_manager.dart';
 import '../../di/service_locator.dart';
 import '../login/store/login_store.dart';
 

@@ -1,5 +1,5 @@
-import 'package:mix_fit/constants/app_routes.dart';
-import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
+import 'package:constants/app_routes.dart';
+import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';

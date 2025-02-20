@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/domain/repository/websocket_repository.dart';
 import 'package:mix_fit/domain/repository/auth/auth_repository.dart';
 import 'package:mix_fit/domain/usecase/auth/is_logged_in_usecase.dart';
 import 'package:mix_fit/domain/usecase/auth/login_usecase.dart';
@@ -8,7 +9,6 @@ import 'package:mix_fit/domain/usecase/auth/save_login_in_status_usecase.dart';
 
 import '../../../di/service_locator.dart';
 import '../../repository/iot/temperature_repository.dart';
-import '../../repository/websocket/websocket_repository.dart';
 import '../../usecase/auth/remove_auth_token_usecase.dart';
 import '../../usecase/auth/save_auth_token_usecase.dart';
 import '../../usecase/iot/get_liquorklin_online_steam_usecase.dart';

@@ -1,4 +1,4 @@
-import 'package:mix_fit/data/network/apis/lib/api.dart';
+import 'package:api_client/api.dart';
 
 abstract class ILiquorKilnRepository {
   Stream<SensorDataEventDto> getLiquorKilnKStream(String deviceId);

@@ -1,7 +1,7 @@
+import 'package:constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import '../../../constants/app_routes.dart';
 import '../../../di/service_locator.dart';
 import '../../home/store/theme/theme_store.dart';
 import '../../widgets/app_drawer.dart';

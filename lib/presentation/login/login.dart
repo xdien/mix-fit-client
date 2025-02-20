@@ -1,13 +1,14 @@
 import 'package:another_flushbar/flushbar_helper.dart';
+import 'package:constants/app_routes.dart';
+import 'package:constants/assets.dart';
+import 'package:core/stores/form/form_store.dart';
+import 'package:core/widgets/app_icon_widget.dart';
+import 'package:core/widgets/empty_app_bar_widget.dart';
+import 'package:core/widgets/progress_indicator_widget.dart';
+import 'package:core/widgets/rounded_button_widget.dart';
+import 'package:core/widgets/textfield_widget.dart';
+import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mix_fit/constants/assets.dart';
-import 'package:mix_fit/core/stores/form/form_store.dart';
-import 'package:mix_fit/core/widgets/app_icon_widget.dart';
-import 'package:mix_fit/core/widgets/empty_app_bar_widget.dart';
-import 'package:mix_fit/core/widgets/progress_indicator_widget.dart';
-import 'package:mix_fit/core/widgets/rounded_button_widget.dart';
-import 'package:mix_fit/core/widgets/textfield_widget.dart';
-import 'package:mix_fit/data/sharedpref/constants/preferences.dart';
 import 'package:mix_fit/presentation/home/store/theme/theme_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
 import 'package:mix_fit/utils/device/device_utils.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../constants/app_routes.dart';
 import '../../di/service_locator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -147,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
           ),
           onPressed: () {
-            // Navigator.of(context).pushNamed(AppRoutes.register);
             context.push(AppRoutes.register);
           },
         ),
