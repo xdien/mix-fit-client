@@ -299,3 +299,4 @@ paket-files/
 *.sln.iml
 **.freezed.dart
 shared/api_client/**
+pubspec_overrides.yaml
