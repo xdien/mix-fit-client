@@ -2,6 +2,7 @@
 import 'package:constants/app_routes.dart';
 import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:iot/iot_routes.dart';
 import 'package:setting/locale/app_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,7 +36,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.attractions_sharp,
             title: localizations.translate('app_drawer_liquor_kiln'),
             onTap: () {
-              context.go(AppRoutes.liquorKiln);
+              context.go(IotRoutes.liquorKiln);
             },
           ),
           _buildMenuItem(

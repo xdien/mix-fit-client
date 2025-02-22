@@ -15,6 +15,8 @@ dependencies:
     path: ../constants
   setting:
     path: ../setting
+  iot:
+    path: ../../modules/iot
 
 dev_dependencies:
   drift_dev: ^2.23.0
