@@ -76,7 +76,6 @@ class ModuleManager {
         return null;
       }
 
-      // Đọc pubspec.yaml của module để lấy thông tin
       final pubspecFile = File('${modulePath}/pubspec.yaml');
       if (!await pubspecFile.exists()) {
         print('Module pubspec.yaml not found: $modulePath');
@@ -87,16 +86,13 @@ class ModuleManager {
       final pubspec = loadYaml(pubspecContent);
       final moduleName = pubspec['name'] as String;
 
-      // Kiểm tra file module definition
       final moduleFile = File('${modulePath}/lib/${moduleName}_module.dart');
       if (!await moduleFile.exists()) {
         print('Module definition file not found: ${moduleFile.path}');
         return null;
       }
 
-      // Dynamic loading của module
       try {
-        // Đọc package config để get package URI
         final packageConfig = await loadPackageConfig();
         final moduleUri = packageConfig.resolve(
             Uri.parse('package:$moduleName/${moduleName}_module.dart'));
@@ -105,9 +101,6 @@ class ModuleManager {
           print('Could not resolve module URI for: $moduleName');
           return null;
         }
-
-        // Load module class using reflection (mirrors không được support trong release mode)
-        // Thay vào đó, chúng ta sẽ sử dụng factory pattern
         return await _createModuleInstance(moduleName);
       } catch (e) {
         print('Error loading module $moduleName: $e');

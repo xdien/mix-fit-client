@@ -17,7 +17,6 @@ class HomeScreenModule extends BaseModule {
 
   @override
   Future<void> registerDependencies(GetIt getIt) async {
-    
   }
 
   @override
