@@ -22,21 +22,23 @@ import 'presentation/liquorkiln-control/store/liquor_kiln_control_store.dart';
 import 'presentation/liquorkiln/store/liquor_kiln_store.dart';
 import 'presentation/liquorkiln/view/liquor_kiln_screen.dart';
 
-class PublicFeatureModule extends BaseModule {
+class IotModule extends BaseModule {
   @override
-  String get moduleName => 'public_feature';
+  String get moduleName => 'iot_feature';
 
   @override
   List<GoRoute> get moduleRoutes => [
-    GoRoute(
-        path: IotRoutes.liquorKiln,
-        builder: (context, state) => LiquorKilnScreen(),
-      ),
-      GoRoute(path: IotRoutes.liquorKilnControl, builder: (context, state) {
-        final deviceId = state.pathParameters['deviceId']!;
-        return LiquorKilnControlScreen(deviceId: deviceId);
-      }),
-  ];
+        GoRoute(
+          path: IotRoutes.liquorKiln,
+          builder: (context, state) => LiquorKilnScreen(),
+        ),
+        GoRoute(
+            path: IotRoutes.liquorKilnControl,
+            builder: (context, state) {
+              final deviceId = state.pathParameters['deviceId']!;
+              return LiquorKilnControlScreen(deviceId: deviceId);
+            }),
+      ];
 
   @override
   Future<void> registerDependencies(GetIt getIt) async {
@@ -46,9 +48,9 @@ class PublicFeatureModule extends BaseModule {
         () => GetLiquorKilnOnlineStreamUseCase(getIt<ILiquorKilnRepository>()));
 
     getIt.registerLazySingleton(
-       () => SetLiquorKilnHeating1Usecase(getIt<ILiquorKilnRepository>()));
+        () => SetLiquorKilnHeating1Usecase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
-       () => SetLiquorKilnOilDayMaxUsecase(getIt<ILiquorKilnRepository>()));
+        () => SetLiquorKilnOilDayMaxUsecase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
         () => SetLiquorKilnOilDayMinUsecase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
@@ -59,11 +61,10 @@ class PublicFeatureModule extends BaseModule {
         () => SetLiquorklinWifiResetUsecase(getIt<ILiquorKilnRepository>()));
     getIt.registerLazySingleton(
         () => ToggleLiquorKilnWaterBumpUsecase(getIt<ILiquorKilnRepository>()));
-    getIt.registerLazySingleton<ILiquorKilnRepository>(
-      () => TemperatureRepositoryImpl(getIt<SocketService>(),getIt<ApiClient>())
-    );
-        
-     getIt.registerFactoryParam<LiquorKilnStore, String, void>(
+    getIt.registerLazySingleton<ILiquorKilnRepository>(() =>
+        TemperatureRepositoryImpl(getIt<SocketService>(), getIt<ApiClient>()));
+
+    getIt.registerFactoryParam<LiquorKilnStore, String, void>(
       (deviceId, _) => LiquorKilnStore(
         getIt<GetConnectionStatusUseCase>(),
         getIt<GetLiquorKilnStreamUseCase>(),

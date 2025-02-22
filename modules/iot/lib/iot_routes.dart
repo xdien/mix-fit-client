@@ -1,6 +1,6 @@
 class IotRoutes {
-  static const liquorKiln = '/liquorKiln';
-  static const liquorKilnControl = '/liquorKilnControl/:deviceId';
-  static String liquorKilnControlPath(String id) => '/liquorKilnControl/$id';
+  static const liquorKiln = '/liquor-kiln';
+  static const liquorKilnControl = '/liquor-kiln-control/:deviceId';
+  static String liquorKilnControlPath(String id) => '/liquor-kiln-control/$id';
 
 }

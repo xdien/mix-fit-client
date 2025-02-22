@@ -403,10 +403,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: "5a74434cc83bf64346efb562f1a06eefaf1bcb530dc3d96a104f631a1eff8d79"
+      sha256: "5276944c6ffc975ae796569a826c38a62d2abcf264e26b88fa6f482e107f4237"
       url: "https://pub.dev"
     source: hosted
-    version: "0.65.0"
+    version: "0.70.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -571,6 +571,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  home_screen:
+    dependency: "direct main"
+    description:
+      path: "shared/home_screen"
+      relative: true
+    source: path
+    version: "0.0.0"
   http:
     dependency: transitive
     description:
@@ -691,6 +698,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  iot:
+    dependency: "direct main"
+    description:
+      path: "modules/iot"
+      relative: true
+    source: path
+    version: "0.0.0"
   js:
     dependency: transitive
     description:

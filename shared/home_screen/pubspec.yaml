@@ -19,6 +19,8 @@ dependencies:
     path: ../setting
   app_drawer:
     path: ../app_drawer
+  core:
+    path: ../core
 
 dev_dependencies:
   drift_dev: ^2.23.0

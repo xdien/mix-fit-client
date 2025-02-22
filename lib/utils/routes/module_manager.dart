@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:yaml/yaml.dart';
 
 import 'package_config.dart';
+import 'package:home_screen/home_screen_module.dart';
+import 'package:iot/iot_module.dart';
 
 class ModuleManager {
   static final ModuleManager instance = ModuleManager._internal();
@@ -16,15 +18,16 @@ class ModuleManager {
 
   Future<void> initialize() async {
     // Register public modules
-    // _registerModule(PublicFeatureModule());
-    
+    _registerModule(HomeScreenModule());
+    _registerModule(IotModule());
+
     // Load and register private modules
     await _loadPrivateModules();
   }
 
   Future<void> _loadPrivateModules() async {
     try {
-      final privateModulesDir = Directory('modules/private_modules');
+      final privateModulesDir = Directory('modules/cms');
       if (await privateModulesDir.exists()) {
         await for (var entity in privateModulesDir.list()) {
           if (entity is Directory) {
@@ -42,7 +45,7 @@ class ModuleManager {
 
   void _registerModule(BaseModule module) {
     _modules.add(module);
-    
+
     // Register route names for the module
     final routeNames = <String, String>{};
     for (var route in module.moduleRoutes) {
@@ -96,8 +99,7 @@ class ModuleManager {
         // Đọc package config để get package URI
         final packageConfig = await loadPackageConfig();
         final moduleUri = packageConfig.resolve(
-          Uri.parse('package:$moduleName/${moduleName}_module.dart')
-        );
+            Uri.parse('package:$moduleName/${moduleName}_module.dart'));
 
         if (moduleUri == null) {
           print('Could not resolve module URI for: $moduleName');

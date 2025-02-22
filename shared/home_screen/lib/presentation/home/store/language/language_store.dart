@@ -1,7 +1,7 @@
 import 'package:constants/stores/error/error_store.dart';
+import 'package:core/entities/Language.dart';
 import 'package:mobx/mobx.dart';
 import 'package:setting/domain/repository/setting/setting_repository.dart';
-import '../../../../domain/entities/language/Language.dart';
 part 'language_store.g.dart';
 
 class LanguageStore = _LanguageStore with _$LanguageStore;

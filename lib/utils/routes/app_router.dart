@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:constants/app_routes.dart';
+import 'package:home_screen/presentation/home/home.dart';
 import 'package:setting/theme_store.dart';
 import 'package:logging/logging.dart';
 
+import '../../presentation/error/error_screen.dart';
+import '../../presentation/login/login.dart';
+import '../../presentation/register/register_screen.dart';
+import '../../presentation/settings/setting_screen.dart';
+import '../../presentation/splash/splash_screen.dart';
 import 'module_manager.dart';
 
 class AppRouter {

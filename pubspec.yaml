@@ -28,6 +28,10 @@ dependencies:
     path: shared/auth
   app_router:
     path: shared/app_router
+  home_screen:
+    path: shared/home_screen
+  iot:
+    path: modules/iot
 
   flutter:
     sdk: flutter
@@ -49,7 +53,7 @@ dependencies:
   # F
   flutter_mobx: ^2.0.6+5
   freezed: ^2.5.7
-  fl_chart: ^0.65.0
+  fl_chart: ^0.70.2
   # G
   get_it: ^8.0.3
   go_router: ^14.7.2

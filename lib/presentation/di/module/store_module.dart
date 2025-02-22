@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
 import 'package:constants/stores/error/error_store.dart';
 import 'package:core/stores/form/form_store.dart';
-import 'package:mix_fit/presentation/home/store/language/language_store.dart';
+import 'package:home_screen/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
 import 'package:mix_fit/presentation/register/store/register_store.dart';
 import 'package:setting/domain/repository/setting/setting_repository.dart';
@@ -26,6 +26,12 @@ class StoreModule {
       () => FormStore(getIt<FormErrorStore>(), getIt<ErrorStore>()),
     );
 
+    getIt.registerSingleton<LanguageStore>(
+      LanguageStore(
+        getIt<SettingRepository>(),
+        getIt<ErrorStore>(),
+      ));
+
     // stores:------------------------------------------------------------------
     getIt.registerSingleton<UserStore>(
       UserStore(
@@ -45,14 +51,6 @@ class StoreModule {
         getIt<ErrorStore>(),
       ),
     );
-
-    getIt.registerSingleton<LanguageStore>(
-      LanguageStore(
-        getIt<SettingRepository>(),
-        getIt<ErrorStore>(),
-      ),
-    );
-
     getIt.registerLazySingleton<RegisterStore>(
       () => RegisterStore(getIt<ErrorStore>(), getIt<RegisterUsecase>()),
     );

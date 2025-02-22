@@ -1,8 +1,8 @@
 import 'package:app_drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:home_screen/presentation/home/store/language/language_store.dart';
 import 'package:setting/locale/app_localization.dart';
-import 'package:mix_fit/presentation/home/store/language/language_store.dart';
 import 'package:mix_fit/di/service_locator.dart';
 import 'package:setting/theme_store.dart';
 
