@@ -1,0 +1,117 @@
+import 'package:app_drawer/app_drawer.dart';
+import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
+import 'package:core/domain/usecase/use_case.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:constants/app_routes.dart';
+import 'package:setting/theme_store.dart';
+import 'package:logging/logging.dart';
+
+import 'module_manager.dart';
+
+class AppRouter {
+  final _logger = Logger('AppRouter');
+  static final IsLoggedInUseCase _isLoggedInUseCase =
+      GetIt.instance<IsLoggedInUseCase>();
+
+  // Shell route cho layout chung (drawer, bottom nav...)
+  static final shellRoute = ShellRoute(
+    builder: (context, state, child) {
+      return Scaffold(
+        drawer: AppDrawer(
+          themeStore: GetIt.instance<ThemeStore>(),
+        ),
+        body: child,
+      );
+    },
+    routes: [
+      GoRoute(
+        path: AppRoutes.home,
+        builder: (context, state) => HomeScreen(),
+      ),
+      ...ModuleManager.instance.getModuleRoutes(),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) {
+          return SettingsScreen();
+        },
+      ),
+    ],
+  );
+
+  static final router = GoRouter(
+    initialLocation: AppRoutes.splash,
+
+    // Redirect logic
+    redirect: (BuildContext context, GoRouterState state) async {
+      final isLoggedIn = await _isLoggedInUseCase.call(params: NoParams());
+      final isLoggingIn = state.matchedLocation == AppRoutes.login;
+      final isRegistering = state.matchedLocation == AppRoutes.register;
+
+      // Cho phép truy cập một số routes public nếu cần
+      final isPublicPage = isLoggingIn ||
+          isRegistering ||
+          state.matchedLocation == AppRoutes.splash;
+
+      // Nếu chưa login và không ở trang public -> login
+      if (!isLoggedIn && !isPublicPage) {
+        return AppRoutes.login;
+      }
+
+      // Nếu đã login mà vào trang login/register -> home
+      if (isLoggedIn && (isLoggingIn || isRegistering)) {
+        return AppRoutes.home;
+      }
+
+      // Cho phép truy cập route hiện tại
+      return null;
+    },
+
+    // Error handling
+    errorBuilder: (context, state) => ErrorScreen(
+      error: state.error,
+    ),
+
+    // Route configuration
+    routes: [
+      // Public routes
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => SplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => RegisterScreen(),
+      ),
+
+      // Protected routes trong shell (có drawer)
+      shellRoute,
+    ],
+
+    // Router observers cho analytics/logging
+    observers: [
+      GoRouterObserver(),
+    ],
+
+    // Debug logging
+    debugLogDiagnostics: true,
+  );
+}
+
+class GoRouterObserver extends NavigatorObserver {
+  final _logger = Logger('AppRouter');
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _logger.log(Level.INFO, 'New route pushed: ${route.settings.name}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _logger.log(Level.INFO, 'Route popped: ${route.settings.name}');
+  }
+}

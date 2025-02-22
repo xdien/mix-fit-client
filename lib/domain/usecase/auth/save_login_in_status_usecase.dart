@@ -1,6 +1,5 @@
+import 'package:auth/domain/repository/auth/auth_repository.dart';
 import 'package:core/domain/usecase/use_case.dart';
-
-import '../../repository/auth/auth_repository.dart';
 
 class SaveLoginStatusUseCase implements UseCase<void, bool> {
   final AuthRepository _userRepository;

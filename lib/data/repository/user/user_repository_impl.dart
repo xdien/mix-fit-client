@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:api_client/api.dart';
+import 'package:auth/domain/repository/auth/auth_repository.dart';
 import 'package:data/sharedpref/shared_preference_helper.dart';
-
-import '../../../domain/repository/auth/auth_repository.dart';
 
 class UserRepositoryImpl extends AuthRepository {
   // shared pref object
