@@ -32,12 +32,12 @@ class IotModule extends BaseModule {
           path: IotRoutes.liquorKiln,
           builder: (context, state) => LiquorKilnScreen(),
         ),
-        // GoRoute(
-        //     path: IotRoutes.liquorKilnControl,
-        //     builder: (context, state) {
-        //       final deviceId = state.pathParameters['deviceId']!;
-        //       return LiquorKilnControlScreen(deviceId: deviceId);
-        //     }),
+        GoRoute(
+            path: IotRoutes.liquorKilnControl,
+            builder: (context, state) {
+              final deviceId = state.pathParameters['deviceId']!;
+              return LiquorKilnControlScreen(deviceId: deviceId);
+            }),
       ];
 
   @override

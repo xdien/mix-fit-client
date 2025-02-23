@@ -12,6 +12,7 @@ Future<void> main() async {
   await setPreferredOrientations();
   await ServiceLocator.configureDependencies();
   await ModuleManager.instance.initialize();
+  await ModuleManager.instance.registerDependencies(getIt);
   runApp(MyApp());
 }
 
