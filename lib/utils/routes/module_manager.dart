@@ -93,6 +93,16 @@ class ModuleManager {
       }
 
       try {
+        if (!await Directory('$modulePath/.dart_tool').exists()) {
+          print('Running flutter pub get for module: $moduleName');
+          final result = await Process.run('flutter', ['pub', 'get'], 
+            workingDirectory: modulePath);
+          
+          if (result.exitCode != 0) {
+            print('Error running pub get: ${result.stderr}');
+            return null;
+          }
+        }
         final packageConfig = await loadPackageConfig();
         final moduleUri = packageConfig.resolve(
             Uri.parse('package:$moduleName/${moduleName}_module.dart'));
