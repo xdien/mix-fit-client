@@ -17,7 +17,6 @@ import '../../presentation/splash/splash_screen.dart';
 import 'module_manager.dart';
 
 class AppRouter {
-  final _logger = Logger('AppRouter');
   static final IsLoggedInUseCase _isLoggedInUseCase =
       GetIt.instance<IsLoggedInUseCase>();
 
@@ -55,22 +54,18 @@ class AppRouter {
       final isLoggingIn = state.matchedLocation == AppRoutes.login;
       final isRegistering = state.matchedLocation == AppRoutes.register;
 
-      // Cho phép truy cập một số routes public nếu cần
       final isPublicPage = isLoggingIn ||
           isRegistering ||
           state.matchedLocation == AppRoutes.splash;
 
-      // Nếu chưa login và không ở trang public -> login
       if (!isLoggedIn && !isPublicPage) {
         return AppRoutes.login;
       }
 
-      // Nếu đã login mà vào trang login/register -> home
       if (isLoggedIn && (isLoggingIn || isRegistering)) {
         return AppRoutes.home;
       }
 
-      // Cho phép truy cập route hiện tại
       return null;
     },
 
@@ -95,11 +90,10 @@ class AppRouter {
         builder: (context, state) => RegisterScreen(),
       ),
 
-      // Protected routes trong shell (có drawer)
+      // Protected routes trong shell (has drawer)
       shellRoute,
     ],
 
-    // Router observers cho analytics/logging
     observers: [
       GoRouterObserver(),
     ],
