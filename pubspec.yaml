@@ -8,11 +8,31 @@ description: A flutter boilerplate project created using MobX and Provider.
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
 version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
 
 dependencies:
+  core:
+    path: shared/core
+  data:
+    path: shared/data
+  constants:
+    path: shared/constants
+  setting:
+    path: shared/setting
+  app_drawer:
+    path: shared/app_drawer
+  auth:
+    path: shared/auth
+  app_router:
+    path: shared/app_router
+  home_screen:
+    path: shared/home_screen
+  iot:
+    path: modules/iot
+
   flutter:
     sdk: flutter
 
@@ -29,18 +49,15 @@ dependencies:
   drift: ^2.23.0
   drift_flutter: ^0.2.4
   # E
-  event_bus: ^2.0.0
+
   # F
   flutter_mobx: ^2.0.6+5
-  flutter_secure_storage: ^9.2.2
   freezed: ^2.5.7
-  fl_chart: ^0.65.0
+  fl_chart: ^0.70.2
   # G
   get_it: ^8.0.3
   go_router: ^14.7.2
-  google_fonts: ^6.2.1
   # H
-  http: ^1.2.2
   # I
   intl: ^0.19.0
   injectable: ^2.5.0
@@ -51,26 +68,25 @@ dependencies:
   # L
   # M
   mobx: ^2.1.4
+  flutter_modular: ^6.3.4
   # N
   # O
   api_client:
-    path: ./lib/data/network/apis
+    path: ./shared/api_client
   # P
   path_provider: ^2.0.14
   # Q
   # R
   # S
-  shared_preferences: ^2.1.0
-  socket_io_client: ^3.0.2 
+
   # T
   # U
   # V
   validators: ^3.0.0
-  # W
-  web_socket_channel: ^3.0.1
   # X
   xxtea: ^2.1.0
   # Y
+  yaml: ^3.1.3
   # Z
 
 dev_dependencies:

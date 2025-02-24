@@ -1,0 +1,26 @@
+name: app_router
+publish_to: 'none'
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  flutter_mobx: ^2.0.6+5
+  mobx: ^2.1.4
+
+  flutter:
+    sdk: flutter
+  data:
+    path: ../data
+  constants:
+    path: ../constants
+  api_client:
+    path: ../api_client
+  core:
+    path: ../core
+  auth:
+    path: ../auth
+
+dev_dependencies:
+  drift_dev: ^2.23.0
+  mobx_codegen: ^2.2.0
+  build_runner: ^2.1.4

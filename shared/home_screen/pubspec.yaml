@@ -1,0 +1,28 @@
+name: home_screen
+publish_to: 'none'
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  flutter_mobx: ^2.0.6+5
+  mobx: ^2.1.4
+  get_it: ^8.0.3
+  go_router: ^14.7.2
+
+  flutter:
+    sdk: flutter
+  data:
+    path: ../data
+  constants:
+    path: ../constants
+  setting:
+    path: ../setting
+  app_drawer:
+    path: ../app_drawer
+  core:
+    path: ../core
+
+dev_dependencies:
+  drift_dev: ^2.23.0
+  mobx_codegen: ^2.2.0
+  build_runner: ^2.1.4

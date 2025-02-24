@@ -1,15 +1,14 @@
-import 'package:mix_fit/core/data/network/dio/configs/dio_configs.dart';
-import 'package:mix_fit/core/data/network/dio/dio_client.dart';
-import 'package:mix_fit/core/data/network/dio/interceptors/auth_interceptor.dart';
-import 'package:mix_fit/core/data/network/dio/interceptors/logging_interceptor.dart';
-import 'package:mix_fit/data/network/constants/endpoints.dart';
-import 'package:mix_fit/data/network/interceptors/error_interceptor.dart';
-import 'package:mix_fit/data/network/rest_client.dart';
-import 'package:mix_fit/data/sharedpref/shared_preference_helper.dart';
+import 'package:core/managers/connection_manager.dart';
+import 'package:core/network/dio/configs/dio_configs.dart';
+import 'package:core/network/dio/dio_client.dart';
+import 'package:core/network/dio/interceptors/auth_interceptor.dart';
+import 'package:core/network/dio/interceptors/logging_interceptor.dart';
+import 'package:core/network/websocket/websocket_service.dart';
+import 'package:data/network/constants/endpoints.dart';
+import 'package:data/network/interceptors/error_interceptor.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 import 'package:event_bus/event_bus.dart';
-
 import '../../../di/service_locator.dart';
-import '../../network/websocket/websocket_service.dart';
 
 class NetworkModule {
   static Future<void> configureNetworkModuleInjection() async {
@@ -24,9 +23,6 @@ class NetworkModule {
         accessToken: () async => await getIt<SharedPreferenceHelper>().authToken,
       ),
     );
-
-    // rest client:-------------------------------------------------------------
-    getIt.registerSingleton(RestClient());
 
     // dio:---------------------------------------------------------------------
     getIt.registerSingleton<DioConfigs>(
@@ -50,6 +46,13 @@ class NetworkModule {
       SocketService(
          url: Endpoints.baseUrl,
          tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
+      ),
+    );
+    // Register ConnectionManager as singleton
+    getIt.registerSingleton<ConnectionManager>(
+      ConnectionManager(
+        socketService: getIt<SocketService>(),
+        sharedPreferenceHelper: getIt<SharedPreferenceHelper>(),
       ),
     );
   }

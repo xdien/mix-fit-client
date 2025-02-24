@@ -1,33 +1,31 @@
+import 'package:app_drawer/app_drawer.dart';
+import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
+import 'package:core/domain/usecase/use_case.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mix_fit/core/domain/usecase/use_case.dart';
-import 'package:mix_fit/presentation/home/home.dart';
+import 'package:constants/app_routes.dart';
+import 'package:home_screen/presentation/home/home.dart';
+import 'package:setting/theme_store.dart';
 import 'package:logging/logging.dart';
-import 'package:mix_fit/presentation/liquorkiln-control/liquor_kiln_control_screen.dart';
-import 'package:mix_fit/presentation/widgets/app_drawer.dart';
 
-import '../../constants/app_routes.dart';
-import '../../di/service_locator.dart';
-import '../../domain/usecase/auth/is_logged_in_usecase.dart';
 import '../../presentation/error/error_screen.dart';
-import '../../presentation/home/store/theme/theme_store.dart';
-import '../../presentation/liquorkiln/view/liquor_kiln_screen.dart';
 import '../../presentation/login/login.dart';
 import '../../presentation/register/register_screen.dart';
 import '../../presentation/settings/setting_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
+import 'module_manager.dart';
 
 class AppRouter {
-  final _logger = Logger('AppRouter');
   static final IsLoggedInUseCase _isLoggedInUseCase =
-      getIt<IsLoggedInUseCase>();
+      GetIt.instance<IsLoggedInUseCase>();
 
   // Shell route cho layout chung (drawer, bottom nav...)
   static final shellRoute = ShellRoute(
     builder: (context, state, child) {
       return Scaffold(
         drawer: AppDrawer(
-          themeStore: getIt<ThemeStore>(),
+          themeStore: GetIt.instance<ThemeStore>(),
         ),
         body: child,
       );
@@ -37,21 +35,7 @@ class AppRouter {
         path: AppRoutes.home,
         builder: (context, state) => HomeScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.postDetail,
-        builder: (context, state) {
-          UnimplementedError('Not implemented yet');
-          return Container();
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.liquorKiln,
-        builder: (context, state) => LiquorKilnScreen(),
-      ),
-      GoRoute(path: AppRoutes.liquorKilnControl, builder: (context, state) {
-        final deviceId = state.pathParameters['deviceId']!;
-        return LiquorKilnControlScreen(deviceId: deviceId);
-      }),
+      ...ModuleManager.instance.getModuleRoutes(),
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) {
@@ -70,22 +54,18 @@ class AppRouter {
       final isLoggingIn = state.matchedLocation == AppRoutes.login;
       final isRegistering = state.matchedLocation == AppRoutes.register;
 
-      // Cho phép truy cập một số routes public nếu cần
       final isPublicPage = isLoggingIn ||
           isRegistering ||
           state.matchedLocation == AppRoutes.splash;
 
-      // Nếu chưa login và không ở trang public -> login
       if (!isLoggedIn && !isPublicPage) {
         return AppRoutes.login;
       }
 
-      // Nếu đã login mà vào trang login/register -> home
       if (isLoggedIn && (isLoggingIn || isRegistering)) {
         return AppRoutes.home;
       }
 
-      // Cho phép truy cập route hiện tại
       return null;
     },
 
@@ -110,11 +90,10 @@ class AppRouter {
         builder: (context, state) => RegisterScreen(),
       ),
 
-      // Protected routes trong shell (có drawer)
+      // Protected routes trong shell (has drawer)
       shellRoute,
     ],
 
-    // Router observers cho analytics/logging
     observers: [
       GoRouterObserver(),
     ],

@@ -1,4 +1,4 @@
-import 'package:mix_fit/core/data/local/models/device.dart';
+import 'package:core/local/models/device.dart';
 import 'package:mobx/mobx.dart';
 
 part 'device_store.g.dart';
