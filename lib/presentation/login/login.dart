@@ -11,7 +11,7 @@ import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'package:setting/theme_store.dart';
 import 'package:mix_fit/presentation/login/store/login_store.dart';
-import 'package:mix_fit/utils/device/device_utils.dart';
+import 'package:core/utils/device/device_utils.dart';
 import 'package:setting/locale/app_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

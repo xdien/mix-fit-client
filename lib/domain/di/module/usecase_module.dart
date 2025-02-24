@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:auth/domain/repository/auth/auth_repository.dart';
 import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
+import 'package:auth/domain/usecase/login_usecase.dart';
+import 'package:auth/domain/usecase/register_usecase.dart';
+import 'package:auth/domain/usecase/remove_auth_token_usecase.dart';
+import 'package:auth/domain/usecase/save_auth_token_usecase.dart';
+import 'package:auth/domain/usecase/save_login_in_status_usecase.dart';
 import 'package:core/domain/repository/websocket_repository.dart';
-import 'package:mix_fit/domain/usecase/auth/login_usecase.dart';
-import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
-import 'package:mix_fit/domain/usecase/auth/save_login_in_status_usecase.dart';
 import 'package:core/domain/usecase/get_connection_status_usecase.dart';
 
 import '../../../di/service_locator.dart';
-import '../../usecase/auth/remove_auth_token_usecase.dart';
-import '../../usecase/auth/save_auth_token_usecase.dart';
 import '../../usecase/websocket/disconnect_websocket_usecase.dart';
 
 class UseCaseModule {

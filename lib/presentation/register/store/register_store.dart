@@ -1,8 +1,8 @@
 // register_store.dart
 import 'dart:io';
 import 'package:api_client/api.dart';
+import 'package:auth/domain/usecase/register_usecase.dart';
 import 'package:constants/stores/error/error_store.dart';
-import 'package:mix_fit/domain/usecase/auth/register_usecase.dart';
 import 'package:mobx/mobx.dart';
 part 'register_store.g.dart';
 
