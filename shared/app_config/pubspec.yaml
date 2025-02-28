@@ -1,0 +1,17 @@
+name: app_config
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  build_config: ^1.1.2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  build_runner: ^2.3.3
+
+flutter:
+  assets:
+    - assets/config/development_config.json
+    - assets/config/production_config.json
