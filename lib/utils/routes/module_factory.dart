@@ -1,9 +1,5 @@
-// lib/module_system/module_factory.dart
-import 'dart:io';
 import 'package:core/base_module.dart';
-import 'dynamic_modules/dynamic_cms_auth_module.dart';
-import 'stub_modules/cms_auth_stub.dart'
-    if (dart.library.cms_auth) 'package:cms_auth/cms_auth_module.dart';
+import 'export_module.dart';
 
 class ModuleFactory {
   static final Map<String, BaseModule Function()> _factories = {};
@@ -35,7 +31,7 @@ class ModuleFactory {
     final modulePath = _modulePaths[moduleName];
     if (modulePath != null) {
       try {
-        return _loadModuleFromPath(moduleName, modulePath);
+        return loadModuleFromPath(moduleName, modulePath);
       } catch (e) {
         print('Error loading module $moduleName from path: $e');
       }
@@ -50,29 +46,11 @@ class ModuleFactory {
   }
   
   // Load module từ path
-  static BaseModule? _loadModuleFromPath(String moduleName, String modulePath) {
-    // Logic tạo module dựa vào path
-    print('Loading $moduleName from path: $modulePath');
-    
-    // Kiểm tra file module có tồn tại không
-    final moduleFile = File('$modulePath/lib/${moduleName}_module.dart');
-    if (!moduleFile.existsSync()) {
-      print('Module file not found: ${moduleFile.path}');
-      return null;
-    }
-    
+  static BaseModule? loadModuleFromPath(String moduleName, String modulePath) {
     // Xử lý các loại module cụ thể
     switch (moduleName) {
       case 'cms_auth':
-        try {
-          print('Creating dynamic CmsAuthModule instance');
-          return DynamicCmsAuthModule(modulePath);
-        } catch (e) {
-          print('Error creating dynamic cms_auth module: $e');
-          print('Falling back to stub implementation');
-          return CmsAuthModule(); // Stub implementation
-        }
-      
+          return CmsAuthModule();
       // Thêm các trường hợp khác ở đây
         
       default:
