@@ -8,6 +8,7 @@
             "name": "Mix Fit (Development)",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
             "args": [
                 "--dart-define=ENV=development",
                 "--dart-define=BASE_URL=http://localhost:3000"
