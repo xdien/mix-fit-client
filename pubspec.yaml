@@ -32,6 +32,8 @@ dependencies:
     path: shared/home_screen
   iot:
     path: modules/iot
+  app_config:
+    path: shared/app_config
 
   flutter:
     sdk: flutter

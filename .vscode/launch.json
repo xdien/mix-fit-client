@@ -5,21 +5,57 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mix-fit-client",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "mix-fit-client (profile mode)",
+            "name": "Mix Fit (Development)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "args": [
+                "--dart-define=ENV=development",
+                "--dart-define=BASE_URL=http://localhost:3000"
+            ]
         },
         {
-            "name": "mix-fit-client (release mode)",
+            "name": "Mix Fit (Production)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "args": [
+                "--dart-define=ENV=production"
+            ]
+        },
+        {
+            "name": "Mix Fit (Profile Mode - Development)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define=ENV=development"
+            ]
+        },
+        {
+            "name": "Mix Fit (Profile Mode - Production)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define=ENV=production"
+            ]
+        },
+        {
+            "name": "Mix Fit (Release Mode - Development)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--dart-define=ENV=development"
+            ]
+        },
+        {
+            "name": "mix-fit-client (Release Mode - Production)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--dart-define=ENV=production"
+            ]
         },
         {
             "name": "apis",
