@@ -3,4 +3,4 @@
 
 // export 'stub_modules/cms_auth_stub.dart';
 
-export 'package:cms_auth/cms_auth.dart';
+export 'package:cms_auth/cms_auth_module.dart';

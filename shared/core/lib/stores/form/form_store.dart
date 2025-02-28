@@ -75,9 +75,7 @@ abstract class _FormStore with Store {
   @action
   void validateUserEmail(String value) {
     if (value.isEmpty) {
-      formErrorStore.userEmail = "Email can't be empty";
-    } else if (!isEmail(value)) {
-      formErrorStore.userEmail = 'Please enter a valid email address';
+      formErrorStore.userEmail = "Email/username can't be empty";
     } else {
       formErrorStore.userEmail = null;
     }

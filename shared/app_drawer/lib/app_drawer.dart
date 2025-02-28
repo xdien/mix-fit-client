@@ -36,7 +36,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.attractions_sharp,
             title: localizations.translate('app_drawer_liquor_kiln'),
             onTap: () {
-              context.go(IotRoutes.liquorKiln);
+              context.go("/cms-auth");
             },
           ),
           _buildMenuItem(

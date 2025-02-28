@@ -5,8 +5,8 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_screen/home_screen_module.dart';
 import 'package:iot/iot_module.dart';
-import 'package:mix_fit/utils/routes/stub_modules/cms_auth_stub.dart';
 import 'package:yaml/yaml.dart';
+import 'export_module.dart';
 import 'module_factory.dart';
 import 'package_config.dart';
 
@@ -53,47 +53,48 @@ class ModuleManager {
       print('Error loading private modules: $e');
     }
   }
+
   Future<void> _registerDynamicModules(Directory moduleRootDir) async {
-  await for (var entity in moduleRootDir.list()) {
-    if (entity is Directory) {
-      final modulePath = entity.path;
-      final moduleName = modulePath.split('/').last;
-      
-      try {
-        // Đăng ký đường dẫn vào ModuleFactory
-        ModuleFactory.registerPath(moduleName, modulePath);
-        
-        // Đọc pubspec để lấy thông tin module
-        final pubspecFile = File('$modulePath/pubspec.yaml');
-        if (await pubspecFile.exists()) {
-          final pubspecContent = await pubspecFile.readAsString();
-          final pubspec = loadYaml(pubspecContent);
-          final fullModuleName = pubspec['name'] as String;
-          
-          // Đăng ký factory cho module này
-          ModuleFactory.register(fullModuleName, () {
-            // Đối với module CMS, sử dụng conditional imports
-            switch (fullModuleName) {
-              // Thêm các trường hợp khác
-              default:
-                // Thử tải từ đường dẫn nếu không có factory cụ thể
-                final moduleFromPath = ModuleFactory.loadModuleFromPath(
-                    fullModuleName, modulePath);
-                if (moduleFromPath != null) {
-                  return moduleFromPath;
-                }
-                throw Exception('Cannot create module: $fullModuleName');
-            }
-          });
-          
-          print('Registered dynamic module: $fullModuleName');
+    await for (var entity in moduleRootDir.list()) {
+      if (entity is Directory) {
+        final modulePath = entity.path;
+        final moduleName = modulePath.split('/').last;
+
+        try {
+          // Đăng ký đường dẫn vào ModuleFactory
+          ModuleFactory.registerPath(moduleName, modulePath);
+
+          // Đọc pubspec để lấy thông tin module
+          final pubspecFile = File('$modulePath/pubspec.yaml');
+          if (await pubspecFile.exists()) {
+            final pubspecContent = await pubspecFile.readAsString();
+            final pubspec = loadYaml(pubspecContent);
+            final fullModuleName = pubspec['name'] as String;
+
+            // Đăng ký factory cho module này
+            ModuleFactory.register(fullModuleName, () {
+              // Đối với module CMS, sử dụng conditional imports
+              switch (fullModuleName) {
+                // Thêm các trường hợp khác
+                default:
+                  // Thử tải từ đường dẫn nếu không có factory cụ thể
+                  final moduleFromPath = ModuleFactory.loadModuleFromPath(
+                      fullModuleName, modulePath);
+                  if (moduleFromPath != null) {
+                    return moduleFromPath;
+                  }
+                  throw Exception('Cannot create module: $fullModuleName');
+              }
+            });
+
+            print('Registered dynamic module: $fullModuleName');
+          }
+        } catch (e) {
+          print('Error registering dynamic module $moduleName: $e');
         }
-      } catch (e) {
-        print('Error registering dynamic module $moduleName: $e');
       }
     }
   }
-}
 
   Future<BaseModule?> _loadPrivateModule(String modulePath) async {
     try {
@@ -113,7 +114,7 @@ class ModuleManager {
       final pubspec = loadYaml(pubspecContent);
       final moduleName = pubspec['name'] as String;
 
-      final moduleFile = File('${modulePath}/lib/${moduleName}.dart');
+      final moduleFile = File('${modulePath}/lib/${moduleName}_module.dart');
       if (!await moduleFile.exists()) {
         print('Module definition file not found: ${moduleFile.path}');
         return null;
@@ -255,28 +256,22 @@ class ModuleManager {
         }
       }
 
-      // Xử lý trường hợp đặc biệt cho modules bắt đầu bằng 'cms_'
-      if (moduleName.startsWith('cms_')) {
-        // Thử tạo thông qua conditional imports trong ModuleFactory
-        final module = ModuleFactory.create(moduleName);
-        if (module != null) {
-          return module;
-        }
-
-        // Fallback nếu không có conditional import phù hợp
-        print('Using stub module for: $moduleName');
-        switch (moduleName) {
-          case 'cms_auth':
-            return CmsAuthModule();
-          // Thêm các trường hợp khác nếu cần
-          default:
-            print('No stub available for module: $moduleName');
-            return null;
-        }
+      // Thử tạo thông qua conditional imports trong ModuleFactory
+      final module = ModuleFactory.create(moduleName);
+      if (module != null) {
+        return module;
       }
 
-      print('Module not found and no factory available: $moduleName');
-      return null;
+      // Fallback nếu không có conditional import phù hợp
+      print('Using stub module for: $moduleName');
+      switch (moduleName) {
+        case 'cms_auth':
+          return CmsAuthModule();
+        // Thêm các trường hợp khác nếu cần
+        default:
+          print('No stub available for module: $moduleName');
+          return null;
+      }
     } catch (e) {
       print('Error creating module instance for $moduleName: $e');
       return null;
