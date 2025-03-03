@@ -298,4 +298,7 @@ paket-files/
 .idea/
 *.sln.iml
 **.freezed.dart
-lib/data/network/apis/**
+shared/api_client/**
+pubspec_overrides.yaml
+shared/app_config/assets/config/*_config.json
+pubspec.lock

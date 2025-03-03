@@ -1,7 +1,5 @@
+import 'package:constants/app_routes.dart';
 import 'package:mobx/mobx.dart';
-
-import '../../constants/app_routes.dart';
-
 part 'navigation_store.g.dart';
 
 class NavigationStore = _NavigationStore with _$NavigationStore;

@@ -1,0 +1,15 @@
+name: constants
+publish_to: 'none' 
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1
+  flutter_mobx: ^2.0.6+5
+  mobx: ^2.1.4
+
+dev_dependencies:
+  mobx_codegen: ^2.2.0
+  build_runner: ^2.1.4
