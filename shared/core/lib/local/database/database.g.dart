@@ -1313,7 +1313,8 @@ class $$CategoriesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (todoEntriesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Category, $CategoriesTable,
+                            TodoEntry>(
                         currentTable: table,
                         referencedTable: $$CategoriesTableReferences
                             ._todoEntriesRefsTable(db),

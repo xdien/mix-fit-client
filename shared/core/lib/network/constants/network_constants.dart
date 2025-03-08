@@ -1,3 +1,4 @@
+// ignore_for_file: drift_drift_file
 class NetworkConstants {
   NetworkConstants._();
 
