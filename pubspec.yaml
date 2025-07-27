@@ -61,7 +61,7 @@ dependencies:
   go_router: ^14.7.2
   # H
   # I
-  intl: ^0.19.0
+  intl: ^0.20.2
   injectable: ^2.5.0
   image_picker: ^1.1.2
   # J
@@ -102,7 +102,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.2
   mobx_codegen: ^2.2.0
   build_runner: ^2.3.3
-  analyzer: ^6.11.0
+  analyzer: ^7.5.5
   drift_dev: ^2.23.0
 
 flutter_icons:

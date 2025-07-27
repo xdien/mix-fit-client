@@ -51,7 +51,8 @@ class ModuleFactory {
     switch (moduleName) {
       case 'cms_auth':
           return CmsAuthModule();
-      // Thêm các trường hợp khác ở đây
+      case 'sales_dashboard':
+          return CmsSalesDashboardModule();
         
       default:
         print('No specific handler for module type: $moduleName');

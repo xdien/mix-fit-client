@@ -302,3 +302,7 @@ shared/api_client/**
 pubspec_overrides.yaml
 shared/app_config/assets/config/*_config.json
 pubspec.lock
+.cursor/rules/*
+pubspec.lock
+modules/cms
+shared/core/pubspec.lock

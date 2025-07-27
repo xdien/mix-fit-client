@@ -41,6 +41,15 @@ class AppDrawer extends StatelessWidget {
           ),
           _buildMenuItem(
             context: context,
+            icon: Icons.dashboard,
+            title: "Sales dashboard",
+            onTap: () {
+              context.go("/sales_dashboard");
+              context.canPop();
+            },
+          ),
+          _buildMenuItem(
+            context: context,
             icon: Icons.settings,
             title: localizations.translate('home_settings') ,
             onTap: () {
