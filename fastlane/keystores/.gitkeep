@@ -1,0 +1,8 @@
+# This directory will contain Android keystores for different environments
+# Keystore directories to be created:
+# - development/
+# - staging/
+# - production/
+#
+# Note: Actual keystore files should not be committed to version control
+# Use environment variables or secure storage for keystore passwords

@@ -1,0 +1,55 @@
+{
+  "environment": "staging",
+  "android": {
+    "application_id": "com.iotecksolutions.todoapp.staging",
+    "keystore_path": "fastlane/keystores/staging/staging.keystore",
+    "key_alias": "staging_key",
+    "build_type": "release",
+    "store_password": "env:ANDROID_KEYSTORE_PASSWORD_STAGING",
+    "key_password": "env:ANDROID_KEY_PASSWORD_STAGING"
+  },
+  "windows": {
+    "app_name": "MixFit Staging",
+    "publisher": "IoTeck Solutions",
+    "installer_type": "msi",
+    "code_sign_certificate": "fastlane/keystores/staging/windows_cert.p12",
+    "code_sign_password": "env:WINDOWS_CERT_PASSWORD_STAGING",
+    "app_version": "1.0.0-staging"
+  },
+  "linux": {
+    "app_name": "MixFit Staging",
+    "desktop_entry": {
+      "name": "MixFit Staging",
+      "comment": "Flutter Boilerplate Application - Staging",
+      "categories": "Utility;Development;",
+      "icon": "mixfit-staging"
+    },
+    "appimage": {
+      "icon": "assets/icons/ic_launcher.png",
+      "update_info": "gh-releases-zsync|iotecksolutions|flutter-boilerplate|latest|*-staging.AppImage.zsync",
+      "app_id": "com.iotecksolutions.todoapp.staging"
+    }
+  },
+  "flutter": {
+    "build_name": "1.0.0",
+    "build_number": "auto",
+    "flavor": "staging",
+    "dart_defines": {
+      "ENVIRONMENT": "staging",
+      "API_BASE_URL": "https://staging-api.iotecksolutions.com"
+    }
+  },
+  "distribution": {
+    "google_play_internal": true,
+    "google_play_production": false,
+    "github_releases": true,
+    "auto_update": true,
+    "firebase_app_distribution": true
+  },
+  "notifications": {
+    "slack_webhook": "env:SLACK_WEBHOOK_STAGING",
+    "email_recipients": ["qa-team@iotecksolutions.com", "dev-team@iotecksolutions.com"],
+    "notify_on_success": true,
+    "notify_on_failure": true
+  }
+}

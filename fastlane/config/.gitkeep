@@ -1,0 +1,5 @@
+# This directory will contain environment-specific configuration files
+# Configuration files to be created:
+# - development.json
+# - staging.json
+# - production.json

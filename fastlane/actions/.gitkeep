@@ -1,0 +1,6 @@
+# This directory will contain custom Fastlane actions
+# Custom actions to be implemented:
+# - setup_environment.rb
+# - run_tests.rb  
+# - increment_version.rb
+# - send_notification.rb

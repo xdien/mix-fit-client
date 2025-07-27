@@ -1,0 +1,44 @@
+# App metadata configuration for Fastlane
+# This file contains the app identifiers and other metadata used across all lanes
+
+# Android configuration
+android_package_name("com.iotecksolutions.todoapp") # Base package name, will be modified per environment
+android_package_name_development("com.iotecksolutions.todoapp.dev")
+android_package_name_staging("com.iotecksolutions.todoapp.staging")
+android_package_name_production("com.iotecksolutions.todoapp")
+
+# Google Play Console configuration
+json_key_file("") # Path to Google Play Console service account JSON key file (to be configured)
+
+# Apple configuration (for future iOS support)
+# apple_id("your-apple-id@example.com")
+# app_identifier("com.iotecksolutions.todoapp")
+# team_id("YOUR_TEAM_ID")
+
+# Windows configuration
+windows_app_name("MixFit")
+windows_publisher("IoTeck Solutions")
+windows_publisher_display_name("IoTeck Solutions")
+
+# Linux configuration  
+linux_app_name("MixFit")
+linux_desktop_name("MixFit")
+linux_generic_name("Flutter Boilerplate Application")
+linux_comment("A Flutter boilerplate application with IoT integration")
+linux_categories("Utility;Development;")
+
+# Common configuration
+app_name("MixFit")
+app_version("1.0.0") # Will be managed by version management system
+
+# Git configuration
+git_url("") # Repository URL (to be configured based on actual repository)
+git_branch("main")
+
+# Team configuration
+team_name("IoTeck Solutions")
+
+# For environment-specific overrides, these will be loaded from config files:
+# - fastlane/config/development.json
+# - fastlane/config/staging.json  
+# - fastlane/config/production.json

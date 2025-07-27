@@ -1,0 +1,28 @@
+# Gym configuration for building the app
+# This file contains build settings that will be used across all platforms
+
+# Output directory for build artifacts
+output_directory("./build")
+
+# Clean build before building
+clean(true)
+
+# Include symbols in the build
+include_symbols(true)
+
+# Include bitcode (for iOS when supported)
+include_bitcode(false)
+
+# Export method (will be overridden per platform/environment)
+export_method("development") # Default, will be changed per environment
+
+# Build configuration
+configuration("Release") # Default configuration
+
+# Suppress Xcode output (for cleaner logs)
+suppress_xcode_output(false)
+
+# Archive path (will be set dynamically)
+# archive_path will be set in lanes based on platform and environment
+
+# Additional build settings will be configured per platform in the Fastfile

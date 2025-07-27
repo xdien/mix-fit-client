@@ -306,3 +306,5 @@ pubspec.lock
 pubspec.lock
 modules/cms
 shared/core/pubspec.lock
+macos/Podfile.lock
+pubspec.lock

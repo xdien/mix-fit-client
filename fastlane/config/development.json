@@ -1,0 +1,55 @@
+{
+  "environment": "development",
+  "android": {
+    "application_id": "com.iotecksolutions.todoapp.dev",
+    "keystore_path": "fastlane/keystores/development/debug.keystore",
+    "key_alias": "androiddebugkey",
+    "build_type": "debug",
+    "store_password": "android",
+    "key_password": "android"
+  },
+  "windows": {
+    "app_name": "MixFit Dev",
+    "publisher": "IoTeck Solutions",
+    "installer_type": "msi",
+    "code_sign_certificate": "",
+    "code_sign_password": "env:WINDOWS_CERT_PASSWORD_DEV",
+    "app_version": "1.0.0-dev"
+  },
+  "linux": {
+    "app_name": "MixFit Dev",
+    "desktop_entry": {
+      "name": "MixFit Dev",
+      "comment": "Flutter Boilerplate Application - Development",
+      "categories": "Utility;Development;",
+      "icon": "mixfit-dev"
+    },
+    "appimage": {
+      "icon": "assets/icons/ic_launcher.png",
+      "update_info": "gh-releases-zsync|iotecksolutions|flutter-boilerplate|latest|*-dev.AppImage.zsync",
+      "app_id": "com.iotecksolutions.todoapp.dev"
+    }
+  },
+  "flutter": {
+    "build_name": "1.0.0",
+    "build_number": "auto",
+    "flavor": "development",
+    "dart_defines": {
+      "ENVIRONMENT": "development",
+      "API_BASE_URL": "https://dev-api.iotecksolutions.com"
+    }
+  },
+  "distribution": {
+    "google_play_internal": false,
+    "google_play_production": false,
+    "github_releases": true,
+    "auto_update": true,
+    "firebase_app_distribution": true
+  },
+  "notifications": {
+    "slack_webhook": "env:SLACK_WEBHOOK_DEV",
+    "email_recipients": ["dev-team@iotecksolutions.com"],
+    "notify_on_success": true,
+    "notify_on_failure": true
+  }
+}

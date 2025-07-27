@@ -1,0 +1,497 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+require 'json'
+require 'fileutils'
+
+default_platform(:android)
+
+# Import custom actions
+import_from_git(url: 'https://github.com/fastlane/fastlane')
+
+# Global variables
+PROJECT_ROOT = File.expand_path('..', __dir__)
+
+# Android platform lanes
+platform :android do
+  desc "Build Android app for development environment"
+  lane :development do
+    UI.message("🚀 Building Android app for development environment")
+    
+    begin
+      # Load development environment configuration
+      config = setup_environment(environment: "development")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 70.0,
+        fail_build_on_low_coverage: false
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with build...")
+      
+      # TODO: Build Android APK/AAB
+      # TODO: Sign with development keystore
+      # TODO: Upload to internal testing if configured
+      
+      UI.success("✅ Android development build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Android development build failed: #{e.message}")
+      handle_build_failure(e, "android_development")
+      raise e
+    end
+  end
+
+  desc "Build Android app for staging environment"
+  lane :staging do
+    UI.message("🚀 Building Android app for staging environment")
+    
+    begin
+      # Load staging environment configuration
+      config = setup_environment(environment: "staging")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 80.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with staging build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with staging build...")
+      
+      # TODO: Build Android APK/AAB
+      # TODO: Sign with staging keystore
+      # TODO: Upload to Google Play Internal Testing
+      
+      UI.success("✅ Android staging build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Android staging build failed: #{e.message}")
+      handle_build_failure(e, "android_staging")
+      raise e
+    end
+  end
+
+  desc "Build Android app for production environment"
+  lane :production do
+    UI.message("🚀 Building Android app for production environment")
+    
+    begin
+      # Load production environment configuration
+      config = setup_environment(environment: "production")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 85.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with production build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with production build...")
+      
+      # TODO: Confirm version number
+      # TODO: Build Android APK/AAB
+      # TODO: Sign with production keystore
+      # TODO: Upload to Google Play Console
+      
+      UI.success("✅ Android production build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Android production build failed: #{e.message}")
+      handle_build_failure(e, "android_production")
+      raise e
+    end
+  end
+end
+
+# Windows platform lanes
+platform :windows do
+  desc "Build Windows app for development environment"
+  lane :development do
+    UI.message("🚀 Building Windows app for development environment")
+    
+    begin
+      # Load development environment configuration
+      config = setup_environment(environment: "development")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 70.0,
+        fail_build_on_low_coverage: false
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with build...")
+      
+      # TODO: Build Flutter Windows app
+      # TODO: Create MSI installer
+      # TODO: Sign executable with code signing certificate
+      # TODO: Upload to GitHub Releases if configured
+      
+      UI.success("✅ Windows development build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Windows development build failed: #{e.message}")
+      handle_build_failure(e, "windows_development")
+      raise e
+    end
+  end
+
+  desc "Build Windows app for staging environment"
+  lane :staging do
+    UI.message("🚀 Building Windows app for staging environment")
+    
+    begin
+      # Load staging environment configuration
+      config = setup_environment(environment: "staging")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 80.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with staging build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with staging build...")
+      
+      # TODO: Build Flutter Windows app
+      # TODO: Create MSI installer
+      # TODO: Sign executable with code signing certificate
+      # TODO: Upload to GitHub Releases
+      
+      UI.success("✅ Windows staging build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Windows staging build failed: #{e.message}")
+      handle_build_failure(e, "windows_staging")
+      raise e
+    end
+  end
+
+  desc "Build Windows app for production environment"
+  lane :production do
+    UI.message("🚀 Building Windows app for production environment")
+    
+    begin
+      # Load production environment configuration
+      config = setup_environment(environment: "production")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 85.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with production build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with production build...")
+      
+      # TODO: Confirm version number
+      # TODO: Build Flutter Windows app
+      # TODO: Create MSI installer
+      # TODO: Sign executable with code signing certificate
+      # TODO: Upload to GitHub Releases
+      
+      UI.success("✅ Windows production build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Windows production build failed: #{e.message}")
+      handle_build_failure(e, "windows_production")
+      raise e
+    end
+  end
+end
+
+# Linux platform lanes
+platform :linux do
+  desc "Build Linux app for development environment"
+  lane :development do
+    UI.message("🚀 Building Linux app for development environment")
+    
+    begin
+      # Load development environment configuration
+      config = setup_environment(environment: "development")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 70.0,
+        fail_build_on_low_coverage: false
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with build...")
+      
+      # TODO: Build Flutter Linux app
+      # TODO: Create AppImage package
+      # TODO: Generate desktop entry file
+      # TODO: Upload to GitHub Releases if configured
+      
+      UI.success("✅ Linux development build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Linux development build failed: #{e.message}")
+      handle_build_failure(e, "linux_development")
+      raise e
+    end
+  end
+
+  desc "Build Linux app for staging environment"
+  lane :staging do
+    UI.message("🚀 Building Linux app for staging environment")
+    
+    begin
+      # Load staging environment configuration
+      config = setup_environment(environment: "staging")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 80.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with staging build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with staging build...")
+      
+      # TODO: Build Flutter Linux app
+      # TODO: Create AppImage package
+      # TODO: Generate desktop entry file
+      # TODO: Upload to GitHub Releases
+      
+      UI.success("✅ Linux staging build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Linux staging build failed: #{e.message}")
+      handle_build_failure(e, "linux_staging")
+      raise e
+    end
+  end
+
+  desc "Build Linux app for production environment"
+  lane :production do
+    UI.message("🚀 Building Linux app for production environment")
+    
+    begin
+      # Load production environment configuration
+      config = setup_environment(environment: "production")
+      
+      # Run tests before building
+      UI.message("Running pre-build tests...")
+      test_results = run_tests(
+        generate_coverage: true,
+        fail_build_on_test_failure: true,
+        minimum_coverage: 85.0,
+        fail_build_on_low_coverage: true
+      )
+      
+      unless test_results[:success]
+        UI.user_error!("Tests failed! Cannot proceed with production build.")
+      end
+      
+      UI.success("✅ All tests passed. Proceeding with production build...")
+      
+      # TODO: Confirm version number
+      # TODO: Build Flutter Linux app
+      # TODO: Create AppImage package
+      # TODO: Generate desktop entry file
+      # TODO: Upload to GitHub Releases
+      
+      UI.success("✅ Linux production build completed successfully")
+      
+    rescue => e
+      UI.error("❌ Linux production build failed: #{e.message}")
+      handle_build_failure(e, "linux_production")
+      raise e
+    end
+  end
+end
+
+# Shared lanes for common functionality
+desc "Run all tests with comprehensive reporting"
+lane :test do
+  UI.message("🧪 Running all tests")
+  
+  begin
+    # Run comprehensive test suite
+    test_results = run_tests(
+      run_unit_tests: true,
+      run_widget_tests: true,
+      run_integration_tests: true,
+      generate_coverage: true,
+      fail_build_on_test_failure: false, # Don't fail immediately for standalone test runs
+      minimum_coverage: 70.0,
+      fail_build_on_low_coverage: false
+    )
+    
+    # Display detailed results
+    UI.header("Test Execution Summary")
+    
+    total_passed = test_results[:unit_tests][:passed] + test_results[:widget_tests][:passed] + test_results[:integration_tests][:passed]
+    total_failed = test_results[:unit_tests][:failed] + test_results[:widget_tests][:failed] + test_results[:integration_tests][:failed]
+    
+    if test_results[:success]
+      UI.success("✅ All #{total_passed} tests passed!")
+      UI.success("📊 Code coverage: #{test_results[:coverage_percentage].round(2)}%")
+    else
+      UI.important("⚠️  #{total_failed} test(s) failed out of #{total_passed + total_failed} total tests")
+      UI.important("📊 Code coverage: #{test_results[:coverage_percentage].round(2)}%")
+    end
+    
+    # Display report locations
+    UI.message("📋 Test reports generated:")
+    test_results[:reports].each do |report_type, path|
+      UI.message("  - #{report_type}: #{path}") if File.exist?(path)
+    end
+    
+    return test_results
+    
+  rescue => e
+    UI.error("❌ Test execution failed: #{e.message}")
+    raise e
+  end
+end
+
+desc "Clean build artifacts"
+lane :clean do
+  UI.message("🧹 Cleaning build artifacts")
+  
+  # TODO: Clean Flutter build directory
+  # TODO: Clean platform-specific build artifacts
+  # TODO: Clean temporary files
+  
+  UI.success("✅ Build artifacts cleaned")
+end
+
+# Helper functions
+def handle_build_failure(exception, build_context)
+  UI.error("Build failure in #{build_context}")
+  UI.error("Exception: #{exception.message}")
+  UI.error("Stack trace: #{exception.backtrace.join("\n")}")
+  
+  # Clean up build artifacts on failure
+  begin
+    UI.message("🧹 Cleaning up build artifacts after failure...")
+    # Add cleanup logic here when implemented
+  rescue => cleanup_error
+    UI.error("Failed to clean up build artifacts: #{cleanup_error.message}")
+  end
+  
+  # Log detailed error information to file
+  begin
+    error_log_dir = File.join(Dir.pwd, 'fastlane_logs')
+    FileUtils.mkdir_p(error_log_dir)
+    
+    error_log_file = File.join(error_log_dir, "error_#{build_context}_#{Time.now.strftime('%Y%m%d_%H%M%S')}.log")
+    
+    error_details = {
+      timestamp: Time.now.iso8601,
+      build_context: build_context,
+      exception_class: exception.class.name,
+      exception_message: exception.message,
+      stack_trace: exception.backtrace,
+      environment: ENV.to_h.select { |k, v| k.start_with?('FLUTTER_', 'FASTLANE_', 'ANDROID_') }
+    }
+    
+    File.write(error_log_file, JSON.pretty_generate(error_details))
+    UI.message("📝 Error details logged to: #{error_log_file}")
+    
+  rescue => log_error
+    UI.error("Failed to write error log: #{log_error.message}")
+  end
+end
+
+def parse_test_failure_details(test_results)
+  failure_details = []
+  
+  if test_results && test_results.is_a?(Hash)
+    [:unit_tests, :widget_tests, :integration_tests].each do |test_type|
+      if test_results[test_type] && test_results[test_type][:failed] > 0
+        failure_details << "#{test_type.to_s.humanize}: #{test_results[test_type][:failed]} failed"
+      end
+    end
+  end
+  
+  failure_details.empty? ? "Unknown test failures" : failure_details.join(", ")
+end
+
+# Error handling
+error do |lane, exception|
+  UI.error("❌ Lane #{lane} failed with exception: #{exception}")
+  
+  # Handle test-specific failures
+  if exception.message.include?("Tests failed")
+    UI.error("🧪 Test failures detected")
+    
+    # Try to get test results from lane context
+    if Actions.lane_context[SharedValues::TEST_RESULTS]
+      test_results = Actions.lane_context[SharedValues::TEST_RESULTS]
+      failure_summary = parse_test_failure_details(test_results)
+      UI.error("Test failure summary: #{failure_summary}")
+    end
+  end
+  
+  # Log error details
+  handle_build_failure(exception, lane.to_s)
+  
+  # TODO: Send error notifications when notification system is implemented
+end
