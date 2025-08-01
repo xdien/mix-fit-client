@@ -303,6 +303,22 @@ pubspec_overrides.yaml
 shared/app_config/assets/config/*_config.json
 pubspec.lock
 .cursor/rules/*
-pubspec.lock
+# Production and staging environment configs (contain sensitive data)
+config/environments/production.yaml
+config/environments/staging.yaml
+
+# Private modules (contain business logic)
 modules/cms
+
+# Build artifacts and cache
+shared/app_config/build/
 shared/core/pubspec.lock
+
+# Lock files (should be generated)
+pubspec.lock
+shared/core/pubspec.lock
+config/environments/development.yaml
+shared/app_config/config/environments/development.yaml
+shared/app_config/config/environments/staging.yaml
+shared/app_config/config/environments/production.yaml
+config/environments/development.yaml
