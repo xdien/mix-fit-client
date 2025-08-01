@@ -14,6 +14,9 @@
 # update_fastlane
 
 require_relative 'config_loader'
+require_relative 'signing_manager'
+require_relative 'certificate_validator'
+require_relative 'credential_manager'
 
 default_platform(:android)
 
@@ -29,6 +32,16 @@ platform :android do
     begin
       # Load and validate environment configuration
       config = ConfigLoader.load_environment_config(environment)
+      
+      # Setup and validate signing credentials
+      credential_manager = CredentialManager.new(environment)
+      credential_manager.setup_secure_environment
+      credential_manager.validate_environment_variables(config['signing'])
+      credential_manager.audit_credential_access
+      
+      # Setup code signing
+      signing_manager = SigningManager.new(config)
+      signing_manager.setup_signing
       
       # Setup environment variables for Flutter
       ConfigLoader.setup_flutter_environment(config)
@@ -50,11 +63,18 @@ platform :android do
       # Send notifications
       send_build_notifications(config, build_info, true)
       
+      # Cleanup sensitive data
+      credential_manager.cleanup_credentials
+      
       UI.success("✅ Build completed successfully for #{environment} environment")
       
     rescue => e
       UI.error("❌ Build failed: #{e.message}")
       send_build_notifications(config, nil, false, e.message) if config
+      
+      # Cleanup sensitive data even on failure
+      credential_manager.cleanup_credentials if credential_manager
+      
       raise e
     end
   end
@@ -114,6 +134,104 @@ platform :android do
     
     config = ConfigLoader.load_environment_config(environment)
     UI.success("✅ Configuration is valid for #{environment} environment")
+  end
+  
+  desc "Validate signing certificates"
+  lane :validate_certificates do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔐 Validating signing certificates for #{environment}")
+    
+    config = ConfigLoader.load_environment_config(environment)
+    
+    # Setup credentials
+    credential_manager = CredentialManager.new(environment)
+    credential_manager.validate_environment_variables(config['signing'])
+    
+    # Validate certificate
+    signing_manager = SigningManager.new(config)
+    signing_manager.validate_certificate_availability
+    
+    # Detailed certificate validation
+    keystore_path = signing_manager.get_keystore_path
+    store_password = ENV[config['signing']['store_password_env']]
+    key_alias = config['signing']['key_alias']
+    
+    validator = CertificateValidator.new(keystore_path, store_password, key_alias)
+    cert_info = validator.validate_certificate
+    validator.generate_certificate_report(cert_info)
+    
+    UI.success("✅ Certificate validation completed for #{environment}")
+  end
+  
+  desc "Validate all environment certificates"
+  lane :validate_all_certificates do
+    CertificateValidator.validate_environment_certificates
+  end
+  
+  desc "Setup signing credentials"
+  lane :setup_credentials do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔧 Setting up signing credentials for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    
+    # Generate credentials template if it doesn't exist
+    credentials_file = File.join(Dir.pwd, '..', 'credentials.yaml')
+    unless File.exist?(credentials_file)
+      template_path = credential_manager.generate_credentials_template
+      UI.important("📝 Please copy #{template_path} to credentials.yaml and update with your passwords")
+      UI.important("📝 Then run: fastlane load_credentials env:#{environment}")
+      return
+    end
+    
+    # Load credentials from file
+    credential_manager.load_credentials_from_file(credentials_file)
+    
+    UI.success("✅ Credentials loaded for #{environment}")
+  end
+  
+  desc "Load credentials from file"
+  lane :load_credentials do |options|
+    environment = options[:env] || "development"
+    credentials_file = options[:file] || File.join(Dir.pwd, '..', 'credentials.yaml')
+    
+    UI.header("📂 Loading credentials for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    credential_manager.load_credentials_from_file(credentials_file)
+    
+    UI.success("✅ Credentials loaded from #{credentials_file}")
+  end
+  
+  desc "Generate debug keystore"
+  lane :generate_debug_keystore do
+    UI.header("🔨 Generating debug keystore")
+    
+    config = ConfigLoader.load_environment_config('development')
+    signing_manager = SigningManager.new(config)
+    
+    keystore_path = signing_manager.create_debug_keystore
+    
+    UI.success("✅ Debug keystore created at #{keystore_path}")
+  end
+  
+  desc "Audit signing access"
+  lane :audit_signing do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("📊 Auditing signing access for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    audit_info = credential_manager.audit_credential_access
+    
+    UI.message("Audit information:")
+    audit_info.each do |key, value|
+      UI.message("  #{key}: #{value}")
+    end
+    
+    UI.success("✅ Signing access audited")
   end
   
   # Private lanes

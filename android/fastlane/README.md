@@ -71,6 +71,54 @@ Clean build artifacts
 
 Validate environment configuration
 
+### android validate_certificates
+
+```sh
+[bundle exec] fastlane android validate_certificates
+```
+
+Validate signing certificates
+
+### android validate_all_certificates
+
+```sh
+[bundle exec] fastlane android validate_all_certificates
+```
+
+Validate all environment certificates
+
+### android setup_credentials
+
+```sh
+[bundle exec] fastlane android setup_credentials
+```
+
+Setup signing credentials
+
+### android load_credentials
+
+```sh
+[bundle exec] fastlane android load_credentials
+```
+
+Load credentials from file
+
+### android generate_debug_keystore
+
+```sh
+[bundle exec] fastlane android generate_debug_keystore
+```
+
+Generate debug keystore
+
+### android audit_signing
+
+```sh
+[bundle exec] fastlane android audit_signing
+```
+
+Audit signing access
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

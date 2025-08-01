@@ -1,0 +1,12 @@
+# Ignore all keystore files for security
+*.keystore
+*.jks
+*.p12
+
+# Allow debug keystore for development
+!debug.keystore
+
+# Ignore any credential files
+credentials.*
+*.pem
+*.key

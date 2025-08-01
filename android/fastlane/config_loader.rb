@@ -19,7 +19,7 @@ class ConfigLoader
   end
   
   def self.validate_config(config, environment)
-    required_keys = %w[environment app network build]
+    required_keys = %w[environment app network build signing]
     
     required_keys.each do |key|
       unless config.key?(key)
@@ -39,6 +39,14 @@ class ConfigLoader
     network_config = config['network']
     unless network_config.key?('api_base_url')
       FastlaneCore::UI.user_error!("Missing required network configuration key 'api_base_url' in #{environment} environment")
+    end
+    
+    # Validate signing configuration
+    signing_config = config['signing']
+    %w[store_file store_password_env key_alias key_password_env].each do |key|
+      unless signing_config.key?(key)
+        FastlaneCore::UI.user_error!("Missing required signing configuration key '#{key}' in #{environment} environment")
+      end
     end
     
     # Validate bundle ID format
