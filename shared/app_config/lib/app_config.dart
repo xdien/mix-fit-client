@@ -8,6 +8,15 @@ export 'models/environment_config.dart';
 export 'loaders/environment_config_loader.dart';
 export 'services/environment_config_service.dart';
 export 'validation/config_validator.dart';
+export 'examples/usage_example.dart';
+export 'configured_app.dart';
+
+// Export build configuration management
+export 'config/build_config_manager.dart';
+export 'config/build_config_factory.dart';
+export 'config/build_config_generator.dart';
+export 'examples/build_config_usage_example.dart';
+export 'examples/flutter_integration_example.dart';
 
 class AppConfig {
   static final AppConfig instance = AppConfig._internal();

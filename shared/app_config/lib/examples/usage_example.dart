@@ -1,131 +1,270 @@
 import 'package:flutter/material.dart';
-import '../app_config.dart';
+import 'package:get_it/get_it.dart';
+import '../services/environment_config_service.dart';
+import '../loaders/environment_config_loader.dart';
+import '../configured_app.dart';
 
-/// Example of how to use the new environment configuration system
-class EnvironmentConfigExample extends StatefulWidget {
-  @override
-  _EnvironmentConfigExampleState createState() => _EnvironmentConfigExampleState();
-}
-
-class _EnvironmentConfigExampleState extends State<EnvironmentConfigExample> {
-  final _configService = EnvironmentConfigService();
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeConfig();
+/// Example demonstrating how to use the EnvironmentConfigService
+class EnvironmentConfigUsageExample {
+  
+  /// Example 1: Basic initialization and usage
+  static Future<void> basicUsage() async {
+    // Initialize the service
+    final service = EnvironmentConfigService();
+    await service.initialize('development');
+    
+    // Access configuration properties
+    print('Environment: ${service.environmentName}');
+    print('App Name: ${service.appName}');
+    print('API URL: ${service.apiBaseUrl}');
+    print('WebSocket URL: ${service.websocketUrl}');
+    print('Is Debug Mode: ${service.isDebugMode}');
+    print('Is Production: ${service.isProduction}');
   }
-
-  Future<void> _initializeConfig() async {
-    try {
-      await _configService.initialize('development');
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+  
+  /// Example 2: Using with dependency injection
+  static Future<void> dependencyInjectionUsage() async {
+    final getIt = GetIt.instance;
+    
+    // Register the service as singleton
+    getIt.registerSingleton<EnvironmentConfigService>(
+      EnvironmentConfigService(),
+    );
+    
+    // Register the loader
+    getIt.registerSingleton<EnvironmentConfigLoader>(
+      YamlEnvironmentConfigLoader(),
+    );
+    
+    // Initialize the service
+    await getIt<EnvironmentConfigService>().initialize('production');
+    
+    // Access through dependency injection
+    final service = getIt<EnvironmentConfigService>();
+    print('Environment: ${service.environmentName}');
+    print('Bundle ID: ${service.bundleId}');
+  }
+  
+  /// Example 3: Using with ConfiguredApp widget
+  static Widget configuredAppUsage() {
+    return ConfiguredApp(
+      environment: 'staging',
+      useNewConfigSystem: true,
+      builder: (context) => MaterialApp(
+        title: EnvironmentConfigService().appName,
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text(EnvironmentConfigService().appName),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Environment: ${EnvironmentConfigService().environmentName}'),
+                Text('API URL: ${EnvironmentConfigService().apiBaseUrl}'),
+                Text('Version: ${EnvironmentConfigService().versionName ?? 'N/A'}'),
+                if (EnvironmentConfigService().isDebugMode)
+                  const Text(
+                    'DEBUG MODE',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  /// Example 4: Environment-specific configuration
+  static Future<void> environmentSpecificUsage() async {
+    final service = EnvironmentConfigService();
+    
+    // Initialize with different environments
+    await service.initialize('development');
+    
+    if (service.isDebugMode) {
+      print('Development mode - enabling debug features');
+      // Enable debug logging, show debug info, etc.
+    } else if (service.isStaging) {
+      print('Staging mode - limited debug features');
+      // Enable some debug features for testing
+    } else if (service.isProduction) {
+      print('Production mode - all debug features disabled');
+      // Disable all debug features
+    }
+    
+    // Access build configuration
+    final buildConfig = service.buildConfig;
+    if (buildConfig != null) {
+      print('Build Type: ${buildConfig.buildType}');
+      print('Obfuscated: ${buildConfig.obfuscate}');
+      print('Shrink Resources: ${buildConfig.shrinkResources}');
     }
   }
+  
+  /// Example 5: Validation and error handling
+  static Future<void> validationExample() async {
+    final service = EnvironmentConfigService();
+    
+    try {
+      await service.initialize('production');
+      
+      // Validate the current configuration
+      final isValid = await service.validateCurrentConfig();
+      if (isValid) {
+        print('Configuration is valid');
+      } else {
+        print('Configuration validation failed');
+        // Handle invalid configuration
+      }
+      
+    } catch (e) {
+      print('Failed to initialize configuration: $e');
+      // Handle initialization error
+      // Service will fall back to default configuration
+    }
+  }
+  
+  /// Example 6: Using configuration for HTTP client setup
+  static Future<void> httpClientSetup() async {
+    final service = EnvironmentConfigService();
+    await service.initialize();
+    
+    // Use configuration for HTTP client
+    final baseUrl = service.apiBaseUrl;
+    final timeout = Duration(milliseconds: service.timeout);
+    
+    print('Setting up HTTP client with:');
+    print('Base URL: $baseUrl');
+    print('Timeout: ${timeout.inSeconds}s');
+    
+    // Example: Configure Dio client
+    // final dio = Dio(BaseOptions(
+    //   baseUrl: baseUrl,
+    //   connectTimeout: timeout,
+    //   receiveTimeout: timeout,
+    // ));
+  }
+  
+  /// Example 7: Using configuration for WebSocket connection
+  static Future<void> websocketSetup() async {
+    final service = EnvironmentConfigService();
+    await service.initialize();
+    
+    final websocketUrl = service.websocketUrl;
+    if (websocketUrl != null) {
+      print('Connecting to WebSocket: $websocketUrl');
+      // Example: Setup WebSocket connection
+      // final channel = WebSocketChannel.connect(Uri.parse(websocketUrl));
+    } else {
+      print('WebSocket URL not configured');
+    }
+  }
+  
+  /// Example 8: Configuration debugging
+  static Future<void> debugConfiguration() async {
+    final service = EnvironmentConfigService();
+    await service.initialize();
+    
+    // Get configuration as JSON for debugging
+    final configJson = service.toJson();
+    print('Current configuration:');
+    print(configJson);
+    
+    // Print service information
+    print('Service info: ${service.toString()}');
+    
+    // Check initialization status
+    print('Is initialized: ${service.isInitialized}');
+    print('Current environment: ${service.currentEnvironment}');
+  }
+  
+  /// Example 9: Reloading configuration
+  static Future<void> reloadExample() async {
+    final service = EnvironmentConfigService();
+    await service.initialize('development');
+    
+    print('Initial environment: ${service.environmentName}');
+    
+    // Reload with different environment
+    await service.reload('production');
+    
+    print('After reload: ${service.environmentName}');
+  }
+  
+  /// Example 10: Using with custom loader (for testing)
+  static Future<void> customLoaderExample() async {
+    final service = EnvironmentConfigService();
+    final customLoader = YamlEnvironmentConfigLoader();
+    
+    // Initialize with custom loader
+    await service.initializeWithLoader(customLoader, 'development');
+    
+    print('Initialized with custom loader');
+    print('Environment: ${service.environmentName}');
+  }
+}
+
+/// Example widget that uses environment configuration
+class EnvironmentInfoWidget extends StatelessWidget {
+  const EnvironmentInfoWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(title: Text('Environment Config Example')),
-        body: Center(child: CircularProgressIndicator()),
+    final service = EnvironmentConfigService();
+    
+    if (!service.isInitialized) {
+      return const Center(
+        child: Text('Environment not initialized'),
       );
     }
-
-    if (_error != null) {
-      return Scaffold(
-        appBar: AppBar(title: Text('Environment Config Example')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error, color: Colors.red, size: 48),
-              SizedBox(height: 16),
-              Text('Error: $_error'),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                    _error = null;
-                  });
-                  _initializeConfig();
-                },
-                child: Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Environment Config Example'),
-        backgroundColor: _configService.isProduction ? Colors.red : Colors.blue,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
+    
+    return Card(
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildConfigItem('Environment', _configService.environmentDisplayName),
-            _buildConfigItem('App Name', _configService.appName),
-            _buildConfigItem('Bundle ID', _configService.bundleId),
-            _buildConfigItem('API Base URL', _configService.apiBaseUrl),
-            _buildConfigItem('WebSocket URL', _configService.websocketUrl ?? 'Not configured'),
-            _buildConfigItem('Timeout', '${_configService.timeout}ms'),
-            _buildConfigItem('Debug Mode', _configService.isDebugMode.toString()),
-            _buildConfigItem('Production Mode', _configService.isProduction.toString()),
-            
-            SizedBox(height: 24),
             Text(
-              'Configuration JSON:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Environment Information',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
-            SizedBox(height: 8),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    _formatJson(_configService.toJson()),
-                    style: TextStyle(fontFamily: 'monospace', fontSize: 12),
-                  ),
-                ),
-              ),
-            ),
-            
-            SizedBox(height: 16),
-            Row(
+            const SizedBox(height: 16),
+            _buildInfoRow('Environment', service.environmentName),
+            _buildInfoRow('Display Name', service.environmentDisplayName),
+            _buildInfoRow('App Name', service.appName),
+            _buildInfoRow('Bundle ID', service.bundleId),
+            _buildInfoRow('API URL', service.apiBaseUrl),
+            if (service.websocketUrl != null)
+              _buildInfoRow('WebSocket URL', service.websocketUrl!),
+            _buildInfoRow('Version', service.versionName ?? 'N/A'),
+            _buildInfoRow('Build Code', service.versionCode?.toString() ?? 'N/A'),
+            _buildInfoRow('Timeout', '${service.timeout}ms'),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
               children: [
-                ElevatedButton(
-                  onPressed: () => _switchEnvironment('development'),
-                  child: Text('Development'),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => _switchEnvironment('staging'),
-                  child: Text('Staging'),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => _switchEnvironment('production'),
-                  child: Text('Production'),
-                ),
+                if (service.isDebugMode)
+                  const Chip(
+                    label: Text('DEBUG'),
+                    backgroundColor: Colors.orange,
+                  ),
+                if (service.isStaging)
+                  const Chip(
+                    label: Text('STAGING'),
+                    backgroundColor: Colors.blue,
+                  ),
+                if (service.isProduction)
+                  const Chip(
+                    label: Text('PRODUCTION'),
+                    backgroundColor: Colors.green,
+                  ),
               ],
             ),
           ],
@@ -133,10 +272,10 @@ class _EnvironmentConfigExampleState extends State<EnvironmentConfigExample> {
       ),
     );
   }
-
-  Widget _buildConfigItem(String label, String value) {
+  
+  Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -144,7 +283,7 @@ class _EnvironmentConfigExampleState extends State<EnvironmentConfigExample> {
             width: 120,
             child: Text(
               '$label:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
@@ -153,59 +292,5 @@ class _EnvironmentConfigExampleState extends State<EnvironmentConfigExample> {
         ],
       ),
     );
-  }
-
-  Future<void> _switchEnvironment(String environment) async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      await _configService.reload(environment);
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  String _formatJson(Map<String, dynamic> json) {
-    // Simple JSON formatting for display
-    final buffer = StringBuffer();
-    _formatJsonRecursive(json, buffer, 0);
-    return buffer.toString();
-  }
-
-  void _formatJsonRecursive(dynamic obj, StringBuffer buffer, int indent) {
-    final indentStr = '  ' * indent;
-    
-    if (obj is Map) {
-      buffer.writeln('{');
-      final entries = obj.entries.toList();
-      for (int i = 0; i < entries.length; i++) {
-        final entry = entries[i];
-        buffer.write('$indentStr  "${entry.key}": ');
-        _formatJsonRecursive(entry.value, buffer, indent + 1);
-        if (i < entries.length - 1) buffer.write(',');
-        buffer.writeln();
-      }
-      buffer.write('$indentStr}');
-    } else if (obj is List) {
-      buffer.write('[');
-      for (int i = 0; i < obj.length; i++) {
-        _formatJsonRecursive(obj[i], buffer, indent);
-        if (i < obj.length - 1) buffer.write(', ');
-      }
-      buffer.write(']');
-    } else if (obj is String) {
-      buffer.write('"$obj"');
-    } else {
-      buffer.write(obj.toString());
-    }
   }
 }
