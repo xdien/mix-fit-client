@@ -1,6 +1,13 @@
+// Legacy AppConfig - kept for backward compatibility
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Export new environment configuration system
+export 'models/environment_config.dart';
+export 'loaders/environment_config_loader.dart';
+export 'services/environment_config_service.dart';
+export 'validation/config_validator.dart';
 
 class AppConfig {
   static final AppConfig instance = AppConfig._internal();
