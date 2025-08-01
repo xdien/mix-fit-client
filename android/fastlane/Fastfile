@@ -1,0 +1,229 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+require_relative 'config_loader'
+
+default_platform(:android)
+
+platform :android do
+  desc "Build and deploy Android app with environment configuration"
+  lane :build do |options|
+    environment = options[:env] || options[:environment] || "development"
+    build_type = options[:build_type] || options[:type]
+    upload = options[:upload] || false
+    
+    UI.header("🚀 Building #{environment} environment")
+    
+    begin
+      # Load and validate environment configuration
+      config = ConfigLoader.load_environment_config(environment)
+      
+      # Setup environment variables for Flutter
+      ConfigLoader.setup_flutter_environment(config)
+      
+      # Build the Flutter app
+      build_flutter_app(config, build_type)
+      
+      # Create build info
+      build_info = ConfigLoader.create_build_info(config, build_type)
+      
+      # Copy and rename APK
+      organize_build_artifacts(config, build_type)
+      
+      # Upload if requested
+      if upload
+        upload_app(config)
+      end
+      
+      # Send notifications
+      send_build_notifications(config, build_info, true)
+      
+      UI.success("✅ Build completed successfully for #{environment} environment")
+      
+    rescue => e
+      UI.error("❌ Build failed: #{e.message}")
+      send_build_notifications(config, nil, false, e.message) if config
+      raise e
+    end
+  end
+  
+  desc "Build development version"
+  lane :dev do |options|
+    build(env: "development", build_type: "debug", upload: false)
+  end
+  
+  desc "Build staging version"
+  lane :staging do |options|
+    upload = options[:upload] || false
+    build(env: "staging", build_type: "release", upload: upload)
+  end
+  
+  desc "Build production version"
+  lane :prod do |options|
+    upload = options[:upload] || false
+    build(env: "production", build_type: "release", upload: upload)
+  end
+  
+  desc "Run tests"
+  lane :test do
+    UI.header("🧪 Running tests")
+    
+    # Run Flutter tests
+    Dir.chdir("../..") do
+      sh("flutter test")
+    end
+    
+    # Run Android tests
+    gradle(task: "test")
+    
+    UI.success("✅ All tests passed")
+  end
+  
+  desc "Clean build artifacts"
+  lane :clean do
+    UI.header("🧹 Cleaning build artifacts")
+    
+    # Clean Flutter build
+    Dir.chdir("../..") do
+      sh("flutter clean")
+    end
+    
+    # Clean Android build
+    gradle(task: "clean")
+    
+    UI.success("✅ Build artifacts cleaned")
+  end
+  
+  desc "Validate environment configuration"
+  lane :validate_config do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔍 Validating #{environment} configuration")
+    
+    config = ConfigLoader.load_environment_config(environment)
+    UI.success("✅ Configuration is valid for #{environment} environment")
+  end
+  
+  # Private lanes
+  
+  private_lane :build_flutter_app do |config, build_type|
+    UI.message("🔨 Building Flutter app...")
+    
+    # Change to Flutter project root
+    Dir.chdir("../..") do
+      # Get dependencies
+      sh("flutter pub get")
+      
+      # Generate code if needed
+      if File.exist?("pubspec.yaml") && File.read("pubspec.yaml").include?("build_runner")
+        sh("flutter packages pub run build_runner build --delete-conflicting-outputs")
+      end
+      
+      # Build the app
+      build_command = ConfigLoader.get_build_command(config, build_type)
+      UI.message("Executing: #{build_command}")
+      sh(build_command)
+    end
+    
+    UI.success("✅ Flutter app built successfully")
+  end
+  
+  private_lane :organize_build_artifacts do |config, build_type|
+    UI.message("📦 Organizing build artifacts...")
+    
+    environment = config['environment']['name']
+    output_filename = ConfigLoader.get_output_filename(config, build_type)
+    
+    # Create environment-specific build directory
+    build_dir = File.join(Dir.pwd, '..', '..', 'build', 'android', environment)
+    FileUtils.mkdir_p(build_dir)
+    
+    # Find the built APK
+    apk_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'flutter-apk', 'app-release.apk')
+    if build_type == 'debug'
+      apk_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'flutter-apk', 'app-debug.apk')
+    end
+    
+    if File.exist?(apk_path)
+      # Copy APK with environment-specific name
+      target_path = File.join(build_dir, output_filename)
+      FileUtils.cp(apk_path, target_path)
+      UI.success("📱 APK copied to #{target_path}")
+    else
+      UI.error("❌ APK not found at #{apk_path}")
+    end
+    
+    # Also check for AAB files
+    aab_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'bundle', 'release', 'app-release.aab')
+    if File.exist?(aab_path)
+      aab_filename = output_filename.gsub('.apk', '.aab')
+      target_aab_path = File.join(build_dir, aab_filename)
+      FileUtils.cp(aab_path, target_aab_path)
+      UI.success("📦 AAB copied to #{target_aab_path}")
+    end
+  end
+  
+  private_lane :upload_app do |config|
+    UI.message("📤 Uploading app...")
+    
+    distribution_config = config['distribution']
+    if distribution_config && distribution_config['platform'] == 'google_play'
+      # This would require proper Google Play Console setup
+      UI.message("🚀 Would upload to Google Play (#{distribution_config['track']} track)")
+      # upload_to_play_store(track: distribution_config['track'])
+    else
+      UI.message("📋 Upload skipped - no distribution platform configured")
+    end
+  end
+  
+  private_lane :send_build_notifications do |config, build_info, success, error_message = nil|
+    return unless config && config['notifications']
+    
+    notifications = config['notifications']
+    environment = config['environment']['name']
+    
+    if success
+      message = "✅ Build completed successfully for #{environment} environment"
+      if build_info
+        message += "\n📱 App: #{build_info[:app_name]}"
+        message += "\n🔢 Version: #{build_info[:version_name]} (#{build_info[:version_code]})"
+        message += "\n🏗️ Build Type: #{build_info[:build_type]}"
+        message += "\n⏰ Build Time: #{build_info[:build_time]}"
+      end
+    else
+      message = "❌ Build failed for #{environment} environment"
+      message += "\n💥 Error: #{error_message}" if error_message
+    end
+    
+    # Send Slack notification if configured
+    if notifications['slack_webhook'] && ENV[notifications['slack_webhook']]
+      begin
+        slack(
+          message: message,
+          webhook_url: ENV[notifications['slack_webhook']],
+          success: success
+        )
+        UI.success("📢 Slack notification sent")
+      rescue => e
+        UI.error("Failed to send Slack notification: #{e.message}")
+      end
+    end
+    
+    # Email notifications would be implemented here
+    if notifications['email_recipients']
+      UI.message("📧 Email notifications configured for: #{notifications['email_recipients'].join(', ')}")
+    end
+  end
+end

@@ -322,3 +322,7 @@ shared/app_config/config/environments/development.yaml
 shared/app_config/config/environments/staging.yaml
 shared/app_config/config/environments/production.yaml
 config/environments/development.yaml
+android/.env.development
+android/.env.production
+android/.env.staging
+android/fastlane/report.xml
