@@ -119,6 +119,126 @@ Generate debug keystore
 
 Audit signing access
 
+### android increment_build
+
+```sh
+[bundle exec] fastlane android increment_build
+```
+
+Increment build number
+
+### android update_version
+
+```sh
+[bundle exec] fastlane android update_version
+```
+
+Update version name
+
+### android increment_patch
+
+```sh
+[bundle exec] fastlane android increment_patch
+```
+
+Increment patch version
+
+### android increment_minor
+
+```sh
+[bundle exec] fastlane android increment_minor
+```
+
+Increment minor version
+
+### android increment_major
+
+```sh
+[bundle exec] fastlane android increment_major
+```
+
+Increment major version
+
+### android create_tag
+
+```sh
+[bundle exec] fastlane android create_tag
+```
+
+Create Git tag for current version
+
+### android show_version
+
+```sh
+[bundle exec] fastlane android show_version
+```
+
+Show current version information
+
+### android encrypt_credentials
+
+```sh
+[bundle exec] fastlane android encrypt_credentials
+```
+
+Encrypt credentials file
+
+### android decrypt_credentials
+
+```sh
+[bundle exec] fastlane android decrypt_credentials
+```
+
+Decrypt credentials file
+
+### android validate_keystore
+
+```sh
+[bundle exec] fastlane android validate_keystore
+```
+
+Validate keystore integrity
+
+### android security_report
+
+```sh
+[bundle exec] fastlane android security_report
+```
+
+Generate security report
+
+### android comprehensive_cert_validation
+
+```sh
+[bundle exec] fastlane android comprehensive_cert_validation
+```
+
+Comprehensive certificate validation
+
+### android setup_ci_credentials
+
+```sh
+[bundle exec] fastlane android setup_ci_credentials
+```
+
+Setup CI/CD credentials
+
+### android security_audit
+
+```sh
+[bundle exec] fastlane android security_audit
+```
+
+Security audit for signing process
+
+### android build_with_version
+
+```sh
+[bundle exec] fastlane android build_with_version
+```
+
+Build with version increment and tag creation
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

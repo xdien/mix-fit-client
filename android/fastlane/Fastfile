@@ -17,6 +17,7 @@ require_relative 'config_loader'
 require_relative 'signing_manager'
 require_relative 'certificate_validator'
 require_relative 'credential_manager'
+require_relative 'version_manager'
 
 default_platform(:android)
 
@@ -249,6 +250,13 @@ platform :android do
         sh("flutter packages pub run build_runner build --delete-conflicting-outputs")
       end
       
+      # Increment build number for release builds
+      if build_type == 'release'
+        UI.message("🔄 Incrementing build number for release build...")
+        version_manager = VersionManager.new(config['environment']['name'], config)
+        version_manager.increment_build_number
+      end
+      
       # Build the app
       build_command = ConfigLoader.get_build_command(config, build_type)
       UI.message("Executing: #{build_command}")
@@ -342,6 +350,258 @@ platform :android do
     # Email notifications would be implemented here
     if notifications['email_recipients']
       UI.message("📧 Email notifications configured for: #{notifications['email_recipients'].join(', ')}")
+    end
+  end
+  
+  # Version Management Lanes
+  
+  desc "Increment build number"
+  lane :increment_build do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.increment_build_number
+  end
+  
+  desc "Update version name"
+  lane :update_version do |options|
+    environment = options[:env] || options[:environment] || "development"
+    version = options[:version]
+    config = ConfigLoader.load_environment_config(environment)
+    
+    unless version
+      UI.user_error!("Version parameter is required. Use: fastlane update_version version:1.2.3")
+    end
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.update_version_name(version)
+  end
+  
+  desc "Increment patch version"
+  lane :increment_patch do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.increment_patch
+  end
+  
+  desc "Increment minor version"
+  lane :increment_minor do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.increment_minor
+  end
+  
+  desc "Increment major version"
+  lane :increment_major do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.increment_major
+  end
+  
+  desc "Create Git tag for current version"
+  lane :create_tag do |options|
+    environment = options[:env] || options[:environment] || "development"
+    tag_message = options[:message]
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.create_tag(tag_message)
+  end
+  
+  desc "Show current version information"
+  lane :show_version do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.show_current_version
+  end
+  
+  # Enhanced Security Lanes
+  
+  desc "Encrypt credentials file"
+  lane :encrypt_credentials do |options|
+    environment = options[:env] || "development"
+    credentials_file = options[:file] || File.join(Dir.pwd, '..', 'credentials.yaml')
+    output_file = options[:output] || File.join(Dir.pwd, '..', 'credentials.encrypted')
+    encryption_key = options[:key]
+    
+    unless encryption_key
+      UI.user_error!("Encryption key is required. Use: fastlane encrypt_credentials key:your-encryption-key")
+    end
+    
+    UI.header("🔐 Encrypting credentials for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    credential_manager.encrypt_credentials(credentials_file, output_file, encryption_key)
+    
+    UI.success("✅ Credentials encrypted successfully")
+  end
+  
+  desc "Decrypt credentials file"
+  lane :decrypt_credentials do |options|
+    environment = options[:env] || "development"
+    encrypted_file = options[:file] || File.join(Dir.pwd, '..', 'credentials.encrypted')
+    encryption_key = options[:key]
+    
+    unless encryption_key
+      UI.user_error!("Encryption key is required. Use: fastlane decrypt_credentials key:your-encryption-key")
+    end
+    
+    UI.header("🔓 Decrypting credentials for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    credential_manager.decrypt_credentials(encrypted_file, encryption_key)
+    
+    UI.success("✅ Credentials decrypted and loaded")
+  end
+  
+  desc "Validate keystore integrity"
+  lane :validate_keystore do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔍 Validating keystore integrity for #{environment}")
+    
+    config = ConfigLoader.load_environment_config(environment)
+    credential_manager = CredentialManager.new(environment)
+    
+    # Load credentials
+    credential_manager.validate_environment_variables(config['signing'])
+    
+    # Get keystore details
+    signing_manager = SigningManager.new(config)
+    keystore_path = signing_manager.get_keystore_path
+    store_password = ENV[config['signing']['store_password_env']]
+    
+    # Validate integrity
+    credential_manager.validate_keystore_integrity(keystore_path, store_password)
+    
+    UI.success("✅ Keystore integrity validation completed")
+  end
+  
+  desc "Generate security report"
+  lane :security_report do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🛡️  Generating security report for #{environment}")
+    
+    credential_manager = CredentialManager.new(environment)
+    report = credential_manager.generate_security_report
+    
+    UI.success("✅ Security report generated")
+  end
+  
+  desc "Comprehensive certificate validation"
+  lane :comprehensive_cert_validation do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔍 Comprehensive certificate validation for #{environment}")
+    
+    config = ConfigLoader.load_environment_config(environment)
+    
+    # Setup credentials
+    credential_manager = CredentialManager.new(environment)
+    credential_manager.validate_environment_variables(config['signing'])
+    
+    # Get certificate details
+    signing_manager = SigningManager.new(config)
+    keystore_path = signing_manager.get_keystore_path
+    store_password = ENV[config['signing']['store_password_env']]
+    key_alias = config['signing']['key_alias']
+    
+    # Run comprehensive validation
+    validator = CertificateValidator.new(keystore_path, store_password, key_alias)
+    cert_info = validator.comprehensive_validation
+    
+    UI.success("✅ Comprehensive certificate validation completed")
+  end
+  
+  desc "Setup CI/CD credentials"
+  lane :setup_ci_credentials do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔧 Setting up CI/CD credentials for #{environment}")
+    
+    CredentialManager.setup_ci_credentials(environment)
+    
+    UI.success("✅ CI/CD credentials setup completed")
+  end
+  
+  desc "Security audit for signing process"
+  lane :security_audit do |options|
+    environment = options[:env] || "development"
+    
+    UI.header("🔍 Security audit for #{environment} signing process")
+    
+    begin
+      # Load configuration
+      config = ConfigLoader.load_environment_config(environment)
+      
+      # Initialize managers
+      credential_manager = CredentialManager.new(environment)
+      signing_manager = SigningManager.new(config)
+      
+      # Run security checks
+      UI.message("1. Validating environment variables...")
+      credential_manager.validate_environment_variables(config['signing'])
+      
+      UI.message("2. Checking credential exposure...")
+      credential_manager.check_credential_exposure
+      
+      UI.message("3. Validating keystore integrity...")
+      keystore_path = signing_manager.get_keystore_path
+      store_password = ENV[config['signing']['store_password_env']]
+      credential_manager.validate_keystore_integrity(keystore_path, store_password)
+      
+      UI.message("4. Validating certificate...")
+      key_alias = config['signing']['key_alias']
+      validator = CertificateValidator.new(keystore_path, store_password, key_alias)
+      validator.comprehensive_validation
+      
+      UI.message("5. Generating security report...")
+      credential_manager.generate_security_report
+      
+      UI.message("6. Auditing credential access...")
+      credential_manager.audit_credential_access
+      
+      UI.success("✅ Security audit completed successfully")
+      
+    rescue => e
+      UI.error("❌ Security audit failed: #{e.message}")
+      raise e
+    end
+  end
+  
+  desc "Build with version increment and tag creation"
+  lane :build_with_version do |options|
+    environment = options[:env] || options[:environment] || "development"
+    build_type = options[:build_type] || "release"
+    create_tag = options[:create_tag] || false
+    tag_message = options[:tag_message]
+    
+    UI.header("🚀 Building with version management for #{environment}")
+    
+    begin
+      # Build the app (this will increment build number for release builds)
+      build(env: environment, build_type: build_type, upload: false)
+      
+      # Create tag if requested
+      if create_tag
+        create_tag(message: tag_message)
+      end
+      
+      UI.success("✅ Build with version management completed")
+      
+    rescue => e
+      UI.error("❌ Build with version management failed: #{e.message}")
+      raise e
     end
   end
 end

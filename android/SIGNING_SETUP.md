@@ -274,12 +274,168 @@ android/
 └── build.gradle          # Updated with signing config
 ```
 
+## Enhanced Security Features
+
+### Encrypted Credential Storage
+
+For additional security, you can encrypt your credentials file:
+
+```bash
+# Encrypt credentials
+fastlane encrypt_credentials env:production key:your-encryption-key file:credentials.yaml
+
+# Decrypt and load credentials
+fastlane decrypt_credentials env:production key:your-encryption-key file:credentials.encrypted
+```
+
+### Comprehensive Security Audit
+
+Run a complete security audit of your signing setup:
+
+```bash
+# Full security audit
+fastlane security_audit env:production
+
+# Generate security report
+fastlane security_report env:production
+
+# Validate keystore integrity
+fastlane validate_keystore env:production
+
+# Comprehensive certificate validation
+fastlane comprehensive_cert_validation env:production
+```
+
+### Automated Setup
+
+Use the comprehensive setup script to configure signing for all environments:
+
+```bash
+cd android
+./setup_signing_comprehensive.sh
+```
+
+This script will:
+- Create secure directory structure
+- Generate debug keystore
+- Guide you through production keystore setup
+- Validate configurations
+- Run security checks
+- Set proper file permissions
+
+## Security Best Practices
+
+### Keystore Security
+- **Use strong passwords**: Minimum 12 characters with mixed case, numbers, and symbols
+- **Secure file permissions**: 600 for keystores, 700 for keystores directory
+- **Regular backups**: Store keystores in secure, encrypted backup locations
+- **Access control**: Limit who has access to production keystores
+- **Certificate rotation**: Plan for certificate renewal before expiry
+
+### Credential Management
+- **Environment variables**: Use secure environment variables in CI/CD
+- **Encrypted storage**: Use encrypted credential files for local development
+- **No version control**: Never commit keystores or credentials
+- **Audit trails**: Monitor all signing operations
+- **Principle of least privilege**: Grant minimal necessary access
+
+### CI/CD Security
+- **Secure secrets**: Use your CI/CD platform's secure secret storage
+- **Environment isolation**: Separate credentials for each environment
+- **Build isolation**: Use clean build environments
+- **Artifact signing**: Verify all build artifacts are properly signed
+- **Access logging**: Log all build and deployment activities
+
+## Advanced Commands
+
+### Certificate Management
+```bash
+# Validate all environment certificates
+fastlane validate_all_certificates
+
+# Generate comprehensive certificate report
+fastlane comprehensive_cert_validation env:production
+
+# Check certificate chain and usage
+fastlane validate_certificates env:production
+```
+
+### Credential Operations
+```bash
+# Setup CI/CD credentials
+fastlane setup_ci_credentials env:production
+
+# Load credentials from custom file
+fastlane load_credentials env:production file:path/to/credentials.yaml
+
+# Generate credentials template
+fastlane setup_credentials env:production
+```
+
+### Security Operations
+```bash
+# Run complete security audit
+fastlane security_audit env:production
+
+# Generate security report
+fastlane security_report env:production
+
+# Audit signing access
+fastlane audit_signing env:production
+```
+
+## Troubleshooting
+
+### Enhanced Diagnostics
+
+1. **Security Audit Issues**
+   ```bash
+   fastlane security_audit env:production
+   # Check build/security/ for detailed reports
+   ```
+
+2. **Certificate Problems**
+   ```bash
+   fastlane comprehensive_cert_validation env:production
+   # Check build/comprehensive-certificate-report.json
+   ```
+
+3. **Credential Issues**
+   ```bash
+   fastlane validate_keystore env:production
+   # Validates keystore integrity and access
+   ```
+
+### Common Security Issues
+
+1. **Insecure File Permissions**
+   - Run: `chmod 600 keystores/*.keystore`
+   - Run: `chmod 700 keystores/`
+
+2. **Weak Passwords**
+   - Use password generators for strong passwords
+   - Avoid common passwords like "android", "password"
+   - Use different passwords for store and key
+
+3. **Certificate Expiry**
+   - Monitor certificate expiry dates
+   - Plan renewal 90 days before expiry
+   - Test with new certificates in staging first
+
+4. **Credential Exposure**
+   - Check environment variables don't contain real passwords
+   - Use encrypted credential storage
+   - Audit credential access regularly
+
 ## Support
 
 For issues with code signing setup:
 
 1. Check this documentation
-2. Run `fastlane validate_certificates env:your-environment`
-3. Check audit logs in `build/audit/`
-4. Verify environment configuration files
-5. Test keystore access manually with keytool
+2. Run `fastlane security_audit env:your-environment`
+3. Run `fastlane validate_certificates env:your-environment`
+4. Check security reports in `build/security/`
+5. Check audit logs in `build/audit/`
+6. Verify environment configuration files
+7. Test keystore access manually with keytool
+8. Use the setup script: `./setup_signing_comprehensive.sh`

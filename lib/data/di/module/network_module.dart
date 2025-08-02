@@ -26,10 +26,10 @@ class NetworkModule {
 
     // dio:---------------------------------------------------------------------
     getIt.registerSingleton<DioConfigs>(
-      const DioConfigs(
+      DioConfigs(
         baseUrl: Endpoints.baseUrl,
         connectionTimeout: Endpoints.connectionTimeout,
-        receiveTimeout:Endpoints.receiveTimeout,
+        receiveTimeout: Endpoints.receiveTimeout,
       ),
     );
     getIt.registerSingleton<DioClient>(
@@ -44,7 +44,7 @@ class NetworkModule {
     );
     getIt.registerSingleton<SocketService>(
       SocketService(
-         url: Endpoints.baseUrl,
+         url: Endpoints.websocketUrl ?? Endpoints.baseUrl,
          tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
       ),
     );

@@ -184,22 +184,41 @@ class CredentialManager
       # Read credentials
       credentials_content = File.read(credentials_file)
       
-      # Encrypt using AES
-      cipher = OpenSSL::Cipher.new('AES-256-CBC')
+      # Validate credentials format before encryption
+      begin
+        YAML.load(credentials_content)
+      rescue => e
+        FastlaneCore::UI.user_error!("Invalid YAML format in credentials file: #{e.message}")
+      end
+      
+      # Encrypt using AES-256-GCM for authenticated encryption
+      cipher = OpenSSL::Cipher.new('AES-256-GCM')
       cipher.encrypt
       cipher.key = Digest::SHA256.digest(encryption_key)
       iv = cipher.random_iv
       
       encrypted_data = cipher.update(credentials_content) + cipher.final
+      auth_tag = cipher.auth_tag
       
-      # Combine IV and encrypted data
-      combined_data = iv + encrypted_data
+      # Combine IV, auth tag, and encrypted data
+      combined_data = iv + auth_tag + encrypted_data
       encoded_data = Base64.strict_encode64(combined_data)
       
-      File.write(output_file, encoded_data)
+      # Add metadata header
+      metadata = {
+        version: '1.0',
+        algorithm: 'AES-256-GCM',
+        created_at: Time.now.iso8601,
+        created_by: ENV['USER'] || ENV['USERNAME'] || 'unknown'
+      }
+      
+      output_content = "# Encrypted credentials - #{metadata.to_json}\n#{encoded_data}"
+      
+      File.write(output_file, output_content)
       File.chmod(0600, output_file)
       
       FastlaneCore::UI.success("✅ Credentials encrypted and saved to #{output_file}")
+      FastlaneCore::UI.message("🔒 Using AES-256-GCM authenticated encryption")
       
     rescue => e
       FastlaneCore::UI.user_error!("Failed to encrypt credentials: #{e.message}")
@@ -214,35 +233,81 @@ class CredentialManager
     end
     
     begin
-      # Read and decode encrypted data
-      encoded_data = File.read(encrypted_file)
+      # Read encrypted file
+      file_content = File.read(encrypted_file)
+      
+      # Extract metadata and encrypted data
+      if file_content.start_with?('# Encrypted credentials')
+        lines = file_content.split("\n")
+        metadata_line = lines[0]
+        encoded_data = lines[1..-1].join("\n")
+        
+        # Parse metadata
+        metadata_json = metadata_line.match(/# Encrypted credentials - (.+)$/)[1]
+        metadata = JSON.parse(metadata_json)
+        
+        FastlaneCore::UI.message("📋 Decrypting file created at #{metadata['created_at']} by #{metadata['created_by']}")
+        
+        # Check algorithm compatibility
+        unless metadata['algorithm'] == 'AES-256-GCM'
+          FastlaneCore::UI.user_error!("Unsupported encryption algorithm: #{metadata['algorithm']}")
+        end
+      else
+        # Legacy format without metadata
+        encoded_data = file_content
+        FastlaneCore::UI.important("⚠️  Using legacy decryption format")
+      end
+      
       combined_data = Base64.strict_decode64(encoded_data)
       
-      # Extract IV and encrypted data
-      iv = combined_data[0, 16]  # AES block size is 16 bytes
-      encrypted_data = combined_data[16..-1]
+      if metadata && metadata['algorithm'] == 'AES-256-GCM'
+        # Extract IV, auth tag, and encrypted data for GCM
+        iv = combined_data[0, 12]  # GCM uses 12-byte IV
+        auth_tag = combined_data[12, 16]  # 16-byte auth tag
+        encrypted_data = combined_data[28..-1]
+        
+        # Decrypt with authentication
+        decipher = OpenSSL::Cipher.new('AES-256-GCM')
+        decipher.decrypt
+        decipher.key = Digest::SHA256.digest(encryption_key)
+        decipher.iv = iv
+        decipher.auth_tag = auth_tag
+        
+        decrypted_content = decipher.update(encrypted_data) + decipher.final
+      else
+        # Legacy CBC decryption
+        iv = combined_data[0, 16]  # AES block size is 16 bytes
+        encrypted_data = combined_data[16..-1]
+        
+        decipher = OpenSSL::Cipher.new('AES-256-CBC')
+        decipher.decrypt
+        decipher.key = Digest::SHA256.digest(encryption_key)
+        decipher.iv = iv
+        
+        decrypted_content = decipher.update(encrypted_data) + decipher.final
+      end
       
-      # Decrypt
-      decipher = OpenSSL::Cipher.new('AES-256-CBC')
-      decipher.decrypt
-      decipher.key = Digest::SHA256.digest(encryption_key)
-      decipher.iv = iv
-      
-      decrypted_content = decipher.update(encrypted_data) + decipher.final
-      
-      # Parse and set environment variables
+      # Parse and validate credentials
       credentials = YAML.load(decrypted_content)
+      
+      unless credentials.is_a?(Hash)
+        FastlaneCore::UI.user_error!("Invalid credentials format after decryption")
+      end
       
       if credentials[@environment]
         credentials[@environment].each do |key, value|
           ENV[key] = value
         end
         
-        FastlaneCore::UI.success("✅ Credentials decrypted and loaded")
+        FastlaneCore::UI.success("✅ Credentials decrypted and loaded for #{@environment}")
       else
         FastlaneCore::UI.user_error!("No credentials found for environment: #{@environment}")
       end
       
+    rescue OpenSSL::Cipher::CipherError => e
+      FastlaneCore::UI.user_error!("Decryption failed - invalid encryption key or corrupted file: #{e.message}")
+    rescue JSON::ParserError => e
+      FastlaneCore::UI.user_error!("Failed to parse metadata: #{e.message}")
     rescue => e
       FastlaneCore::UI.user_error!("Failed to decrypt credentials: #{e.message}")
     end
@@ -366,5 +431,157 @@ class CredentialManager
     unless missing_vars.empty?
       FastlaneCore::UI.user_error!("Missing required CI environment variables: #{missing_vars.join(', ')}")
     end
+  end
+  
+  def validate_keystore_integrity(keystore_path, store_password)
+    FastlaneCore::UI.message("🔍 Validating keystore integrity...")
+    
+    begin
+      # Check file exists and is readable
+      unless File.exist?(keystore_path)
+        FastlaneCore::UI.user_error!("Keystore file not found: #{keystore_path}")
+      end
+      
+      unless File.readable?(keystore_path)
+        FastlaneCore::UI.user_error!("Keystore file is not readable: #{keystore_path}")
+      end
+      
+      # Check file size (empty keystore would be suspicious)
+      file_size = File.size(keystore_path)
+      if file_size < 1000  # Keystores are typically several KB
+        FastlaneCore::UI.important("⚠️  Keystore file seems unusually small (#{file_size} bytes)")
+      end
+      
+      # Verify keystore can be opened
+      keytool_command = [
+        'keytool',
+        '-list',
+        '-keystore', keystore_path,
+        '-storepass', store_password,
+        '-v'
+      ].join(' ')
+      
+      result = `#{keytool_command} 2>&1`
+      
+      if $?.exitstatus != 0
+        FastlaneCore::UI.user_error!("Failed to open keystore: #{result}")
+      end
+      
+      # Check for multiple aliases (could indicate shared keystore)
+      alias_count = result.scan(/Alias name:/).length
+      if alias_count > 1
+        FastlaneCore::UI.message("📋 Keystore contains #{alias_count} aliases")
+      end
+      
+      FastlaneCore::UI.success("✅ Keystore integrity validation passed")
+      
+    rescue => e
+      FastlaneCore::UI.user_error!("Keystore integrity validation failed: #{e.message}")
+    end
+  end
+  
+  def check_credential_exposure
+    FastlaneCore::UI.message("🔍 Checking for credential exposure...")
+    
+    exposed_vars = []
+    
+    # Check environment variables that might contain sensitive data
+    ENV.each do |key, value|
+      next unless value && !value.empty?
+      
+      # Skip checking the environment variable name references
+      next if key.end_with?('_ENV')
+      
+      if key.include?('PASSWORD') || key.include?('SECRET') || key.include?('KEY')
+        # Check if value looks like a real password (not placeholder)
+        if value.length > 6 && 
+           !value.include?('your_') && 
+           !value.include?('placeholder') &&
+           !value.include?('example')
+          
+          # Check if it's not the default debug password
+          unless value == 'android' && @environment == 'development'
+            exposed_vars << key
+          end
+        end
+      end
+    end
+    
+    if exposed_vars.empty?
+      FastlaneCore::UI.success("✅ No credential exposure detected")
+    else
+      FastlaneCore::UI.important("⚠️  Found #{exposed_vars.length} environment variables with potential credentials")
+      FastlaneCore::UI.important("    Variables: #{exposed_vars.join(', ')}")
+      FastlaneCore::UI.important("    Ensure these are properly secured in CI/CD")
+    end
+    
+    exposed_vars
+  end
+  
+  def generate_security_report
+    FastlaneCore::UI.header("🛡️  Generating security report")
+    
+    report = {
+      timestamp: Time.now.iso8601,
+      environment: @environment,
+      security_checks: {}
+    }
+    
+    # Check credential exposure
+    exposed_vars = check_credential_exposure
+    report[:security_checks][:credential_exposure] = {
+      status: exposed_vars.empty? ? 'pass' : 'warning',
+      exposed_variables: exposed_vars
+    }
+    
+    # Check file permissions
+    keystores_dir = File.join(Dir.pwd, '..', 'keystores')
+    if Dir.exist?(keystores_dir)
+      keystore_files = Dir.glob(File.join(keystores_dir, '*.keystore'))
+      insecure_files = []
+      
+      keystore_files.each do |keystore|
+        stat = File.stat(keystore)
+        # Check if group or others have any permissions
+        if (stat.mode & 0077) != 0
+          insecure_files << keystore
+        end
+      end
+      
+      report[:security_checks][:file_permissions] = {
+        status: insecure_files.empty? ? 'pass' : 'fail',
+        insecure_files: insecure_files
+      }
+    end
+    
+    # Check CI environment security
+    ci_env = detect_ci_environment
+    report[:security_checks][:ci_environment] = {
+      detected: ci_env,
+      is_secure: ci_env != 'local'
+    }
+    
+    # Save report
+    report_dir = File.join(Dir.pwd, '..', '..', 'build', 'security')
+    FileUtils.mkdir_p(report_dir)
+    
+    report_file = File.join(report_dir, "security-report-#{Time.now.strftime('%Y%m%d-%H%M%S')}.json")
+    File.write(report_file, JSON.pretty_generate(report))
+    
+    FastlaneCore::UI.success("🛡️  Security report saved to #{report_file}")
+    
+    # Display summary
+    report[:security_checks].each do |check, result|
+      case result[:status]
+      when 'pass'
+        FastlaneCore::UI.success("✅ #{check.to_s.gsub('_', ' ').capitalize}: PASS")
+      when 'warning'
+        FastlaneCore::UI.important("⚠️  #{check.to_s.gsub('_', ' ').capitalize}: WARNING")
+      when 'fail'
+        FastlaneCore::UI.error("❌ #{check.to_s.gsub('_', ' ').capitalize}: FAIL")
+      end
+    end
+    
+    report
   end
 end
