@@ -322,9 +322,16 @@ class ApiClientIntegrationExample {
     
     // Example of using with WebSocket service
     /*
-    final socketService = SocketService(
-      url: websocketUrl ?? apiBaseUrl,
-      tokenProvider: () async => await getToken(),
+    final webSocketManager = WebSocketManager.instance;
+    webSocketManager.initialize(
+      config: WebSocketConfig(
+        url: websocketUrl ?? apiBaseUrl,
+        reconnectInterval: Duration(seconds: 5),
+        maxReconnectAttempts: 5,
+        heartbeatInterval: Duration(seconds: 30),
+        autoReconnect: true,
+      ),
+      getAuthToken: () async => await getToken(),
     );
     */
   }

@@ -13,6 +13,10 @@ import 'network_connectivity_detector.dart';
 
 /// WebSocket service implementation with JWT authentication support
 class WebSocketService implements IWebSocketService {
+  // Static counter to track instances
+  static int _instanceCount = 0;
+  final int _instanceId = ++_instanceCount;
+  
   IO.Socket? _socket;
   final WebSocketConfig _config;
   final StreamController<WebSocketConnectionState> _connectionStateController =
@@ -48,6 +52,7 @@ class WebSocketService implements IWebSocketService {
        _errorHandler = errorHandler ?? WebSocketErrorHandler(),
        _reconnectionStrategy = reconnectionStrategy ?? ReconnectionStrategy(),
        _networkDetector = networkDetector ?? NetworkConnectivityDetector() {
+    developer.log('Creating WebSocket service instance #$_instanceId', name: 'WebSocketService');
     _setupNetworkMonitoring();
   }
 
@@ -66,11 +71,16 @@ class WebSocketService implements IWebSocketService {
 
   @override
   Future<void> connect() async {
+    // Prevent multiple simultaneous connection attempts
     if (_currentState == WebSocketConnectionState.connected ||
-        _currentState == WebSocketConnectionState.connecting) {
-      developer.log('WebSocket already connected or connecting', name: 'WebSocketService');
+        _currentState == WebSocketConnectionState.connecting ||
+        _currentState == WebSocketConnectionState.reconnecting) {
+      developer.log('WebSocket already connected, connecting, or reconnecting. Current state: $_currentState', name: 'WebSocketService');
       return;
     }
+    
+    // Cancel any existing reconnect timer to prevent multiple connections
+    _cancelReconnectTimer();
 
     _updateConnectionState(WebSocketConnectionState.connecting);
     _cancelConnectionTimeout();
@@ -172,17 +182,28 @@ class WebSocketService implements IWebSocketService {
   Future<void> disconnect() async {
     developer.log('Disconnecting WebSocket', name: 'WebSocketService');
     
+    // Cancel all timers first
     _cancelReconnectTimer();
     _cancelConnectionTimeout();
     _stopHeartbeat();
     
+    // Update state to prevent new connections
+    _updateConnectionState(WebSocketConnectionState.disconnected);
+    
+    // Clean up socket
     if (_socket != null) {
-      _socket!.disconnect();
-      _socket!.dispose();
-      _socket = null;
+      try {
+        _socket!.disconnect();
+        _socket!.dispose();
+      } catch (e) {
+        developer.log('Error during socket cleanup: $e', name: 'WebSocketService');
+      } finally {
+        _socket = null;
+      }
     }
     
-    _updateConnectionState(WebSocketConnectionState.disconnected);
+    // Reset reconnect attempts
+    _reconnectAttempts = 0;
   }
 
   @override
@@ -222,10 +243,15 @@ class WebSocketService implements IWebSocketService {
     switch (state) {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        await disconnect();
+        // Only disconnect if we're actually connected
+        if (_currentState == WebSocketConnectionState.connected) {
+          await disconnect();
+        }
         break;
       case AppLifecycleState.resumed:
-        if (_subscriptions.isNotEmpty) {
+        // Only reconnect if we have subscriptions and we're not already connected
+        if (_subscriptions.isNotEmpty && 
+            _currentState == WebSocketConnectionState.disconnected) {
           await connect();
         }
         break;
@@ -238,14 +264,14 @@ class WebSocketService implements IWebSocketService {
     if (_socket == null) return;
     
     _socket!.onConnect((_) {
-      developer.log('Socket connected', name: 'WebSocketService');
+      developer.log('Socket connected - Instance #$_instanceId', name: 'WebSocketService');
       _updateConnectionState(WebSocketConnectionState.connected);
       _reconnectAttempts = 0;
       _lastError = null;
     });
     
     _socket!.onDisconnect((reason) {
-      developer.log('Socket disconnected: $reason', name: 'WebSocketService');
+      developer.log('Socket disconnected: $reason - Instance #$_instanceId', name: 'WebSocketService');
       _stopHeartbeat();
       
       final disconnectionError = _errorHandler.createUnexpectedDisconnectionError(reason?.toString());
@@ -375,11 +401,15 @@ class WebSocketService implements IWebSocketService {
   }
 
   void _scheduleReconnectWithError(WebSocketError? error) {
+    // Prevent multiple reconnect timers
+    _cancelReconnectTimer();
+    
     if (_reconnectAttempts >= _config.maxReconnectAttempts) {
       developer.log('Max reconnect attempts reached', name: 'WebSocketService');
       final maxAttemptsError = _errorHandler.createMaxAttemptsError(_config.maxReconnectAttempts);
       _lastError = maxAttemptsError;
       _errorHandler.emitError(maxAttemptsError);
+      _updateConnectionState(WebSocketConnectionState.error);
       return;
     }
     
@@ -397,6 +427,7 @@ class WebSocketService implements IWebSocketService {
     );
     
     _reconnectTimer = Timer(delay, () {
+      // Only reconnect if we're still in reconnecting state
       if (_currentState == WebSocketConnectionState.reconnecting) {
         connect();
       }
@@ -500,7 +531,7 @@ class WebSocketService implements IWebSocketService {
 
   @override
   void dispose() {
-    developer.log('Disposing WebSocket service', name: 'WebSocketService');
+    developer.log('Disposing WebSocket service - Instance #$_instanceId', name: 'WebSocketService');
     
     _cancelReconnectTimer();
     _cancelConnectionTimeout();
@@ -509,11 +540,18 @@ class WebSocketService implements IWebSocketService {
     _errorHandler.dispose();
     
     if (_socket != null) {
-      _socket!.disconnect();
-      _socket!.dispose();
-      _socket = null;
+      try {
+        _socket!.disconnect();
+        _socket!.dispose();
+      } catch (e) {
+        developer.log('Error during socket disposal: $e', name: 'WebSocketService');
+      } finally {
+        _socket = null;
+      }
     }
     
-    _connectionStateController.close();
+    if (!_connectionStateController.isClosed) {
+      _connectionStateController.close();
+    }
   }
 }

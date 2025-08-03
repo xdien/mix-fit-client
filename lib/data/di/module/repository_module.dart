@@ -3,7 +3,7 @@ import 'package:api_client/api.dart';
 import 'package:auth/domain/repository/auth/auth_repository.dart';
 import 'package:core/domain/repository/websocket_repository.dart';
 import 'package:core/network/websocket/websocket_repository_impl.dart';
-import 'package:core/network/websocket/websocket_service.dart';
+import 'package:data/websocket/websocket.dart';
 import 'package:data/network/constants/endpoints.dart';
 import 'package:data/sharedpref/shared_preference_helper.dart';
 import 'package:setting/data/repository/setting/setting_repository_impl.dart';
@@ -25,9 +25,9 @@ class RepositoryModule {
     getIt.registerSingleton<AuthRepository>(UserRepositoryImpl(
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
-    // Register WebSocket repository
+    // Register WebSocket repository using WebSocketManager
     getIt.registerSingleton<WebSocketRepository>(
-      WebSocketRepositoryImpl(getIt<SocketService>()),
+      WebSocketRepositoryImpl(WebSocketManager.instance.webSocketService!),
     );
   }
 }

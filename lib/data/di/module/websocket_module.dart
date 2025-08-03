@@ -1,4 +1,5 @@
 import 'package:data/websocket/websocket.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 import '../../../di/service_locator.dart';
 
 class WebSocketModule {
@@ -14,9 +15,15 @@ class WebSocketModule {
       ),
     );
 
-    // WebSocket service
-    getIt.registerSingleton<IWebSocketService>(
-      WebSocketService(getIt<WebSocketConfig>()),
+    // WebSocket manager (singleton)
+    getIt.registerSingleton<WebSocketManager>(
+      WebSocketManager.instance,
+    );
+    
+    // Initialize WebSocketManager with authentication callbacks
+    WebSocketManager.instance.initialize(
+      config: getIt<WebSocketConfig>(),
+      getAuthToken: () async => await getIt<SharedPreferenceHelper>().authToken,
     );
   }
 }

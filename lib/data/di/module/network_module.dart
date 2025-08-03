@@ -1,9 +1,7 @@
-import 'package:core/managers/connection_manager.dart';
 import 'package:core/network/dio/configs/dio_configs.dart';
 import 'package:core/network/dio/dio_client.dart';
 import 'package:core/network/dio/interceptors/auth_interceptor.dart';
 import 'package:core/network/dio/interceptors/logging_interceptor.dart';
-import 'package:core/network/websocket/websocket_service.dart';
 import 'package:data/network/constants/endpoints.dart';
 import 'package:data/network/interceptors/error_interceptor.dart';
 import 'package:data/sharedpref/shared_preference_helper.dart';
@@ -42,18 +40,6 @@ class NetworkModule {
           ],
         ),
     );
-    getIt.registerSingleton<SocketService>(
-      SocketService(
-         url: Endpoints.websocketUrl ?? Endpoints.baseUrl,
-         tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
-      ),
-    );
-    // Register ConnectionManager as singleton
-    getIt.registerSingleton<ConnectionManager>(
-      ConnectionManager(
-        socketService: getIt<SocketService>(),
-        sharedPreferenceHelper: getIt<SharedPreferenceHelper>(),
-      ),
-    );
+    // WebSocket is now managed by WebSocketManager in websocket_module.dart
   }
 }

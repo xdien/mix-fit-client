@@ -29,6 +29,13 @@ class WebSocketManager {
   }) {
     developer.log('Initializing WebSocket manager', name: 'WebSocketManager');
     
+    // Dispose existing service if any
+    if (_webSocketService != null) {
+      developer.log('Disposing existing WebSocket service', name: 'WebSocketManager');
+      _webSocketService!.dispose();
+      _webSocketService = null;
+    }
+    
     _getAuthToken = getAuthToken;
     _refreshToken = refreshToken;
     
@@ -40,7 +47,9 @@ class WebSocketManager {
     
     // Forward connection state changes
     _webSocketService!.connectionState.listen((state) {
-      _connectionStateController.add(state);
+      if (!_connectionStateController.isClosed) {
+        _connectionStateController.add(state);
+      }
     });
   }
 

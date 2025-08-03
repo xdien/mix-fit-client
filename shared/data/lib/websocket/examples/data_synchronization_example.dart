@@ -5,6 +5,7 @@ import '../services/websocket_service.dart';
 import '../database/sync_database.dart';
 import '../models/websocket_message.dart';
 import '../models/sync_operation.dart';
+import '../models/websocket_config.dart';
 
 /// Example demonstrating how to use the WebSocket data synchronization system
 class DataSynchronizationExample {
@@ -24,12 +25,11 @@ class DataSynchronizationExample {
     
     // Initialize WebSocket service (you would provide real auth callbacks)
     _webSocketService = WebSocketService(
-      // Your WebSocket config here
-      WebSocketConfig(
+      const WebSocketConfig(
         url: 'ws://localhost:3000',
-        reconnectInterval: const Duration(seconds: 5),
+        reconnectInterval: Duration(seconds: 5),
         maxReconnectAttempts: 5,
-        heartbeatInterval: const Duration(seconds: 30),
+        heartbeatInterval: Duration(seconds: 30),
       ),
       () async => 'your-jwt-token', // Auth token callback
       refreshToken: () async => 'refreshed-jwt-token', // Token refresh callback
