@@ -327,3 +327,4 @@ android/.env.production
 android/.env.staging
 android/fastlane/report.xml
 shared/data/pubspec.lock
+shared/data/build/*
