@@ -20,21 +20,21 @@ class LegacyConfigAdapter {
     }
     
     // Fallback to environment variable
-    return const String.fromEnvironment('API_ENDPOINT', defaultValue: 'http://localhost:3000');
+    return const String.fromEnvironment('API_ENDPOINT', defaultValue: 'http://localhost:3000/api');
   }
 
   /// Get WebSocket URL with fallback
   String get websocketUrl {
     try {
       if (_configService.isInitialized) {
-        return _configService.websocketUrl ?? 'ws://localhost:3001';
+        return _configService.websocketUrl ?? 'ws://localhost:3000';
       }
     } catch (e) {
       debugPrint('Failed to get websocket URL from environment config: $e');
     }
     
     // Fallback to environment variable
-    return const String.fromEnvironment('WEBSOCKET_URL', defaultValue: 'ws://localhost:3001');
+    return const String.fromEnvironment('WEBSOCKET_URL', defaultValue: 'ws://localhost:3000');
   }
 
   /// Get API key (placeholder for future implementation)
@@ -67,7 +67,7 @@ class LegacyConfigAdapter {
       debugPrint('Failed to get app name from environment config: $e');
     }
     
-    return const String.fromEnvironment('APP_NAME', defaultValue: 'CMS Business');
+    return const String.fromEnvironment('APP_NAME', defaultValue: 'Mix Fit');
   }
 
   /// Get bundle ID
@@ -80,7 +80,7 @@ class LegacyConfigAdapter {
       debugPrint('Failed to get bundle ID from environment config: $e');
     }
     
-    return const String.fromEnvironment('BUNDLE_ID', defaultValue: 'com.ankhanh.cms');
+    return const String.fromEnvironment('BUNDLE_ID', defaultValue: 'com.ankhanh.mixfit.dev');
   }
 
   /// Get environment name

@@ -22,7 +22,4 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/config/development_config.json
-    - assets/config/production_config.json
     - assets/config/schema/environment_config_schema.json
-    - ../../config/environments/

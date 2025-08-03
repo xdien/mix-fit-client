@@ -13,7 +13,7 @@ abstract class EnvironmentConfigLoader {
 class YamlEnvironmentConfigLoader implements EnvironmentConfigLoader {
   final String configPath;
 
-  YamlEnvironmentConfigLoader({this.configPath = 'assets/../../config/environments'});
+  YamlEnvironmentConfigLoader({this.configPath = 'config/environments'});
 
   @override
   Future<EnvironmentConfig> loadConfig(String environment) async {
@@ -54,18 +54,38 @@ class YamlEnvironmentConfigLoader implements EnvironmentConfigLoader {
         rethrow;
       }
       
-      // If config file doesn't exist, return default config with warning
+      // If config file doesn't exist, try to create it from example
       if (e.toString().contains('Unable to load asset')) {
         print('Warning: Configuration file not found for environment: $environment');
-        print('Using default configuration');
-        return getDefaultConfig();
+        print('Expected path: $configPath/$environment.yaml');
+        
+        // Try to load from example file
+        try {
+          final exampleFile = '$configPath/$environment.yaml.example';
+          final exampleString = await rootBundle.loadString(exampleFile);
+          
+          print('Creating $environment.yaml from example file...');
+          
+          // Parse example YAML
+          final yamlDoc = loadYaml(exampleString);
+          final configMap = _yamlToMap(yamlDoc);
+          
+          // Create EnvironmentConfig from example data
+          final config = EnvironmentConfig.fromJson(configMap);
+          
+          print('Successfully created configuration from example for: $environment');
+          return config;
+        } catch (exampleError) {
+          print('Failed to load example file: $exampleError');
+          print('Using default configuration');
+          return getDefaultConfig();
+        }
       }
       
-      throw ConfigValidationError(
-        'loading',
-        environment,
-        'Failed to load configuration for environment $environment: $e',
-      );
+      // For other errors, log and return default config
+      print('Error loading configuration for environment $environment: $e');
+      print('Using default configuration');
+      return getDefaultConfig();
     }
   }
 

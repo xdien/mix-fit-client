@@ -22,7 +22,7 @@ class ConfigValidator {
 
     try {
       final schemaString = await rootBundle.loadString(
-        'assets/config/schema/environment_config_schema.json',
+        'config/schema/environment_config_schema.json',
       );
       final schemaJson = json.decode(schemaString);
       _schema = JsonSchema.create(schemaJson);

@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'adapters/legacy_config_adapter.dart';
 
 // Export new environment configuration system
@@ -48,28 +49,14 @@ class AppConfig {
     }
 
     try {
-      // Try to load from legacy JSON config first
-      final configFile = 'assets/config/${env}_config.json';
-      final configString = await rootBundle.loadString(configFile);
-      
-      // Parse JSON
-      _config = json.decode(configString) as Map<String, dynamic>;
-
-      _endpoint = _config['endpoint'] as String;
-      _apiKey = _config['apiKey'] as String;
-      _debugMode = _config['debugMode'] as bool;
-
-      debugPrint('Loaded legacy config for $env environment');
-      debugPrint('API Endpoint: $_endpoint');
-    } catch (e) {
-      // Fallback to environment configuration adapter
-      debugPrint('Failed to load legacy config, using environment configuration: $e');
+      // Use environment configuration adapter directly instead of legacy JSON
+      debugPrint('Loading configuration using environment configuration system for $env environment');
       
       _endpoint = _adapter.endpoint;
       _apiKey = _adapter.apiKey;
       _debugMode = _adapter.debugMode;
       
-      // Create a mock config map for backward compatibility
+      // Create config map from environment configuration
       _config = {
         'endpoint': _endpoint,
         'apiKey': _apiKey,
@@ -78,10 +65,30 @@ class AppConfig {
         'appName': _adapter.appName,
         'bundleId': _adapter.bundleId,
         'timeout': _adapter.timeout,
+        'websocketUrl': _adapter.websocketUrl,
       };
 
       debugPrint('Using environment config adapter for $env environment');
       debugPrint('API Endpoint: $_endpoint');
+    } catch (e) {
+      debugPrint('Failed to load configuration: $e');
+      debugPrint('Using fallback configuration');
+      
+      // Fallback configuration
+      _config = {
+        'endpoint': 'http://localhost:3000',
+        'apiKey': '',
+        'debugMode': kDebugMode,
+        'environment': env,
+        'appName': 'Mix Fit',
+        'bundleId': 'com.xdien.mixfit',
+        'timeout': 30000,
+        'websocketUrl': 'ws://localhost:3000',
+      };
+      
+      _endpoint = _config['endpoint'];
+      _apiKey = _config['apiKey'];
+      _debugMode = _config['debugMode'];
     }
     
     _isLoaded = true;

@@ -35,6 +35,17 @@ Future<void> _initializeEnvironmentConfig() async {
     if (!isValid) {
       debugPrint('Warning: Configuration validation failed');
     }
+    
+    // Test config loading
+    final configService = EnvironmentConfigService();
+    if (configService.isInitialized) {
+      debugPrint('✅ Environment config loaded successfully!');
+      debugPrint('API Base URL: ${configService.apiBaseUrl}');
+      debugPrint('App Name: ${configService.appName}');
+      debugPrint('Environment: ${configService.environmentName}');
+    } else {
+      debugPrint('❌ Environment config not initialized');
+    }
   } catch (e) {
     debugPrint('Failed to initialize configuration system: $e');
     debugPrint('Application will continue with fallback configuration');
