@@ -118,6 +118,7 @@ flutter:
     - assets/icons/
     - assets/lang/
     - config/environments/
+    - config/schema/
 
   fonts:
     - family: ProductSans

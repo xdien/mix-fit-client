@@ -1,0 +1,60 @@
+# Flutter Flavorizr Configuration
+# This file defines different app flavors for different environments
+
+flavors:
+  development:
+    app:
+      name: "Mix Fit Dev"
+    android:
+      applicationId: "com.xdien.mixfit.dev"
+    ios:
+      bundleId: "com.xdien.mixfit.dev"
+    assets:
+      - "config/environments/development.yaml"
+    android:
+      signingConfig:
+        storeFile: null
+        storePassword: null
+        keyAlias: null
+        keyPassword: null
+    ios:
+      provisioningProfileSpecifier: null
+      teamId: null
+
+  staging:
+    app:
+      name: "Mix Fit Staging"
+    android:
+      applicationId: "com.xdien.mixfit.staging"
+    ios:
+      bundleId: "com.xdien.mixfit.staging"
+    assets:
+      - "config/environments/staging.yaml"
+    android:
+      signingConfig:
+        storeFile: null
+        storePassword: null
+        keyAlias: null
+        keyPassword: null
+    ios:
+      provisioningProfileSpecifier: null
+      teamId: null
+
+  production:
+    app:
+      name: "Mix Fit"
+    android:
+      applicationId: "com.xdien.mixfit"
+    ios:
+      bundleId: "com.xdien.mixfit"
+    assets:
+      - "config/environments/production.yaml"
+    android:
+      signingConfig:
+        storeFile: null
+        storePassword: null
+        keyAlias: null
+        keyPassword: null
+    ios:
+      provisioningProfileSpecifier: null
+      teamId: null 

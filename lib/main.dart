@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:app_config/app_config.dart';
 
 import 'utils/routes/module_manager.dart';
+import 'utils/environment_detector.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,17 @@ Future<void> main() async {
 /// Initialize environment configuration
 Future<void> _initializeEnvironmentConfig() async {
   try {
+    // Auto-detect environment
+    final environment = EnvironmentDetector.getCurrentEnvironment();
+    final envInfo = EnvironmentDetector.getEnvironmentInfo();
+    
+    debugPrint('🔍 Environment Detection:');
+    debugPrint('  Environment: ${envInfo['environment']}');
+    debugPrint('  Display Name: ${envInfo['displayName']}');
+    debugPrint('  Is Debug: ${envInfo['isDebug']}');
+    debugPrint('  Dart Define: ${envInfo['dartDefine']}');
+    debugPrint('  Flavor: ${envInfo['flavor']}');
+    
     final integrationHelper = ConfigIntegrationHelper();
     await integrationHelper.initialize();
     
@@ -36,8 +48,10 @@ Future<void> _initializeEnvironmentConfig() async {
       debugPrint('Warning: Configuration validation failed');
     }
     
-    // Test config loading
+    // Auto-initialize config service with detected environment
     final configService = EnvironmentConfigService();
+    await configService.initialize(environment);
+    
     if (configService.isInitialized) {
       debugPrint('✅ Environment config loaded successfully!');
       debugPrint('API Base URL: ${configService.apiBaseUrl}');

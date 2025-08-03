@@ -13,8 +13,9 @@ if [ ! -f "pubspec.yaml" ]; then
     exit 1
 fi
 
-# Read config values from YAML
-CONFIG_FILE="config/environments/development.yaml"
+# Get environment from argument, environment variable, or default to development
+ENVIRONMENT=${1:-${ENVIRONMENT:-development}}
+CONFIG_FILE="config/environments/$ENVIRONMENT.yaml"
 
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "❌ Error: Config file not found: $CONFIG_FILE"
