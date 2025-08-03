@@ -1,0 +1,43 @@
+environment:
+  name: production
+  display_name: Production
+
+app:
+  name: AnKhanh CMS
+  bundle_id: com.ankhanh.cms
+  version_name: "1.0.0"
+  version_code: 1
+
+network:
+  api_base_url: https://api.ankhanh.com
+  websocket_url: wss://api.ankhanh.com
+  timeout: 30000
+
+websocket:
+  enabled: true
+  auto_connect: true
+  reconnect_interval: 15000
+  max_reconnect_attempts: 10
+  heartbeat_interval: 60000
+  connection_timeout: 20000
+  message_queue_size: 5000
+  channels:
+    - inventory
+    - customers
+    - orders
+    - notifications
+  features:
+    real_time_updates: true
+    offline_support: true
+    background_sync: false
+    push_notifications: true
+
+build:
+  flavor: production
+  build_type: release
+  obfuscate: true
+  shrink_resources: true
+
+notifications:
+  slack_webhook: null
+  email_recipients: []

@@ -135,7 +135,7 @@ class BuildConfigFactory {
         name: environmentName,
         displayName: displayName,
       ),
-      app: AppConfig(
+      app: AppEnvironmentConfig(
         name: appName,
         bundleId: bundleId,
         versionName: versionName,

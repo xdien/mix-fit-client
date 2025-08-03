@@ -1,0 +1,43 @@
+environment:
+  name: staging
+  display_name: Staging
+
+app:
+  name: AnKhanh CMS
+  bundle_id: com.ankhanh.cms.staging
+  version_name: "1.0.0"
+  version_code: 1
+
+network:
+  api_base_url: https://staging-api.ankhanh.com
+  websocket_url: wss://staging-api.ankhanh.com
+  timeout: 30000
+
+websocket:
+  enabled: true
+  auto_connect: true
+  reconnect_interval: 10000
+  max_reconnect_attempts: 8
+  heartbeat_interval: 60000
+  connection_timeout: 15000
+  message_queue_size: 2000
+  channels:
+    - inventory
+    - customers
+    - orders
+    - notifications
+  features:
+    real_time_updates: true
+    offline_support: true
+    background_sync: true
+    push_notifications: true
+
+build:
+  flavor: staging
+  build_type: release
+  obfuscate: true
+  shrink_resources: true
+
+notifications:
+  slack_webhook: null
+  email_recipients: []

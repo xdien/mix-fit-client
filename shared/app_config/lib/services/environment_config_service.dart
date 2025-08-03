@@ -54,6 +54,45 @@ class EnvironmentConfigService {
   /// Get WebSocket URL
   String? get websocketUrl => config.network.websocketUrl;
 
+  /// Get WebSocket configuration
+  WebSocketEnvironmentConfig? get websocketConfig => config.websocket;
+
+  /// Check if WebSocket is enabled
+  bool get isWebSocketEnabled => config.websocket?.enabled ?? false;
+
+  /// Get WebSocket reconnect interval
+  int get websocketReconnectInterval => config.websocket?.reconnectInterval ?? 5000;
+
+  /// Get WebSocket max reconnect attempts
+  int get websocketMaxReconnectAttempts => config.websocket?.maxReconnectAttempts ?? 5;
+
+  /// Get WebSocket heartbeat interval
+  int get websocketHeartbeatInterval => config.websocket?.heartbeatInterval ?? 30000;
+
+  /// Get WebSocket connection timeout
+  int get websocketConnectionTimeout => config.websocket?.connectionTimeout ?? 10000;
+
+  /// Get WebSocket message queue size
+  int get websocketMessageQueueSize => config.websocket?.messageQueueSize ?? 1000;
+
+  /// Get WebSocket channels
+  List<String> get websocketChannels => config.websocket?.channels ?? [];
+
+  /// Get WebSocket feature flags
+  WebSocketFeatureFlags? get websocketFeatures => config.websocket?.features;
+
+  /// Check if real-time updates are enabled
+  bool get isRealTimeUpdatesEnabled => config.websocket?.features?.realTimeUpdates ?? true;
+
+  /// Check if offline support is enabled
+  bool get isOfflineSupportEnabled => config.websocket?.features?.offlineSupport ?? true;
+
+  /// Check if background sync is enabled
+  bool get isBackgroundSyncEnabled => config.websocket?.features?.backgroundSync ?? true;
+
+  /// Check if push notifications are enabled
+  bool get isPushNotificationsEnabled => config.websocket?.features?.pushNotifications ?? true;
+
   /// Get app name
   String get appName => config.app.name;
 
@@ -120,32 +159,151 @@ class EnvironmentConfigService {
     const bundleId = String.fromEnvironment('BUNDLE_ID');
     const timeoutStr = String.fromEnvironment('NETWORK_TIMEOUT');
     
-    // Parse timeout if provided
+    // WebSocket environment variable overrides
+    const websocketEnabledStr = String.fromEnvironment('WEBSOCKET_ENABLED');
+    const websocketAutoConnectStr = String.fromEnvironment('WEBSOCKET_AUTO_CONNECT');
+    const websocketReconnectIntervalStr = String.fromEnvironment('WEBSOCKET_RECONNECT_INTERVAL');
+    const websocketMaxReconnectAttemptsStr = String.fromEnvironment('WEBSOCKET_MAX_RECONNECT_ATTEMPTS');
+    const websocketHeartbeatIntervalStr = String.fromEnvironment('WEBSOCKET_HEARTBEAT_INTERVAL');
+    const websocketConnectionTimeoutStr = String.fromEnvironment('WEBSOCKET_CONNECTION_TIMEOUT');
+    const websocketMessageQueueSizeStr = String.fromEnvironment('WEBSOCKET_MESSAGE_QUEUE_SIZE');
+    
+    // Feature flag overrides
+    const realTimeUpdatesStr = String.fromEnvironment('WEBSOCKET_REAL_TIME_UPDATES');
+    const offlineSupportStr = String.fromEnvironment('WEBSOCKET_OFFLINE_SUPPORT');
+    const backgroundSyncStr = String.fromEnvironment('WEBSOCKET_BACKGROUND_SYNC');
+    const pushNotificationsStr = String.fromEnvironment('WEBSOCKET_PUSH_NOTIFICATIONS');
+    
+    // Parse values if provided
     int? timeout;
     if (timeoutStr.isNotEmpty) {
       timeout = int.tryParse(timeoutStr);
     }
+    
+    bool? websocketEnabled;
+    if (websocketEnabledStr.isNotEmpty) {
+      websocketEnabled = websocketEnabledStr.toLowerCase() == 'true';
+    }
+    
+    bool? websocketAutoConnect;
+    if (websocketAutoConnectStr.isNotEmpty) {
+      websocketAutoConnect = websocketAutoConnectStr.toLowerCase() == 'true';
+    }
+    
+    int? websocketReconnectInterval;
+    if (websocketReconnectIntervalStr.isNotEmpty) {
+      websocketReconnectInterval = int.tryParse(websocketReconnectIntervalStr);
+    }
+    
+    int? websocketMaxReconnectAttempts;
+    if (websocketMaxReconnectAttemptsStr.isNotEmpty) {
+      websocketMaxReconnectAttempts = int.tryParse(websocketMaxReconnectAttemptsStr);
+    }
+    
+    int? websocketHeartbeatInterval;
+    if (websocketHeartbeatIntervalStr.isNotEmpty) {
+      websocketHeartbeatInterval = int.tryParse(websocketHeartbeatIntervalStr);
+    }
+    
+    int? websocketConnectionTimeout;
+    if (websocketConnectionTimeoutStr.isNotEmpty) {
+      websocketConnectionTimeout = int.tryParse(websocketConnectionTimeoutStr);
+    }
+    
+    int? websocketMessageQueueSize;
+    if (websocketMessageQueueSizeStr.isNotEmpty) {
+      websocketMessageQueueSize = int.tryParse(websocketMessageQueueSizeStr);
+    }
+    
+    bool? realTimeUpdates;
+    if (realTimeUpdatesStr.isNotEmpty) {
+      realTimeUpdates = realTimeUpdatesStr.toLowerCase() == 'true';
+    }
+    
+    bool? offlineSupport;
+    if (offlineSupportStr.isNotEmpty) {
+      offlineSupport = offlineSupportStr.toLowerCase() == 'true';
+    }
+    
+    bool? backgroundSync;
+    if (backgroundSyncStr.isNotEmpty) {
+      backgroundSync = backgroundSyncStr.toLowerCase() == 'true';
+    }
+    
+    bool? pushNotifications;
+    if (pushNotificationsStr.isNotEmpty) {
+      pushNotifications = pushNotificationsStr.toLowerCase() == 'true';
+    }
 
-    // Apply overrides if environment variables are set
-    if (apiBaseUrl.isNotEmpty || 
+    // Check if any overrides are needed
+    final hasNetworkOverrides = apiBaseUrl.isNotEmpty || 
         websocketUrl.isNotEmpty || 
         appName.isNotEmpty || 
         bundleId.isNotEmpty ||
-        timeout != null) {
-      
+        timeout != null;
+        
+    final hasWebSocketOverrides = websocketEnabled != null ||
+        websocketAutoConnect != null ||
+        websocketReconnectInterval != null ||
+        websocketMaxReconnectAttempts != null ||
+        websocketHeartbeatInterval != null ||
+        websocketConnectionTimeout != null ||
+        websocketMessageQueueSize != null ||
+        realTimeUpdates != null ||
+        offlineSupport != null ||
+        backgroundSync != null ||
+        pushNotifications != null;
+
+    // Apply overrides if environment variables are set
+    if (hasNetworkOverrides || hasWebSocketOverrides) {
       debugPrint('Applying environment variable overrides...');
       
-      return config.copyWith(
-        app: config.app.copyWith(
-          name: appName.isNotEmpty ? appName : config.app.name,
-          bundleId: bundleId.isNotEmpty ? bundleId : config.app.bundleId,
-        ),
-        network: config.network.copyWith(
-          apiBaseUrl: apiBaseUrl.isNotEmpty ? apiBaseUrl : config.network.apiBaseUrl,
-          websocketUrl: websocketUrl.isNotEmpty ? websocketUrl : config.network.websocketUrl,
-          timeout: timeout ?? config.network.timeout,
-        ),
-      );
+      var updatedConfig = config;
+      
+      // Apply network overrides
+      if (hasNetworkOverrides) {
+        updatedConfig = updatedConfig.copyWith(
+          app: config.app.copyWith(
+            name: appName.isNotEmpty ? appName : config.app.name,
+            bundleId: bundleId.isNotEmpty ? bundleId : config.app.bundleId,
+          ),
+          network: config.network.copyWith(
+            apiBaseUrl: apiBaseUrl.isNotEmpty ? apiBaseUrl : config.network.apiBaseUrl,
+            websocketUrl: websocketUrl.isNotEmpty ? websocketUrl : config.network.websocketUrl,
+            timeout: timeout ?? config.network.timeout,
+          ),
+        );
+      }
+      
+      // Apply WebSocket overrides
+      if (hasWebSocketOverrides) {
+        final currentWebSocketConfig = config.websocket ?? const WebSocketEnvironmentConfig();
+        final currentFeatures = currentWebSocketConfig.features ?? const WebSocketFeatureFlags();
+        
+        final updatedFeatures = currentFeatures.copyWith(
+          realTimeUpdates: realTimeUpdates ?? currentFeatures.realTimeUpdates,
+          offlineSupport: offlineSupport ?? currentFeatures.offlineSupport,
+          backgroundSync: backgroundSync ?? currentFeatures.backgroundSync,
+          pushNotifications: pushNotifications ?? currentFeatures.pushNotifications,
+        );
+        
+        final updatedWebSocketConfig = currentWebSocketConfig.copyWith(
+          enabled: websocketEnabled ?? currentWebSocketConfig.enabled,
+          autoConnect: websocketAutoConnect ?? currentWebSocketConfig.autoConnect,
+          reconnectInterval: websocketReconnectInterval ?? currentWebSocketConfig.reconnectInterval,
+          maxReconnectAttempts: websocketMaxReconnectAttempts ?? currentWebSocketConfig.maxReconnectAttempts,
+          heartbeatInterval: websocketHeartbeatInterval ?? currentWebSocketConfig.heartbeatInterval,
+          connectionTimeout: websocketConnectionTimeout ?? currentWebSocketConfig.connectionTimeout,
+          messageQueueSize: websocketMessageQueueSize ?? currentWebSocketConfig.messageQueueSize,
+          features: updatedFeatures,
+        );
+        
+        updatedConfig = updatedConfig.copyWith(
+          websocket: updatedWebSocketConfig,
+        );
+      }
+      
+      return updatedConfig;
     }
 
     return config;

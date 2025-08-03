@@ -12,3 +12,7 @@ export 'network_connectivity_detector.dart';
 export 'app_lifecycle_manager.dart';
 export 'missed_update_synchronizer.dart';
 export 'lifecycle_aware_websocket_service.dart';
+export 'websocket_config_manager.dart';
+export 'websocket_feature_manager.dart';
+export 'websocket_preferences_service.dart';
+export 'websocket_notification_filter.dart';

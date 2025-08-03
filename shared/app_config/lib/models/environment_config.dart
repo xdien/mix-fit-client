@@ -8,8 +8,9 @@ class EnvironmentConfig with _$EnvironmentConfig {
   @JsonSerializable(explicitToJson: true)
   const factory EnvironmentConfig({
     required EnvironmentInfo environment,
-    required AppConfig app,
+    required AppEnvironmentConfig app,
     required NetworkConfig network,
+    WebSocketEnvironmentConfig? websocket,
     BuildConfig? build,
     SigningConfig? signing,
     DistributionConfig? distribution,
@@ -32,16 +33,16 @@ class EnvironmentInfo with _$EnvironmentInfo {
 }
 
 @freezed
-class AppConfig with _$AppConfig {
-  const factory AppConfig({
+class AppEnvironmentConfig with _$AppEnvironmentConfig {
+  const factory AppEnvironmentConfig({
     required String name,
     @JsonKey(name: 'bundle_id') required String bundleId,
     @JsonKey(name: 'version_name') String? versionName,
     @JsonKey(name: 'version_code') int? versionCode,
-  }) = _AppConfig;
+  }) = _AppEnvironmentConfig;
 
-  factory AppConfig.fromJson(Map<String, dynamic> json) =>
-      _$AppConfigFromJson(json);
+  factory AppEnvironmentConfig.fromJson(Map<String, dynamic> json) =>
+      _$AppEnvironmentConfigFromJson(json);
 }
 
 @freezed
@@ -102,4 +103,35 @@ class NotificationConfig with _$NotificationConfig {
 
   factory NotificationConfig.fromJson(Map<String, dynamic> json) =>
       _$NotificationConfigFromJson(json);
+}
+
+@freezed
+class WebSocketEnvironmentConfig with _$WebSocketEnvironmentConfig {
+  const factory WebSocketEnvironmentConfig({
+    @Default(true) bool enabled,
+    @JsonKey(name: 'auto_connect') @Default(true) bool autoConnect,
+    @JsonKey(name: 'reconnect_interval') @Default(5000) int reconnectInterval,
+    @JsonKey(name: 'max_reconnect_attempts') @Default(5) int maxReconnectAttempts,
+    @JsonKey(name: 'heartbeat_interval') @Default(30000) int heartbeatInterval,
+    @JsonKey(name: 'connection_timeout') @Default(10000) int connectionTimeout,
+    @JsonKey(name: 'message_queue_size') @Default(1000) int messageQueueSize,
+    @Default([]) List<String> channels,
+    WebSocketFeatureFlags? features,
+  }) = _WebSocketEnvironmentConfig;
+
+  factory WebSocketEnvironmentConfig.fromJson(Map<String, dynamic> json) =>
+      _$WebSocketEnvironmentConfigFromJson(json);
+}
+
+@freezed
+class WebSocketFeatureFlags with _$WebSocketFeatureFlags {
+  const factory WebSocketFeatureFlags({
+    @JsonKey(name: 'real_time_updates') @Default(true) bool realTimeUpdates,
+    @JsonKey(name: 'offline_support') @Default(true) bool offlineSupport,
+    @JsonKey(name: 'background_sync') @Default(true) bool backgroundSync,
+    @JsonKey(name: 'push_notifications') @Default(true) bool pushNotifications,
+  }) = _WebSocketFeatureFlags;
+
+  factory WebSocketFeatureFlags.fromJson(Map<String, dynamic> json) =>
+      _$WebSocketFeatureFlagsFromJson(json);
 }

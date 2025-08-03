@@ -92,7 +92,7 @@ class YamlEnvironmentConfigLoader implements EnvironmentConfigLoader {
         name: 'development',
         displayName: 'CMS Development (Default)',
       ),
-      app: AppConfig(
+      app: AppEnvironmentConfig(
         name: 'CMS Business',
         bundleId: 'com.placeholder.module.default',
         versionName: '1.0.0',
