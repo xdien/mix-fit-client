@@ -20,6 +20,7 @@ dependencies:
   drift_flutter: ^0.2.4
   path_provider: ^2.0.14
   path: ^1.8.3
+  uuid: ^4.5.1
   app_config:
     path: ../app_config
 

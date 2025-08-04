@@ -60,4 +60,7 @@ class SharedPreferenceHelper {
   }
 
   Stream<bool> get authStateChanges => _authStateController.stream;
+
+  // WebSocket preferences support
+  SharedPreferences get sharedPreferences => _sharedPreference;
 }

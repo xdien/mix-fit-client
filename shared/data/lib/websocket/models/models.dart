@@ -6,3 +6,6 @@ export 'websocket_subscription.dart';
 export 'websocket_message_type.dart';
 export 'websocket_preferences.dart';
 export 'sync_operation.dart';
+export 'queued_message.dart';
+export 'websocket_metrics.dart';
+export 'websocket_debug_event.dart';

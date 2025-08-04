@@ -3,10 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:data/sharedpref/shared_preference_helper.dart' as _i2;
+import 'package:data/sharedpref/shared_preference_helper.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:shared_preferences/shared_preferences.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -22,26 +23,37 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeSharedPreferences_0 extends _i1.SmartFake
+    implements _i2.SharedPreferences {
+  _FakeSharedPreferences_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [SharedPreferenceHelper].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSharedPreferenceHelper extends _i1.Mock
-    implements _i2.SharedPreferenceHelper {
+    implements _i3.SharedPreferenceHelper {
   MockSharedPreferenceHelper() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<String?> get authToken => (super.noSuchMethod(
+  _i4.Future<String?> get authToken => (super.noSuchMethod(
         Invocation.getter(#authToken),
-        returnValue: _i3.Future<String?>.value(),
-      ) as _i3.Future<String?>);
+        returnValue: _i4.Future<String?>.value(),
+      ) as _i4.Future<String?>);
 
   @override
-  _i3.Future<bool> get isLoggedIn => (super.noSuchMethod(
+  _i4.Future<bool> get isLoggedIn => (super.noSuchMethod(
         Invocation.getter(#isLoggedIn),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 
   @override
   bool get isDarkMode => (super.noSuchMethod(
@@ -50,56 +62,65 @@ class MockSharedPreferenceHelper extends _i1.Mock
       ) as bool);
 
   @override
-  _i3.Stream<bool> get authStateChanges => (super.noSuchMethod(
+  _i4.Stream<bool> get authStateChanges => (super.noSuchMethod(
         Invocation.getter(#authStateChanges),
-        returnValue: _i3.Stream<bool>.empty(),
-      ) as _i3.Stream<bool>);
+        returnValue: _i4.Stream<bool>.empty(),
+      ) as _i4.Stream<bool>);
 
   @override
-  _i3.Future<void> saveAuthToken(String? authToken) => (super.noSuchMethod(
+  _i2.SharedPreferences get sharedPreferences => (super.noSuchMethod(
+        Invocation.getter(#sharedPreferences),
+        returnValue: _FakeSharedPreferences_0(
+          this,
+          Invocation.getter(#sharedPreferences),
+        ),
+      ) as _i2.SharedPreferences);
+
+  @override
+  _i4.Future<void> saveAuthToken(String? authToken) => (super.noSuchMethod(
         Invocation.method(
           #saveAuthToken,
           [authToken],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<bool> removeAuthToken() => (super.noSuchMethod(
+  _i4.Future<bool> removeAuthToken() => (super.noSuchMethod(
         Invocation.method(
           #removeAuthToken,
           [],
         ),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 
   @override
-  _i3.Future<bool> saveIsLoggedIn(bool? value) => (super.noSuchMethod(
+  _i4.Future<bool> saveIsLoggedIn(bool? value) => (super.noSuchMethod(
         Invocation.method(
           #saveIsLoggedIn,
           [value],
         ),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 
   @override
-  _i3.Future<void> changeBrightnessToDark(bool? value) => (super.noSuchMethod(
+  _i4.Future<void> changeBrightnessToDark(bool? value) => (super.noSuchMethod(
         Invocation.method(
           #changeBrightnessToDark,
           [value],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<void> changeLanguage(String? language) => (super.noSuchMethod(
+  _i4.Future<void> changeLanguage(String? language) => (super.noSuchMethod(
         Invocation.method(
           #changeLanguage,
           [language],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }

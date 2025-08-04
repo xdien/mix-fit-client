@@ -2300,6 +2300,640 @@ class SyncOperationEntriesCompanion
   }
 }
 
+class $QueuedMessageEntriesTable extends QueuedMessageEntries
+    with TableInfo<$QueuedMessageEntriesTable, QueuedMessageEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QueuedMessageEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _messageIdMeta =
+      const VerificationMeta('messageId');
+  @override
+  late final GeneratedColumn<String> messageId = GeneratedColumn<String>(
+      'message_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _messageTypeMeta =
+      const VerificationMeta('messageType');
+  @override
+  late final GeneratedColumn<String> messageType = GeneratedColumn<String>(
+      'message_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _channelMeta =
+      const VerificationMeta('channel');
+  @override
+  late final GeneratedColumn<String> channel = GeneratedColumn<String>(
+      'channel', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _messageDataMeta =
+      const VerificationMeta('messageData');
+  @override
+  late final GeneratedColumn<String> messageData = GeneratedColumn<String>(
+      'message_data', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+      'status', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('pending'));
+  static const VerificationMeta _priorityMeta =
+      const VerificationMeta('priority');
+  @override
+  late final GeneratedColumn<String> priority = GeneratedColumn<String>(
+      'priority', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('normal'));
+  static const VerificationMeta _queuedAtMeta =
+      const VerificationMeta('queuedAt');
+  @override
+  late final GeneratedColumn<DateTime> queuedAt = GeneratedColumn<DateTime>(
+      'queued_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _processedAtMeta =
+      const VerificationMeta('processedAt');
+  @override
+  late final GeneratedColumn<DateTime> processedAt = GeneratedColumn<DateTime>(
+      'processed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _expiresAtMeta =
+      const VerificationMeta('expiresAt');
+  @override
+  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
+      'expires_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+      'error', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _retryCountMeta =
+      const VerificationMeta('retryCount');
+  @override
+  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
+      'retry_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _metadataMeta =
+      const VerificationMeta('metadata');
+  @override
+  late final GeneratedColumn<String> metadata = GeneratedColumn<String>(
+      'metadata', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        messageId,
+        messageType,
+        channel,
+        messageData,
+        status,
+        priority,
+        queuedAt,
+        processedAt,
+        expiresAt,
+        error,
+        retryCount,
+        metadata
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'queued_message_entries';
+  @override
+  VerificationContext validateIntegrity(Insertable<QueuedMessageEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('message_id')) {
+      context.handle(_messageIdMeta,
+          messageId.isAcceptableOrUnknown(data['message_id']!, _messageIdMeta));
+    } else if (isInserting) {
+      context.missing(_messageIdMeta);
+    }
+    if (data.containsKey('message_type')) {
+      context.handle(
+          _messageTypeMeta,
+          messageType.isAcceptableOrUnknown(
+              data['message_type']!, _messageTypeMeta));
+    } else if (isInserting) {
+      context.missing(_messageTypeMeta);
+    }
+    if (data.containsKey('channel')) {
+      context.handle(_channelMeta,
+          channel.isAcceptableOrUnknown(data['channel']!, _channelMeta));
+    } else if (isInserting) {
+      context.missing(_channelMeta);
+    }
+    if (data.containsKey('message_data')) {
+      context.handle(
+          _messageDataMeta,
+          messageData.isAcceptableOrUnknown(
+              data['message_data']!, _messageDataMeta));
+    } else if (isInserting) {
+      context.missing(_messageDataMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    }
+    if (data.containsKey('queued_at')) {
+      context.handle(_queuedAtMeta,
+          queuedAt.isAcceptableOrUnknown(data['queued_at']!, _queuedAtMeta));
+    }
+    if (data.containsKey('processed_at')) {
+      context.handle(
+          _processedAtMeta,
+          processedAt.isAcceptableOrUnknown(
+              data['processed_at']!, _processedAtMeta));
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(_expiresAtMeta,
+          expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta));
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+          _errorMeta, error.isAcceptableOrUnknown(data['error']!, _errorMeta));
+    }
+    if (data.containsKey('retry_count')) {
+      context.handle(
+          _retryCountMeta,
+          retryCount.isAcceptableOrUnknown(
+              data['retry_count']!, _retryCountMeta));
+    }
+    if (data.containsKey('metadata')) {
+      context.handle(_metadataMeta,
+          metadata.isAcceptableOrUnknown(data['metadata']!, _metadataMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QueuedMessageEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QueuedMessageEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      messageId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}message_id'])!,
+      messageType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}message_type'])!,
+      channel: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}channel'])!,
+      messageData: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}message_data'])!,
+      status: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      priority: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}priority'])!,
+      queuedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}queued_at'])!,
+      processedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}processed_at']),
+      expiresAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}expires_at']),
+      error: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}error']),
+      retryCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}retry_count'])!,
+      metadata: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}metadata']),
+    );
+  }
+
+  @override
+  $QueuedMessageEntriesTable createAlias(String alias) {
+    return $QueuedMessageEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class QueuedMessageEntry extends DataClass
+    implements Insertable<QueuedMessageEntry> {
+  final int id;
+  final String messageId;
+  final String messageType;
+  final String channel;
+  final String messageData;
+  final String status;
+  final String priority;
+  final DateTime queuedAt;
+  final DateTime? processedAt;
+  final DateTime? expiresAt;
+  final String? error;
+  final int retryCount;
+  final String? metadata;
+  const QueuedMessageEntry(
+      {required this.id,
+      required this.messageId,
+      required this.messageType,
+      required this.channel,
+      required this.messageData,
+      required this.status,
+      required this.priority,
+      required this.queuedAt,
+      this.processedAt,
+      this.expiresAt,
+      this.error,
+      required this.retryCount,
+      this.metadata});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['message_id'] = Variable<String>(messageId);
+    map['message_type'] = Variable<String>(messageType);
+    map['channel'] = Variable<String>(channel);
+    map['message_data'] = Variable<String>(messageData);
+    map['status'] = Variable<String>(status);
+    map['priority'] = Variable<String>(priority);
+    map['queued_at'] = Variable<DateTime>(queuedAt);
+    if (!nullToAbsent || processedAt != null) {
+      map['processed_at'] = Variable<DateTime>(processedAt);
+    }
+    if (!nullToAbsent || expiresAt != null) {
+      map['expires_at'] = Variable<DateTime>(expiresAt);
+    }
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    map['retry_count'] = Variable<int>(retryCount);
+    if (!nullToAbsent || metadata != null) {
+      map['metadata'] = Variable<String>(metadata);
+    }
+    return map;
+  }
+
+  QueuedMessageEntriesCompanion toCompanion(bool nullToAbsent) {
+    return QueuedMessageEntriesCompanion(
+      id: Value(id),
+      messageId: Value(messageId),
+      messageType: Value(messageType),
+      channel: Value(channel),
+      messageData: Value(messageData),
+      status: Value(status),
+      priority: Value(priority),
+      queuedAt: Value(queuedAt),
+      processedAt: processedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(processedAt),
+      expiresAt: expiresAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiresAt),
+      error:
+          error == null && nullToAbsent ? const Value.absent() : Value(error),
+      retryCount: Value(retryCount),
+      metadata: metadata == null && nullToAbsent
+          ? const Value.absent()
+          : Value(metadata),
+    );
+  }
+
+  factory QueuedMessageEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QueuedMessageEntry(
+      id: serializer.fromJson<int>(json['id']),
+      messageId: serializer.fromJson<String>(json['messageId']),
+      messageType: serializer.fromJson<String>(json['messageType']),
+      channel: serializer.fromJson<String>(json['channel']),
+      messageData: serializer.fromJson<String>(json['messageData']),
+      status: serializer.fromJson<String>(json['status']),
+      priority: serializer.fromJson<String>(json['priority']),
+      queuedAt: serializer.fromJson<DateTime>(json['queuedAt']),
+      processedAt: serializer.fromJson<DateTime?>(json['processedAt']),
+      expiresAt: serializer.fromJson<DateTime?>(json['expiresAt']),
+      error: serializer.fromJson<String?>(json['error']),
+      retryCount: serializer.fromJson<int>(json['retryCount']),
+      metadata: serializer.fromJson<String?>(json['metadata']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'messageId': serializer.toJson<String>(messageId),
+      'messageType': serializer.toJson<String>(messageType),
+      'channel': serializer.toJson<String>(channel),
+      'messageData': serializer.toJson<String>(messageData),
+      'status': serializer.toJson<String>(status),
+      'priority': serializer.toJson<String>(priority),
+      'queuedAt': serializer.toJson<DateTime>(queuedAt),
+      'processedAt': serializer.toJson<DateTime?>(processedAt),
+      'expiresAt': serializer.toJson<DateTime?>(expiresAt),
+      'error': serializer.toJson<String?>(error),
+      'retryCount': serializer.toJson<int>(retryCount),
+      'metadata': serializer.toJson<String?>(metadata),
+    };
+  }
+
+  QueuedMessageEntry copyWith(
+          {int? id,
+          String? messageId,
+          String? messageType,
+          String? channel,
+          String? messageData,
+          String? status,
+          String? priority,
+          DateTime? queuedAt,
+          Value<DateTime?> processedAt = const Value.absent(),
+          Value<DateTime?> expiresAt = const Value.absent(),
+          Value<String?> error = const Value.absent(),
+          int? retryCount,
+          Value<String?> metadata = const Value.absent()}) =>
+      QueuedMessageEntry(
+        id: id ?? this.id,
+        messageId: messageId ?? this.messageId,
+        messageType: messageType ?? this.messageType,
+        channel: channel ?? this.channel,
+        messageData: messageData ?? this.messageData,
+        status: status ?? this.status,
+        priority: priority ?? this.priority,
+        queuedAt: queuedAt ?? this.queuedAt,
+        processedAt: processedAt.present ? processedAt.value : this.processedAt,
+        expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
+        error: error.present ? error.value : this.error,
+        retryCount: retryCount ?? this.retryCount,
+        metadata: metadata.present ? metadata.value : this.metadata,
+      );
+  QueuedMessageEntry copyWithCompanion(QueuedMessageEntriesCompanion data) {
+    return QueuedMessageEntry(
+      id: data.id.present ? data.id.value : this.id,
+      messageId: data.messageId.present ? data.messageId.value : this.messageId,
+      messageType:
+          data.messageType.present ? data.messageType.value : this.messageType,
+      channel: data.channel.present ? data.channel.value : this.channel,
+      messageData:
+          data.messageData.present ? data.messageData.value : this.messageData,
+      status: data.status.present ? data.status.value : this.status,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      queuedAt: data.queuedAt.present ? data.queuedAt.value : this.queuedAt,
+      processedAt:
+          data.processedAt.present ? data.processedAt.value : this.processedAt,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      error: data.error.present ? data.error.value : this.error,
+      retryCount:
+          data.retryCount.present ? data.retryCount.value : this.retryCount,
+      metadata: data.metadata.present ? data.metadata.value : this.metadata,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedMessageEntry(')
+          ..write('id: $id, ')
+          ..write('messageId: $messageId, ')
+          ..write('messageType: $messageType, ')
+          ..write('channel: $channel, ')
+          ..write('messageData: $messageData, ')
+          ..write('status: $status, ')
+          ..write('priority: $priority, ')
+          ..write('queuedAt: $queuedAt, ')
+          ..write('processedAt: $processedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('error: $error, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('metadata: $metadata')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      messageId,
+      messageType,
+      channel,
+      messageData,
+      status,
+      priority,
+      queuedAt,
+      processedAt,
+      expiresAt,
+      error,
+      retryCount,
+      metadata);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QueuedMessageEntry &&
+          other.id == this.id &&
+          other.messageId == this.messageId &&
+          other.messageType == this.messageType &&
+          other.channel == this.channel &&
+          other.messageData == this.messageData &&
+          other.status == this.status &&
+          other.priority == this.priority &&
+          other.queuedAt == this.queuedAt &&
+          other.processedAt == this.processedAt &&
+          other.expiresAt == this.expiresAt &&
+          other.error == this.error &&
+          other.retryCount == this.retryCount &&
+          other.metadata == this.metadata);
+}
+
+class QueuedMessageEntriesCompanion
+    extends UpdateCompanion<QueuedMessageEntry> {
+  final Value<int> id;
+  final Value<String> messageId;
+  final Value<String> messageType;
+  final Value<String> channel;
+  final Value<String> messageData;
+  final Value<String> status;
+  final Value<String> priority;
+  final Value<DateTime> queuedAt;
+  final Value<DateTime?> processedAt;
+  final Value<DateTime?> expiresAt;
+  final Value<String?> error;
+  final Value<int> retryCount;
+  final Value<String?> metadata;
+  const QueuedMessageEntriesCompanion({
+    this.id = const Value.absent(),
+    this.messageId = const Value.absent(),
+    this.messageType = const Value.absent(),
+    this.channel = const Value.absent(),
+    this.messageData = const Value.absent(),
+    this.status = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.queuedAt = const Value.absent(),
+    this.processedAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.error = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.metadata = const Value.absent(),
+  });
+  QueuedMessageEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String messageId,
+    required String messageType,
+    required String channel,
+    required String messageData,
+    this.status = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.queuedAt = const Value.absent(),
+    this.processedAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.error = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.metadata = const Value.absent(),
+  })  : messageId = Value(messageId),
+        messageType = Value(messageType),
+        channel = Value(channel),
+        messageData = Value(messageData);
+  static Insertable<QueuedMessageEntry> custom({
+    Expression<int>? id,
+    Expression<String>? messageId,
+    Expression<String>? messageType,
+    Expression<String>? channel,
+    Expression<String>? messageData,
+    Expression<String>? status,
+    Expression<String>? priority,
+    Expression<DateTime>? queuedAt,
+    Expression<DateTime>? processedAt,
+    Expression<DateTime>? expiresAt,
+    Expression<String>? error,
+    Expression<int>? retryCount,
+    Expression<String>? metadata,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (messageId != null) 'message_id': messageId,
+      if (messageType != null) 'message_type': messageType,
+      if (channel != null) 'channel': channel,
+      if (messageData != null) 'message_data': messageData,
+      if (status != null) 'status': status,
+      if (priority != null) 'priority': priority,
+      if (queuedAt != null) 'queued_at': queuedAt,
+      if (processedAt != null) 'processed_at': processedAt,
+      if (expiresAt != null) 'expires_at': expiresAt,
+      if (error != null) 'error': error,
+      if (retryCount != null) 'retry_count': retryCount,
+      if (metadata != null) 'metadata': metadata,
+    });
+  }
+
+  QueuedMessageEntriesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? messageId,
+      Value<String>? messageType,
+      Value<String>? channel,
+      Value<String>? messageData,
+      Value<String>? status,
+      Value<String>? priority,
+      Value<DateTime>? queuedAt,
+      Value<DateTime?>? processedAt,
+      Value<DateTime?>? expiresAt,
+      Value<String?>? error,
+      Value<int>? retryCount,
+      Value<String?>? metadata}) {
+    return QueuedMessageEntriesCompanion(
+      id: id ?? this.id,
+      messageId: messageId ?? this.messageId,
+      messageType: messageType ?? this.messageType,
+      channel: channel ?? this.channel,
+      messageData: messageData ?? this.messageData,
+      status: status ?? this.status,
+      priority: priority ?? this.priority,
+      queuedAt: queuedAt ?? this.queuedAt,
+      processedAt: processedAt ?? this.processedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      error: error ?? this.error,
+      retryCount: retryCount ?? this.retryCount,
+      metadata: metadata ?? this.metadata,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (messageId.present) {
+      map['message_id'] = Variable<String>(messageId.value);
+    }
+    if (messageType.present) {
+      map['message_type'] = Variable<String>(messageType.value);
+    }
+    if (channel.present) {
+      map['channel'] = Variable<String>(channel.value);
+    }
+    if (messageData.present) {
+      map['message_data'] = Variable<String>(messageData.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<String>(priority.value);
+    }
+    if (queuedAt.present) {
+      map['queued_at'] = Variable<DateTime>(queuedAt.value);
+    }
+    if (processedAt.present) {
+      map['processed_at'] = Variable<DateTime>(processedAt.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<DateTime>(expiresAt.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (retryCount.present) {
+      map['retry_count'] = Variable<int>(retryCount.value);
+    }
+    if (metadata.present) {
+      map['metadata'] = Variable<String>(metadata.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QueuedMessageEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('messageId: $messageId, ')
+          ..write('messageType: $messageType, ')
+          ..write('channel: $channel, ')
+          ..write('messageData: $messageData, ')
+          ..write('status: $status, ')
+          ..write('priority: $priority, ')
+          ..write('queuedAt: $queuedAt, ')
+          ..write('processedAt: $processedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('error: $error, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('metadata: $metadata')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$SyncDatabase extends GeneratedDatabase {
   _$SyncDatabase(QueryExecutor e) : super(e);
   $SyncDatabaseManager get managers => $SyncDatabaseManager(this);
@@ -2308,12 +2942,19 @@ abstract class _$SyncDatabase extends GeneratedDatabase {
   late final $OrdersTable orders = $OrdersTable(this);
   late final $SyncOperationEntriesTable syncOperationEntries =
       $SyncOperationEntriesTable(this);
+  late final $QueuedMessageEntriesTable queuedMessageEntries =
+      $QueuedMessageEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [customers, inventory, orders, syncOperationEntries];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        customers,
+        inventory,
+        orders,
+        syncOperationEntries,
+        queuedMessageEntries
+      ];
 }
 
 typedef $$CustomersTableCreateCompanionBuilder = CustomersCompanion Function({
@@ -3383,6 +4024,299 @@ typedef $$SyncOperationEntriesTableProcessedTableManager
         ),
         SyncOperationEntry,
         PrefetchHooks Function()>;
+typedef $$QueuedMessageEntriesTableCreateCompanionBuilder
+    = QueuedMessageEntriesCompanion Function({
+  Value<int> id,
+  required String messageId,
+  required String messageType,
+  required String channel,
+  required String messageData,
+  Value<String> status,
+  Value<String> priority,
+  Value<DateTime> queuedAt,
+  Value<DateTime?> processedAt,
+  Value<DateTime?> expiresAt,
+  Value<String?> error,
+  Value<int> retryCount,
+  Value<String?> metadata,
+});
+typedef $$QueuedMessageEntriesTableUpdateCompanionBuilder
+    = QueuedMessageEntriesCompanion Function({
+  Value<int> id,
+  Value<String> messageId,
+  Value<String> messageType,
+  Value<String> channel,
+  Value<String> messageData,
+  Value<String> status,
+  Value<String> priority,
+  Value<DateTime> queuedAt,
+  Value<DateTime?> processedAt,
+  Value<DateTime?> expiresAt,
+  Value<String?> error,
+  Value<int> retryCount,
+  Value<String?> metadata,
+});
+
+class $$QueuedMessageEntriesTableFilterComposer
+    extends Composer<_$SyncDatabase, $QueuedMessageEntriesTable> {
+  $$QueuedMessageEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get messageId => $composableBuilder(
+      column: $table.messageId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get messageType => $composableBuilder(
+      column: $table.messageType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get channel => $composableBuilder(
+      column: $table.channel, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get messageData => $composableBuilder(
+      column: $table.messageData, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get queuedAt => $composableBuilder(
+      column: $table.queuedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get processedAt => $composableBuilder(
+      column: $table.processedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get expiresAt => $composableBuilder(
+      column: $table.expiresAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get error => $composableBuilder(
+      column: $table.error, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get retryCount => $composableBuilder(
+      column: $table.retryCount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get metadata => $composableBuilder(
+      column: $table.metadata, builder: (column) => ColumnFilters(column));
+}
+
+class $$QueuedMessageEntriesTableOrderingComposer
+    extends Composer<_$SyncDatabase, $QueuedMessageEntriesTable> {
+  $$QueuedMessageEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get messageId => $composableBuilder(
+      column: $table.messageId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get messageType => $composableBuilder(
+      column: $table.messageType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get channel => $composableBuilder(
+      column: $table.channel, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get messageData => $composableBuilder(
+      column: $table.messageData, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get queuedAt => $composableBuilder(
+      column: $table.queuedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get processedAt => $composableBuilder(
+      column: $table.processedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
+      column: $table.expiresAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get error => $composableBuilder(
+      column: $table.error, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get retryCount => $composableBuilder(
+      column: $table.retryCount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get metadata => $composableBuilder(
+      column: $table.metadata, builder: (column) => ColumnOrderings(column));
+}
+
+class $$QueuedMessageEntriesTableAnnotationComposer
+    extends Composer<_$SyncDatabase, $QueuedMessageEntriesTable> {
+  $$QueuedMessageEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get messageId =>
+      $composableBuilder(column: $table.messageId, builder: (column) => column);
+
+  GeneratedColumn<String> get messageType => $composableBuilder(
+      column: $table.messageType, builder: (column) => column);
+
+  GeneratedColumn<String> get channel =>
+      $composableBuilder(column: $table.channel, builder: (column) => column);
+
+  GeneratedColumn<String> get messageData => $composableBuilder(
+      column: $table.messageData, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get queuedAt =>
+      $composableBuilder(column: $table.queuedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get processedAt => $composableBuilder(
+      column: $table.processedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<int> get retryCount => $composableBuilder(
+      column: $table.retryCount, builder: (column) => column);
+
+  GeneratedColumn<String> get metadata =>
+      $composableBuilder(column: $table.metadata, builder: (column) => column);
+}
+
+class $$QueuedMessageEntriesTableTableManager extends RootTableManager<
+    _$SyncDatabase,
+    $QueuedMessageEntriesTable,
+    QueuedMessageEntry,
+    $$QueuedMessageEntriesTableFilterComposer,
+    $$QueuedMessageEntriesTableOrderingComposer,
+    $$QueuedMessageEntriesTableAnnotationComposer,
+    $$QueuedMessageEntriesTableCreateCompanionBuilder,
+    $$QueuedMessageEntriesTableUpdateCompanionBuilder,
+    (
+      QueuedMessageEntry,
+      BaseReferences<_$SyncDatabase, $QueuedMessageEntriesTable,
+          QueuedMessageEntry>
+    ),
+    QueuedMessageEntry,
+    PrefetchHooks Function()> {
+  $$QueuedMessageEntriesTableTableManager(
+      _$SyncDatabase db, $QueuedMessageEntriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QueuedMessageEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QueuedMessageEntriesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QueuedMessageEntriesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> messageId = const Value.absent(),
+            Value<String> messageType = const Value.absent(),
+            Value<String> channel = const Value.absent(),
+            Value<String> messageData = const Value.absent(),
+            Value<String> status = const Value.absent(),
+            Value<String> priority = const Value.absent(),
+            Value<DateTime> queuedAt = const Value.absent(),
+            Value<DateTime?> processedAt = const Value.absent(),
+            Value<DateTime?> expiresAt = const Value.absent(),
+            Value<String?> error = const Value.absent(),
+            Value<int> retryCount = const Value.absent(),
+            Value<String?> metadata = const Value.absent(),
+          }) =>
+              QueuedMessageEntriesCompanion(
+            id: id,
+            messageId: messageId,
+            messageType: messageType,
+            channel: channel,
+            messageData: messageData,
+            status: status,
+            priority: priority,
+            queuedAt: queuedAt,
+            processedAt: processedAt,
+            expiresAt: expiresAt,
+            error: error,
+            retryCount: retryCount,
+            metadata: metadata,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String messageId,
+            required String messageType,
+            required String channel,
+            required String messageData,
+            Value<String> status = const Value.absent(),
+            Value<String> priority = const Value.absent(),
+            Value<DateTime> queuedAt = const Value.absent(),
+            Value<DateTime?> processedAt = const Value.absent(),
+            Value<DateTime?> expiresAt = const Value.absent(),
+            Value<String?> error = const Value.absent(),
+            Value<int> retryCount = const Value.absent(),
+            Value<String?> metadata = const Value.absent(),
+          }) =>
+              QueuedMessageEntriesCompanion.insert(
+            id: id,
+            messageId: messageId,
+            messageType: messageType,
+            channel: channel,
+            messageData: messageData,
+            status: status,
+            priority: priority,
+            queuedAt: queuedAt,
+            processedAt: processedAt,
+            expiresAt: expiresAt,
+            error: error,
+            retryCount: retryCount,
+            metadata: metadata,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$QueuedMessageEntriesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$SyncDatabase,
+        $QueuedMessageEntriesTable,
+        QueuedMessageEntry,
+        $$QueuedMessageEntriesTableFilterComposer,
+        $$QueuedMessageEntriesTableOrderingComposer,
+        $$QueuedMessageEntriesTableAnnotationComposer,
+        $$QueuedMessageEntriesTableCreateCompanionBuilder,
+        $$QueuedMessageEntriesTableUpdateCompanionBuilder,
+        (
+          QueuedMessageEntry,
+          BaseReferences<_$SyncDatabase, $QueuedMessageEntriesTable,
+              QueuedMessageEntry>
+        ),
+        QueuedMessageEntry,
+        PrefetchHooks Function()>;
 
 class $SyncDatabaseManager {
   final _$SyncDatabase _db;
@@ -3395,4 +4329,6 @@ class $SyncDatabaseManager {
       $$OrdersTableTableManager(_db, _db.orders);
   $$SyncOperationEntriesTableTableManager get syncOperationEntries =>
       $$SyncOperationEntriesTableTableManager(_db, _db.syncOperationEntries);
+  $$QueuedMessageEntriesTableTableManager get queuedMessageEntries =>
+      $$QueuedMessageEntriesTableTableManager(_db, _db.queuedMessageEntries);
 }
