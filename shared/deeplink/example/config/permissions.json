@@ -1,0 +1,96 @@
+{
+  "permissions": {
+    "iot.view": {
+      "description": "View IoT devices and data",
+      "category": "iot",
+      "roles": ["iot_manager", "admin", "iot_operator"]
+    },
+    "iot.monitor": {
+      "description": "Access IoT monitoring features",
+      "category": "iot",
+      "roles": ["iot_manager", "admin", "iot_operator"]
+    },
+    "iot.control": {
+      "description": "Control IoT devices",
+      "category": "iot",
+      "roles": ["iot_manager", "admin"]
+    },
+    "settings.view": {
+      "description": "View application settings",
+      "category": "settings",
+      "roles": ["admin", "user"]
+    },
+    "settings.edit": {
+      "description": "Edit application settings",
+      "category": "settings",
+      "roles": ["admin"]
+    },
+    "user.profile": {
+      "description": "Access user profile",
+      "category": "user",
+      "roles": ["admin", "user", "iot_manager", "iot_operator"]
+    },
+    "cms.nhansu.view": {
+      "description": "View human resources module",
+      "category": "cms",
+      "roles": ["admin", "hr_manager", "hr_staff"]
+    },
+    "cms.nhansu.edit": {
+      "description": "Edit human resources data",
+      "category": "cms",
+      "roles": ["admin", "hr_manager"]
+    },
+    "cms.kinhdoanh.view": {
+      "description": "View business management module",
+      "category": "cms",
+      "roles": ["admin", "business_manager", "sales_staff"]
+    },
+    "cms.kinhdoanh.edit": {
+      "description": "Edit business management data",
+      "category": "cms",
+      "roles": ["admin", "business_manager"]
+    }
+  },
+  "roles": {
+    "admin": {
+      "permissions": ["*"],
+      "description": "System administrator with full access",
+      "isSystem": true
+    },
+    "user": {
+      "permissions": ["settings.view", "user.profile"],
+      "description": "Basic user with limited access"
+    },
+    "iot_manager": {
+      "permissions": ["iot.*", "settings.view", "user.profile"],
+      "description": "IoT system manager"
+    },
+    "iot_operator": {
+      "permissions": ["iot.view", "iot.monitor", "user.profile"],
+      "description": "IoT system operator"
+    },
+    "hr_manager": {
+      "permissions": ["cms.nhansu.*", "user.profile"],
+      "description": "Human resources manager",
+      "inherits": ["hr_staff"]
+    },
+    "hr_staff": {
+      "permissions": ["cms.nhansu.view", "user.profile"],
+      "description": "Human resources staff member"
+    },
+    "business_manager": {
+      "permissions": ["cms.kinhdoanh.*", "user.profile"],
+      "description": "Business operations manager",
+      "inherits": ["sales_staff"]
+    },
+    "sales_staff": {
+      "permissions": ["cms.kinhdoanh.view", "user.profile"],
+      "description": "Sales staff member"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Cross-platform deeplink permission configuration",
+    "lastUpdated": "2025-01-08"
+  }
+}

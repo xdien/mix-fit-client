@@ -328,3 +328,6 @@ android/.env.staging
 android/fastlane/report.xml
 shared/data/pubspec.lock
 shared/data/build/*
+*.cache.dill.track.dill
+shared/websocket_service/build/unit_test_assets/NativeAssetsManifest.json
+**/unit_test_assets/
