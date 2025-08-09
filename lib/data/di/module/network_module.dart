@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:core/network/dio/configs/dio_configs.dart';
 import 'package:core/network/dio/dio_client.dart';
 import 'package:core/network/dio/interceptors/auth_interceptor.dart';
 import 'package:core/network/dio/interceptors/logging_interceptor.dart';
+import 'package:core/network/dio/interceptors/retry_interceptor.dart';
+import 'package:core/error/interceptors/error_service_interceptor.dart';
 import 'package:data/network/constants/endpoints.dart';
 import 'package:data/network/interceptors/error_interceptor.dart';
 import 'package:data/sharedpref/shared_preference_helper.dart';
@@ -16,6 +19,7 @@ class NetworkModule {
     // interceptors:------------------------------------------------------------
     getIt.registerSingleton<LoggingInterceptor>(LoggingInterceptor());
     getIt.registerSingleton<ErrorInterceptor>(ErrorInterceptor(getIt()));
+    getIt.registerSingleton<ErrorServiceInterceptor>(ErrorServiceInterceptor());
     getIt.registerSingleton<AuthInterceptor>(
       AuthInterceptor(
         accessToken: () async => await getIt<SharedPreferenceHelper>().authToken,
@@ -30,16 +34,27 @@ class NetworkModule {
         receiveTimeout: Endpoints.receiveTimeout,
       ),
     );
+    // Create DioClient instance
+    final dioClient = DioClient(dioConfigs: getIt());
+    
     getIt.registerSingleton<DioClient>(
-      DioClient(dioConfigs: getIt())
+      dioClient
         ..addInterceptors(
           [
             getIt<AuthInterceptor>(),
-            getIt<ErrorInterceptor>(),
+            RetryInterceptor(
+              dio: dioClient.dio,
+              options: const RetryOptions(retries: 3),
+            ),
+            getIt<ErrorServiceInterceptor>(),
+            getIt<ErrorInterceptor>(), // Keep existing for backward compatibility
             getIt<LoggingInterceptor>(),
           ],
         ),
     );
+
+    // Register the Dio instance for direct access
+    getIt.registerSingleton<Dio>(dioClient.dio);
     // WebSocket is now managed by WebSocketManager in websocket_module.dart
   }
 }

@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
-import 'package:constants/stores/error/error_store.dart';
+import 'package:core/error/services/error_service.dart';
+import 'package:core/error/utils/error_migration_helper.dart';
 import '../domain/repository/websocket_preferences_repository.dart';
 import '../models/websocket_preferences.dart';
 import '../models/websocket_channel_config.dart';
@@ -14,8 +15,8 @@ abstract class _WebSocketPreferencesStore with Store {
   // repository instance
   final WebSocketPreferencesRepository _repository;
 
-  // store for handling errors
-  final ErrorStore errorStore;
+  // error migration helper for shared error system
+  final ErrorMigrationHelper _errorMigrationHelper;
 
   // store variables:-----------------------------------------------------------
   @observable
@@ -38,7 +39,8 @@ abstract class _WebSocketPreferencesStore with Store {
   Set<String> get subscribedChannels => _preferences?.subscribedChannels ?? {};
 
   // constructor:---------------------------------------------------------------
-  _WebSocketPreferencesStore(this._repository, this.errorStore) {
+  _WebSocketPreferencesStore(this._repository, IErrorService errorService) 
+      : _errorMigrationHelper = ErrorMigrationHelper(errorService) {
     init();
   }
 
@@ -57,7 +59,10 @@ abstract class _WebSocketPreferencesStore with Store {
         });
       });
     } catch (e) {
-      errorStore.errorMessage = 'Failed to load WebSocket preferences: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to load WebSocket preferences: $e',
+        operation: 'init',
+      );
     } finally {
       _isLoading = false;
     }
@@ -68,7 +73,11 @@ abstract class _WebSocketPreferencesStore with Store {
     try {
       await _repository.setRealTimeUpdatesEnabled(enabled);
     } catch (e) {
-      errorStore.errorMessage = 'Failed to update real-time settings: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to update real-time settings: $e',
+        operation: 'setRealTimeUpdatesEnabled',
+        metadata: {'enabled': enabled},
+      );
     }
   }
 
@@ -77,7 +86,11 @@ abstract class _WebSocketPreferencesStore with Store {
     try {
       await _repository.setConnectionStatusEnabled(enabled);
     } catch (e) {
-      errorStore.errorMessage = 'Failed to update connection status settings: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to update connection status settings: $e',
+        operation: 'setConnectionStatusEnabled',
+        metadata: {'enabled': enabled},
+      );
     }
   }
 
@@ -86,7 +99,11 @@ abstract class _WebSocketPreferencesStore with Store {
     try {
       await _repository.setNotificationsEnabled(enabled);
     } catch (e) {
-      errorStore.errorMessage = 'Failed to update notification settings: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to update notification settings: $e',
+        operation: 'setNotificationsEnabled',
+        metadata: {'enabled': enabled},
+      );
     }
   }
 
@@ -95,7 +112,12 @@ abstract class _WebSocketPreferencesStore with Store {
     try {
       await _repository.setChannelEnabled(channelId, enabled);
     } catch (e) {
-      errorStore.errorMessage = 'Failed to update channel settings: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to update channel settings: $e',
+        operation: 'setChannelEnabled',
+        channel: channelId,
+        metadata: {'enabled': enabled},
+      );
     }
   }
 
@@ -104,7 +126,12 @@ abstract class _WebSocketPreferencesStore with Store {
     try {
       await _repository.setChannelPriority(channelId, priority);
     } catch (e) {
-      errorStore.errorMessage = 'Failed to update channel priority: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to update channel priority: $e',
+        operation: 'setChannelPriority',
+        channel: channelId,
+        metadata: {'priority': priority.toString()},
+      );
     }
   }
 
@@ -114,7 +141,10 @@ abstract class _WebSocketPreferencesStore with Store {
       _isLoading = true;
       await _repository.resetToDefaults();
     } catch (e) {
-      errorStore.errorMessage = 'Failed to reset preferences: $e';
+      _errorMigrationHelper.migrateWebSocketError(
+        'Failed to reset preferences: $e',
+        operation: 'resetToDefaults',
+      );
     } finally {
       _isLoading = false;
     }
