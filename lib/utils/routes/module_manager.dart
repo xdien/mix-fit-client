@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:core/base_module.dart';
+import 'package:core/module_management.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_screen/home_screen_module.dart';
@@ -24,17 +25,46 @@ class ModuleManager {
 
     _registerModule(HomeScreenModule());
     _registerModule(IotModule());
-    _registerModule(CustomerManagementModule());
-
-    // Load và đăng ký các module động
+    
+    // Only register CMS modules if they actually exist
     await _loadPrivateModules();
+    
+    // Register built-in CMS modules only if the private modules directory exists
+    try {
+      final privateModulesDir = Directory('modules/cms');
+      if (await privateModulesDir.exists()) {
+        // Check if customer_management module directory exists
+        final customerManagementDir = Directory('modules/cms/customer_management');
+        if (await customerManagementDir.exists()) {
+          ModuleFactory.register('customer_management', () => CustomerManagementModule());
+          _registerModule(CustomerManagementModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('customer_management', true);
+        }
+        
+        // Check if sales_dashboard module directory exists
+        final salesDashboardDir = Directory('modules/cms/sales_dashboard');
+        if (await salesDashboardDir.exists()) {
+          ModuleFactory.register('sales_dashboard', () => CmsSalesDashboardModule());
+          _registerModule(CmsSalesDashboardModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('sales_dashboard', true);
+        }
+      }
+    } catch (e) {
+      print('Error checking CMS modules: $e');
+    }
+    
+    // Always set IoT module as available
+    ModuleManagement.instance.setModuleAvailability('iot', true);
+    ModuleManagement.instance.setModuleAvailability('home_screen', true);
   }
 
   // Đăng ký các built-in modules vào factory
   void _registerBuiltInModuleFactories() {
     ModuleFactory.register('home_screen', () => HomeScreenModule());
     ModuleFactory.register('iot', () => IotModule());
-    ModuleFactory.register('customer_management', () => CustomerManagementModule());
+    // CMS modules will be registered conditionally when they exist
   }
 
   Future<void> _loadPrivateModules() async {

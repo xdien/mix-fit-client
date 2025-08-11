@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:core/module_management.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -27,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: _buildAppBar(),
       drawer: AppDrawer(themeStore: _themeStore),
       body: _bodyBuilder(),
-      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
@@ -91,22 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _showDialog<String>(
       context: context,
       child: AlertDialog(
-        // borderRadius: 5.0,
-        // enableFullWidth: true,
-
         title: Text(
           AppLocalizations.of(context).translate('home_tv_choose_language'),
         ),
-        // headerColor: Theme.of(context).primaryColor,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        // closeButtonColor: Colors.white,
-        // enableCloseButton: true,
-        // enableBackButton: false,
-        // onCloseButtonClicked: () {
-        //   Navigator.of(context).pop();
-        // },
         actions: _languageStore.supportedLanguages
-            // children: _languageStore.supportedLanguages
             .map(
               (object) => ListTile(
                 dense: true,
@@ -123,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pop();
-                  // change user language based on selected locale
                   _languageStore.changeLanguage(object.locale);
                 },
               ),
@@ -149,107 +137,132 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Welcome section
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context).translate('home_tv_welcome'),
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  'Hệ thống quản lý khách hàng',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildWelcomeSection(),
           SizedBox(height: 32.0),
           
-          // Quick actions section
-          Text(
-            'Thao tác nhanh',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 16.0),
-          
-          // Customer management cards
-          _buildQuickActionGrid(),
-          
+          // Module Overview
+          _buildModuleOverview(),
           SizedBox(height: 32.0),
           
-          // Recent activities section (placeholder)
-          Text(
-            'Hoạt động gần đây',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 16.0),
+          // Quick Actions
+          _buildQuickActions(),
+          SizedBox(height: 32.0),
           
-          _buildRecentActivitiesPlaceholder(),
+          // System Overview
+          _buildSystemOverview(),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActionGrid() {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      crossAxisSpacing: 16.0,
-      mainAxisSpacing: 16.0,
-      childAspectRatio: 1.2,
-      children: [
-        _buildQuickActionCard(
-          title: 'Danh sách khách hàng',
-          subtitle: 'Xem và quản lý khách hàng',
+  Widget _buildWelcomeSection() {
+    return Center(
+      child: Column(
+        children: [
+          Icon(
+            Icons.dashboard,
+            size: 64,
+            color: Colors.blue[600],
+          ),
+          SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context).translate('home_tv_welcome'),
+            style: TextStyle(
+              fontSize: 28.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[600],
+            ),
+          ),
+          SizedBox(height: 8.0),
+          Text(
+            'System Management Dashboard',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModuleOverview() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
+    
+    // Build list of available modules
+    final List<Widget> moduleCards = [
+      _buildModuleCard(
+        title: 'IoT Dashboard',
+        subtitle: 'Device monitoring and control',
+        icon: Icons.sensors,
+        color: Colors.blue,
+        onTap: () => context.go('/iot-dashboard'),
+      ),
+    ];
+
+    // Add CMS modules only if they exist
+    if (hasCustomerManagement) {
+      moduleCards.add(
+        _buildModuleCard(
+          title: 'Customer Management',
+          subtitle: 'Manage customer data',
           icon: Icons.people,
-          color: Colors.blue,
-          onTap: () => context.push(AppRoutes.customers),
-        ),
-        _buildQuickActionCard(
-          title: 'Thêm khách hàng',
-          subtitle: 'Tạo khách hàng mới',
-          icon: Icons.person_add,
           color: Colors.green,
-          onTap: () => context.push(AppRoutes.customerAdd),
-        ),
-        _buildQuickActionCard(
-          title: 'Tìm kiếm',
-          subtitle: 'Tìm kiếm khách hàng',
-          icon: Icons.search,
-          color: Colors.orange,
           onTap: () => context.push(AppRoutes.customers),
         ),
-        _buildQuickActionCard(
-          title: 'Báo cáo',
-          subtitle: 'Thống kê khách hàng',
+      );
+    }
+
+    if (hasSalesDashboard) {
+      moduleCards.add(
+        _buildModuleCard(
+          title: 'Sales Dashboard',
+          subtitle: 'Business analytics',
           icon: Icons.analytics,
-          color: Colors.purple,
-          onTap: () {
-            // TODO: Navigate to reports
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Tính năng báo cáo đang phát triển')),
-            );
-          },
+          color: Colors.orange,
+          onTap: () => context.go('/sales_dashboard'),
+        ),
+      );
+    }
+
+    // Always add settings
+    moduleCards.add(
+      _buildModuleCard(
+        title: 'System Settings',
+        subtitle: 'Configure application',
+        icon: Icons.settings,
+        color: Colors.purple,
+        onTap: () => context.push(AppRoutes.settings),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Available Modules',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 1.2,
+          children: moduleCards,
         ),
       ],
     );
   }
 
-  Widget _buildQuickActionCard({
+  Widget _buildModuleCard({
     required String title,
     required String subtitle,
     required IconData icon,
@@ -306,47 +319,128 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecentActivitiesPlaceholder() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+  Widget _buildQuickActions() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Actions',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Row(
           children: [
-            Icon(
-              Icons.history,
-              size: 48,
-              color: Colors.grey[400],
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Chưa có hoạt động nào',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
+            Expanded(
+              child: _buildActionButton(
+                title: 'IoT Dashboard',
+                icon: Icons.sensors,
+                onTap: () => context.go('/iot-dashboard'),
               ),
             ),
-            SizedBox(height: 4),
-            Text(
-              'Các hoạt động gần đây sẽ hiển thị ở đây',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[500],
+            if (hasCustomerManagement) ...[
+              SizedBox(width: 16),
+              Expanded(
+                child: _buildActionButton(
+                  title: 'Customers',
+                  icon: Icons.people,
+                  onTap: () => context.push(AppRoutes.customers),
+                ),
               ),
-            ),
+            ],
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(title),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () => context.push(AppRoutes.customerAdd),
-      icon: const Icon(Icons.person_add),
-      label: const Text('Thêm KH'),
-      backgroundColor: Colors.blue[600],
-      foregroundColor: Colors.white,
-      tooltip: 'Thêm khách hàng mới',
+  Widget _buildSystemOverview() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
+    
+    // Count active modules
+    int activeModules = 1; // IoT module is always available
+    if (hasCustomerManagement) activeModules++;
+    if (hasSalesDashboard) activeModules++;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'System Overview',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _buildOverviewRow('Active Modules', '$activeModules', Colors.green),
+                Divider(),
+                _buildOverviewRow('Total Users', '12', Colors.blue),
+                Divider(),
+                _buildOverviewRow('System Status', 'Online', Colors.green),
+                Divider(),
+                _buildOverviewRow('Last Update', 'Just now', Colors.blue),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverviewRow(String label, String value, Color valueColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              color: valueColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

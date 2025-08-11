@@ -1,5 +1,6 @@
 // Core module exports
 export 'base_module.dart';
+export 'module_management.dart';
 
 // Dependency Injection
 export 'di/core_module.dart';
