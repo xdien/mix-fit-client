@@ -188,6 +188,10 @@ class ErrorFactory {
         return 'Poor network quality detected';
       case NetworkErrorType.unknown:
         return 'Network error occurred';
+      case NetworkErrorType.connectivity:
+        return 'Connectivity error occurred';
+      case NetworkErrorType.websocket:
+        return 'WebSocket connection error occurred';
     }
   }
 

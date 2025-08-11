@@ -30,7 +30,13 @@ enum NetworkErrorType {
   poorQuality,
   
   /// Unknown network error
-  unknown;
+  unknown,
+  
+  /// General connectivity issues
+  connectivity,
+  
+  /// WebSocket connection issues
+  websocket;
 
   /// Returns the severity for this network error type
   ErrorSeverity get severity {
@@ -49,6 +55,10 @@ enum NetworkErrorType {
         return ErrorSeverity.info;
       case NetworkErrorType.unknown:
         return ErrorSeverity.warning;
+      case NetworkErrorType.connectivity:
+        return ErrorSeverity.info;
+      case NetworkErrorType.websocket:
+        return ErrorSeverity.warning;
     }
   }
 
@@ -65,6 +75,8 @@ enum NetworkErrorType {
       case NetworkErrorType.certificateError:
       case NetworkErrorType.sslError:
       case NetworkErrorType.cancelled:
+      case NetworkErrorType.connectivity:
+      case NetworkErrorType.websocket:
         return false;
     }
   }

@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
 import '../../../lib/core/services/desktop_deeplink_parser.dart';
-import '../../../lib/core/models/deeplink_request.dart';
 import '../../../lib/core/errors/deeplink_error.dart';
 
 void main() {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import '../stores/websocket_preferences_store.dart';
 import 'websocket_preferences_screen.dart';
 import 'websocket_connection_status_widget.dart';

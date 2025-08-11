@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:core/error/services/error_service.dart';
+import 'package:core/error/services/error_service_interface.dart';
 import 'package:core/error/utils/error_migration_helper.dart';
 import '../domain/repository/websocket_preferences_repository.dart';
 import '../models/websocket_preferences.dart';
@@ -186,6 +186,5 @@ abstract class _WebSocketPreferencesStore with Store {
   }
 
   // dispose:-------------------------------------------------------------------
-  @override
-  dispose() {}
+  void dispose() {}
 }

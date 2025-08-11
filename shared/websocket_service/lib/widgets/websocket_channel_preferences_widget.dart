@@ -100,8 +100,8 @@ class WebSocketChannelPreferencesWidget extends StatelessWidget {
               store.setChannelPriority(channel.id, priority);
             }
           },
-          backgroundColor: _getPriorityColor(priority).withOpacity(0.1),
-          selectedColor: _getPriorityColor(priority).withOpacity(0.3),
+                  backgroundColor: _getPriorityColor(priority).withValues(alpha: 0.1),
+        selectedColor: _getPriorityColor(priority).withValues(alpha: 0.3),
           checkmarkColor: _getPriorityColor(priority),
         );
       }).toList(),

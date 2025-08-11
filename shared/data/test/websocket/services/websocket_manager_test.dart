@@ -122,9 +122,8 @@ void main() {
       });
 
       test('should handle channel subscriptions', () {
-        bool callbackCalled = false;
         void testCallback(dynamic data) {
-          callbackCalled = true;
+          // Callback implementation for testing
         }
 
         webSocketManager.subscribe('test-channel', testCallback);

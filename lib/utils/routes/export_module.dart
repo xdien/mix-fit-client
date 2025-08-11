@@ -5,3 +5,4 @@
 
 export 'package:cms_auth/cms_auth_module.dart';
 export 'package:sales_dashboard/sales_dashboard_module.dart';
+export 'package:customer_management/customer_management_module.dart';

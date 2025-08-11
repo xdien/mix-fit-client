@@ -19,7 +19,6 @@ class NetworkModule {
     // interceptors:------------------------------------------------------------
     getIt.registerSingleton<LoggingInterceptor>(LoggingInterceptor());
     getIt.registerSingleton<ErrorInterceptor>(ErrorInterceptor(getIt()));
-    getIt.registerSingleton<ErrorServiceInterceptor>(ErrorServiceInterceptor());
     getIt.registerSingleton<AuthInterceptor>(
       AuthInterceptor(
         accessToken: () async => await getIt<SharedPreferenceHelper>().authToken,
@@ -37,6 +36,12 @@ class NetworkModule {
     // Create DioClient instance
     final dioClient = DioClient(dioConfigs: getIt());
     
+    // Register the Dio instance for direct access
+    getIt.registerSingleton<Dio>(dioClient.dio);
+    
+    // Register ErrorServiceInterceptor after Dio is available
+    getIt.registerSingleton<ErrorServiceInterceptor>(ErrorServiceInterceptor());
+    
     getIt.registerSingleton<DioClient>(
       dioClient
         ..addInterceptors(
@@ -52,9 +57,7 @@ class NetworkModule {
           ],
         ),
     );
-
-    // Register the Dio instance for direct access
-    getIt.registerSingleton<Dio>(dioClient.dio);
+    
     // WebSocket is now managed by WebSocketManager in websocket_module.dart
   }
 }

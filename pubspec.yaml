@@ -32,6 +32,8 @@ dependencies:
     path: shared/home_screen
   iot:
     path: modules/iot
+  customer_management:
+    path: modules/cms/customer_management
   app_config:
     path: shared/app_config
   websocket_service:
@@ -107,6 +109,7 @@ dev_dependencies:
   build_runner: ^2.3.3
   analyzer: ^7.5.5
   drift_dev: ^2.23.0
+  mockito: ^5.4.2
 
 flutter_icons:
   image_path: "assets/icons/ic_launcher.png"

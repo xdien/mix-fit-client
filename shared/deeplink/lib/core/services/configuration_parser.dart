@@ -21,14 +21,14 @@ class ConfigurationParser {
       return config;
     } on FormatException catch (e) {
       throw ConfigurationError(
-        'Invalid JSON format in route configuration: ${e.message}',
-        ConfigurationErrorType.invalidFormat,
+        message: 'Invalid JSON format in route configuration: ${e.message}',
+        configPath: 'route_configuration',
       );
     } catch (e) {
       if (e is ConfigurationError) rethrow;
       throw ConfigurationError(
-        'Failed to parse route configuration: $e',
-        ConfigurationErrorType.parsingError,
+        message: 'Failed to parse route configuration: $e',
+        configPath: 'route_configuration',
       );
     }
   }
@@ -46,14 +46,14 @@ class ConfigurationParser {
       return config;
     } on FormatException catch (e) {
       throw ConfigurationError(
-        'Invalid JSON format in permission configuration: ${e.message}',
-        ConfigurationErrorType.invalidFormat,
+        message: 'Invalid JSON format in permission configuration: ${e.message}',
+        configPath: 'permission_configuration',
       );
     } catch (e) {
       if (e is ConfigurationError) rethrow;
       throw ConfigurationError(
-        'Failed to parse permission configuration: $e',
-        ConfigurationErrorType.parsingError,
+        message: 'Failed to parse permission configuration: $e',
+        configPath: 'permission_configuration',
       );
     }
   }
@@ -70,8 +70,8 @@ class ConfigurationParser {
       
       if (!await file.exists()) {
         throw ConfigurationError(
-          'Route configuration file not found: $effectivePath',
-          ConfigurationErrorType.fileNotFound,
+          message: 'Route configuration file not found: $effectivePath',
+          configPath: configPath,
         );
       }
       
@@ -81,8 +81,8 @@ class ConfigurationParser {
       rethrow;
     } catch (e) {
       throw ConfigurationError(
-        'Failed to load route configuration from $configPath: $e',
-        ConfigurationErrorType.loadError,
+        message: 'Failed to load route configuration from $configPath: $e',
+        configPath: configPath,
       );
     }
   }
@@ -99,8 +99,8 @@ class ConfigurationParser {
       
       if (!await file.exists()) {
         throw ConfigurationError(
-          'Permission configuration file not found: $effectivePath',
-          ConfigurationErrorType.fileNotFound,
+          message: 'Permission configuration file not found: $effectivePath',
+          configPath: configPath,
         );
       }
       
@@ -110,8 +110,8 @@ class ConfigurationParser {
       rethrow;
     } catch (e) {
       throw ConfigurationError(
-        'Failed to load permission configuration from $configPath: $e',
-        ConfigurationErrorType.loadError,
+        message: 'Failed to load permission configuration from $configPath: $e',
+        configPath: configPath,
       );
     }
   }
@@ -145,8 +145,8 @@ class ConfigurationParser {
     // Validate that we have at least one route
     if (config.routes.isEmpty) {
       throw ConfigurationError(
-        'Route configuration must contain at least one module',
-        ConfigurationErrorType.validationError,
+        message: 'Route configuration must contain at least one module',
+        configPath: 'route_configuration',
       );
     }
 
@@ -167,8 +167,8 @@ class ConfigurationParser {
   static void _validateModuleName(String moduleName) {
     if (moduleName.isEmpty) {
       throw ConfigurationError(
-        'Module name cannot be empty',
-        ConfigurationErrorType.validationError,
+        message: 'Module name cannot be empty',
+        configPath: 'route_configuration',
       );
     }
     
@@ -176,8 +176,8 @@ class ConfigurationParser {
     final validPattern = RegExp(r'^[a-z][a-z0-9_-]*$');
     if (!validPattern.hasMatch(moduleName)) {
       throw ConfigurationError(
-        'Invalid module name format: $moduleName. Must be lowercase alphanumeric with optional hyphens/underscores',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid module name format: $moduleName. Must be lowercase alphanumeric with optional hyphens/underscores',
+        configPath: 'route_configuration',
       );
     }
   }
@@ -186,8 +186,8 @@ class ConfigurationParser {
   static void _validateModuleConfiguration(String moduleName, ModuleConfiguration moduleConfig) {
     if (moduleConfig.features.isEmpty) {
       throw ConfigurationError(
-        'Module $moduleName must contain at least one feature',
-        ConfigurationErrorType.validationError,
+        message: 'Module $moduleName must contain at least one feature',
+        configPath: 'route_configuration',
       );
     }
 
@@ -205,8 +205,8 @@ class ConfigurationParser {
   static void _validateFeatureName(String moduleName, String featureName) {
     if (featureName.isEmpty) {
       throw ConfigurationError(
-        'Feature name cannot be empty in module $moduleName',
-        ConfigurationErrorType.validationError,
+        message: 'Feature name cannot be empty in module $moduleName',
+        configPath: 'route_configuration',
       );
     }
     
@@ -214,8 +214,8 @@ class ConfigurationParser {
     final validPattern = RegExp(r'^[a-z][a-z0-9_-]*$');
     if (!validPattern.hasMatch(featureName)) {
       throw ConfigurationError(
-        'Invalid feature name format: $featureName in module $moduleName. Must be lowercase alphanumeric with optional hyphens/underscores',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid feature name format: $featureName in module $moduleName. Must be lowercase alphanumeric with optional hyphens/underscores',
+        configPath: 'route_configuration',
       );
     }
   }
@@ -225,8 +225,8 @@ class ConfigurationParser {
     // Validate screen name
     if (routeDefinition.screen.isEmpty) {
       throw ConfigurationError(
-        'Screen name cannot be empty for route $moduleName/$featureName',
-        ConfigurationErrorType.validationError,
+        message: 'Screen name cannot be empty for route $moduleName/$featureName',
+        configPath: 'route_configuration',
       );
     }
 
@@ -249,8 +249,8 @@ class ConfigurationParser {
   static void _validatePermissionName(String permission, String context) {
     if (permission.isEmpty) {
       throw ConfigurationError(
-        'Permission name cannot be empty in route $context',
-        ConfigurationErrorType.validationError,
+        message: 'Permission name cannot be empty in route $context',
+        configPath: 'route_configuration',
       );
     }
     
@@ -258,8 +258,8 @@ class ConfigurationParser {
     final validPattern = RegExp(r'^(\*|[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*(\.\*)?|\*\.[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*)$');
     if (!validPattern.hasMatch(permission)) {
       throw ConfigurationError(
-        'Invalid permission name format: $permission in route $context. Must follow dot notation (e.g., module.action)',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid permission name format: $permission in route $context. Must follow dot notation (e.g., module.action)',
+        configPath: 'route_configuration',
       );
     }
   }
@@ -268,8 +268,8 @@ class ConfigurationParser {
   static void _validateParameterName(String paramName, String context) {
     if (paramName.isEmpty) {
       throw ConfigurationError(
-        'Parameter name cannot be empty in route $context',
-        ConfigurationErrorType.validationError,
+        message: 'Parameter name cannot be empty in route $context',
+        configPath: 'route_configuration',
       );
     }
     
@@ -277,8 +277,8 @@ class ConfigurationParser {
     final validPattern = RegExp(r'^[a-zA-Z][a-zA-Z0-9_]*$');
     if (!validPattern.hasMatch(paramName)) {
       throw ConfigurationError(
-        'Invalid parameter name format: $paramName in route $context. Must be alphanumeric with optional underscores',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid parameter name format: $paramName in route $context. Must be alphanumeric with optional underscores',
+        configPath: 'route_configuration',
       );
     }
   }
@@ -289,8 +289,8 @@ class ConfigurationParser {
     const validTypes = ['string', 'int', 'bool', 'double'];
     if (!validTypes.contains(paramDef.type)) {
       throw ConfigurationError(
-        'Invalid parameter type: ${paramDef.type} for parameter $paramName in route $context. Must be one of: ${validTypes.join(', ')}',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid parameter type: ${paramDef.type} for parameter $paramName in route $context. Must be one of: ${validTypes.join(', ')}',
+        configPath: 'route_configuration',
       );
     }
 
@@ -300,8 +300,8 @@ class ConfigurationParser {
         RegExp(paramDef.pattern!);
       } catch (e) {
         throw ConfigurationError(
-          'Invalid regex pattern for parameter $paramName in route $context: ${paramDef.pattern}',
-          ConfigurationErrorType.validationError,
+          message: 'Invalid regex pattern for parameter $paramName in route $context: ${paramDef.pattern}',
+          configPath: 'route_configuration',
         );
       }
     }
@@ -319,8 +319,8 @@ class ConfigurationParser {
     for (final route in routes) {
       if (route.isEmpty) {
         throw ConfigurationError(
-          'Fallback route cannot be empty',
-          ConfigurationErrorType.validationError,
+          message: 'Fallback route cannot be empty',
+          configPath: 'route_configuration',
         );
       }
     }
@@ -331,8 +331,8 @@ class ConfigurationParser {
     // Validate that we have at least one permission or role
     if (config.permissions.isEmpty && config.roles.isEmpty) {
       throw ConfigurationError(
-        'Permission configuration must contain at least one permission or role',
-        ConfigurationErrorType.validationError,
+        message: 'Permission configuration must contain at least one permission or role',
+        configPath: 'permission_configuration',
       );
     }
 
@@ -359,8 +359,8 @@ class ConfigurationParser {
   static void _validatePermissionDefinition(String permissionName, PermissionDefinition permissionDef) {
     if (permissionDef.description.isEmpty) {
       throw ConfigurationError(
-        'Permission description cannot be empty for permission $permissionName',
-        ConfigurationErrorType.validationError,
+        message: 'Permission description cannot be empty for permission $permissionName',
+        configPath: 'permission_configuration',
       );
     }
 
@@ -374,8 +374,8 @@ class ConfigurationParser {
   static void _validateRoleName(String roleName) {
     if (roleName.isEmpty) {
       throw ConfigurationError(
-        'Role name cannot be empty',
-        ConfigurationErrorType.validationError,
+        message: 'Role name cannot be empty',
+        configPath: 'permission_configuration',
       );
     }
     
@@ -383,8 +383,8 @@ class ConfigurationParser {
     final validPattern = RegExp(r'^[a-z][a-z0-9_]*$');
     if (!validPattern.hasMatch(roleName)) {
       throw ConfigurationError(
-        'Invalid role name format: $roleName. Must be lowercase alphanumeric with optional underscores',
-        ConfigurationErrorType.validationError,
+        message: 'Invalid role name format: $roleName. Must be lowercase alphanumeric with optional underscores',
+        configPath: 'permission_configuration',
       );
     }
   }
@@ -397,8 +397,8 @@ class ConfigurationParser {
         // Direct permission reference - should exist in config
         if (!config.hasPermission(permission)) {
           throw ConfigurationError(
-            'Role $roleName references unknown permission: $permission',
-            ConfigurationErrorType.validationError,
+            message: 'Role $roleName references unknown permission: $permission',
+            configPath: 'permission_configuration',
           );
         }
       }
@@ -408,8 +408,8 @@ class ConfigurationParser {
     for (final parentRole in roleDef.inherits) {
       if (!config.hasRole(parentRole)) {
         throw ConfigurationError(
-          'Role $roleName inherits from unknown role: $parentRole',
-          ConfigurationErrorType.validationError,
+          message: 'Role $roleName inherits from unknown role: $parentRole',
+          configPath: 'permission_configuration',
         );
       }
     }
@@ -427,8 +427,8 @@ class ConfigurationParser {
   ) {
     if (visited.contains(roleName)) {
       throw ConfigurationError(
-        'Circular inheritance detected in role hierarchy: ${visited.join(' -> ')} -> $roleName',
-        ConfigurationErrorType.validationError,
+        message: 'Circular inheritance detected in role hierarchy: ${visited.join(' -> ')} -> $roleName',
+        configPath: 'permission_configuration',
       );
     }
 
@@ -456,7 +456,7 @@ enum ConfigurationErrorType {
 class ConfigurationParsingError extends DeeplinkError {
   final ConfigurationErrorType type;
 
-  ConfigurationError(String message, this.type, {String configPath = ''}) 
+  ConfigurationParsingError(String message, this.type, {String configPath = ''}) 
       : super(
           message: message,
           code: 'CONFIGURATION_ERROR',
@@ -466,6 +466,6 @@ class ConfigurationParsingError extends DeeplinkError {
 
   @override
   String toString() {
-    return 'ConfigurationError(${type.name}): $message';
+    return 'ConfigurationParsingError(${type.name}): $message';
   }
 }

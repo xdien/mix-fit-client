@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: _buildAppBar(),
       drawer: AppDrawer(themeStore: _themeStore),
       body: _bodyBuilder(),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).translate('home_tv_posts')),
-      // actions: _buildActions(context),
+      actions: _buildActions(context),
     );
   }
 
@@ -142,20 +143,210 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _bodyBuilder() {
-    return Center(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          // Welcome section
+          Center(
+            child: Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context).translate('home_tv_welcome'),
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  'Hệ thống quản lý khách hàng',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 32.0),
+          
+          // Quick actions section
           Text(
-            AppLocalizations.of(context).translate('home_tv_welcome'),
+            'Thao tác nhanh',
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20.0)
+          SizedBox(height: 16.0),
+          
+          // Customer management cards
+          _buildQuickActionGrid(),
+          
+          SizedBox(height: 32.0),
+          
+          // Recent activities section (placeholder)
+          Text(
+            'Hoạt động gần đây',
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 16.0),
+          
+          _buildRecentActivitiesPlaceholder(),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickActionGrid() {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 16.0,
+      mainAxisSpacing: 16.0,
+      childAspectRatio: 1.2,
+      children: [
+        _buildQuickActionCard(
+          title: 'Danh sách khách hàng',
+          subtitle: 'Xem và quản lý khách hàng',
+          icon: Icons.people,
+          color: Colors.blue,
+          onTap: () => context.push(AppRoutes.customers),
+        ),
+        _buildQuickActionCard(
+          title: 'Thêm khách hàng',
+          subtitle: 'Tạo khách hàng mới',
+          icon: Icons.person_add,
+          color: Colors.green,
+          onTap: () => context.push(AppRoutes.customerAdd),
+        ),
+        _buildQuickActionCard(
+          title: 'Tìm kiếm',
+          subtitle: 'Tìm kiếm khách hàng',
+          icon: Icons.search,
+          color: Colors.orange,
+          onTap: () => context.push(AppRoutes.customers),
+        ),
+        _buildQuickActionCard(
+          title: 'Báo cáo',
+          subtitle: 'Thống kê khách hàng',
+          icon: Icons.analytics,
+          color: Colors.purple,
+          onTap: () {
+            // TODO: Navigate to reports
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Tính năng báo cáo đang phát triển')),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  size: 32,
+                  color: color,
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentActivitiesPlaceholder() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Icon(
+              Icons.history,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Chưa có hoạt động nào',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Các hoạt động gần đây sẽ hiển thị ở đây',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => context.push(AppRoutes.customerAdd),
+      icon: const Icon(Icons.person_add),
+      label: const Text('Thêm KH'),
+      backgroundColor: Colors.blue[600],
+      foregroundColor: Colors.white,
+      tooltip: 'Thêm khách hàng mới',
     );
   }
 }

@@ -134,9 +134,8 @@ void main() {
 
     group('Subscription Management', () {
       test('should manage channel subscriptions', () {
-        bool callbackCalled = false;
         void testCallback(dynamic data) {
-          callbackCalled = true;
+          // Callback implementation for testing
         }
 
         webSocketService.subscribe('test-channel', testCallback);

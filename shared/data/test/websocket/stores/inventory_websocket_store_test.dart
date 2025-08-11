@@ -5,7 +5,6 @@ import 'package:mockito/mockito.dart' as mockito;
 
 import 'package:data/websocket/interfaces/i_websocket_service.dart';
 import 'package:data/websocket/models/websocket_connection_state.dart';
-import 'package:data/websocket/models/websocket_message.dart';
 import 'package:data/websocket/stores/inventory_websocket_store.dart';
 
 import 'websocket_aware_store_test.mocks.dart';

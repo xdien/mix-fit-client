@@ -13,6 +13,9 @@ export 'data/repository/websocket_preferences_repository_impl.dart';
 // Stores
 export 'stores/websocket_preferences_store.dart';
 
+// DI
+export 'di/websocket_di.dart';
+
 // Widgets
 export 'widgets/websocket_preferences_screen.dart';
 export 'widgets/websocket_channel_preferences_widget.dart';

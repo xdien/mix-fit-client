@@ -37,10 +37,10 @@ class WebSocketConnectionStatusWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _getStatusColor(connectionState).withOpacity(0.1),
+              color: _getStatusColor(connectionState).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: _getStatusColor(connectionState).withOpacity(0.3),
+                color: _getStatusColor(connectionState).withValues(alpha: 0.3),
                 width: 1,
               ),
             ),

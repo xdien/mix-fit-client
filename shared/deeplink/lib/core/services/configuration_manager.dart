@@ -186,8 +186,8 @@ class ConfigurationManager {
     final validationErrors = validateRoutePermissions();
     if (validationErrors.isNotEmpty) {
       throw ConfigurationError(
-        'Configuration validation failed:\n${validationErrors.join('\n')}',
-        ConfigurationErrorType.validationError,
+        message: 'Configuration validation failed:\n${validationErrors.join('\n')}',
+        configPath: _routeConfigPath!,
       );
     }
   }

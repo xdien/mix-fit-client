@@ -4,7 +4,6 @@ import 'package:app_config/services/environment_config_service.dart';
 import 'package:app_config/loaders/environment_config_loader.dart';
 import '../../lib/websocket/services/websocket_config_manager.dart';
 import '../../lib/websocket/services/websocket_feature_manager.dart';
-import '../../lib/websocket/models/websocket_config.dart';
 
 void main() {
   group('WebSocket Configuration Tests', () {

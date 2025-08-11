@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../stores/websocket_preferences_store.dart';
-import '../models/websocket_preferences.dart';
 import 'websocket_channel_preferences_widget.dart';
 
 class WebSocketPreferencesScreen extends StatelessWidget {

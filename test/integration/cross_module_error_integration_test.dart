@@ -10,40 +10,19 @@ import 'package:core/error/models/client_error.dart';
 import 'package:core/di/error_module.dart';
 
 // Mock modules for testing
-@GenerateMocks([
-  CustomerModule,
-  AuthModule,
-  WebSocketService,
-  NavigationService,
-])
+@GenerateMocks([])
 void main() {
   group('Cross-Module Error Integration Tests', () {
     late GetIt getIt;
     late IErrorService errorService;
     late ErrorStore errorStore;
-    late MockCustomerModule mockCustomerModule;
-    late MockAuthModule mockAuthModule;
-    late MockWebSocketService mockWebSocketService;
-    late MockNavigationService mockNavigationService;
 
     setUp(() async {
       getIt = GetIt.instance;
       getIt.reset();
       
-      // Initialize mocks
-      mockCustomerModule = MockCustomerModule();
-      mockAuthModule = MockAuthModule();
-      mockWebSocketService = MockWebSocketService();
-      mockNavigationService = MockNavigationService();
-      
       // Initialize error module
       await ErrorModule.configureErrorModuleInjection(getIt);
-      
-      // Register mocks
-      getIt.registerSingleton<CustomerModule>(mockCustomerModule);
-      getIt.registerSingleton<AuthModule>(mockAuthModule);
-      getIt.registerSingleton<WebSocketService>(mockWebSocketService);
-      getIt.registerSingleton<NavigationService>(mockNavigationService);
       
       errorService = getIt<IErrorService>();
       errorStore = getIt<ErrorStore>();
@@ -53,32 +32,24 @@ void main() {
       await getIt.reset();
     });
 
-    group('Customer Module Integration', () {
-      test('should handle customer API errors from customer module', () async {
+    group('Error Service Integration', () {
+      test('should handle API errors', () async {
         // Arrange
-        when(mockCustomerModule.createCustomer(any))
-            .thenThrow(ApiError(
-              message: 'Customer validation failed',
-              statusCode: 422,
-              endpoint: '/api/customers',
-              method: 'POST',
-              responseData: {
-                'errors': {
-                  'email': ['Email already exists'],
-                  'phone': ['Invalid phone format'],
-                }
-              },
-            ));
+        final apiError = ApiError(
+          message: 'Customer validation failed',
+          statusCode: 422,
+          endpoint: '/api/customers',
+          method: 'POST',
+          responseData: {
+            'errors': {
+              'email': ['Email already exists'],
+              'phone': ['Invalid phone format'],
+            }
+          },
+        );
 
-        // Act - Simulate customer module calling error service
-        try {
-          await mockCustomerModule.createCustomer({'email': 'test@test.com'});
-        } catch (error) {
-          if (error is ApiError) {
-            errorService.showError(error);
-          }
-        }
-
+        // Act
+        errorService.showError(apiError);
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert

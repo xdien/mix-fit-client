@@ -34,7 +34,6 @@ dev_dependencies:
   # Code generation
   build_runner: ^2.3.3
   mobx_codegen: ^2.2.0
-  freezed: ^2.5.7
   json_serializable: ^6.6.1
   
   # Testing

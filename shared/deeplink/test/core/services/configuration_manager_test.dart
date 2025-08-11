@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:deeplink/core/services/configuration_manager.dart';
-import 'package:deeplink/core/services/configuration_parser.dart';
 
 void main() {
   group('ConfigurationManager', () {

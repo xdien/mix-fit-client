@@ -3,7 +3,8 @@ import '../models/api_error.dart';
 import '../models/validation_error.dart';
 import '../models/network_error.dart';
 import '../models/client_error.dart';
-import '../services/error_service.dart';
+import '../models/error_severity.dart';
+import '../services/error_service_interface.dart';
 
 /// Helper class for migrating existing error handling to the shared error system
 class ErrorMigrationHelper {
@@ -16,12 +17,12 @@ class ErrorMigrationHelper {
     String? context,
     Map<String, dynamic>? metadata,
   }) {
-    final error = ClientError(
+    final error = ClientError.withMetadata(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: exception.toString(),
       stackTrace: StackTrace.current.toString(),
       componentName: context,
-      metadata: metadata,
+      metadata: metadata ?? {},
     );
     _errorService.showError(error);
   }
@@ -36,7 +37,6 @@ class ErrorMigrationHelper {
       message: 'Validation failed',
       fieldErrors: fieldErrors,
       formId: formId,
-      metadata: context != null ? {'context': context} : null,
     );
     _errorService.showError(error);
   }
@@ -50,7 +50,7 @@ class ErrorMigrationHelper {
     final error = NetworkError(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: message,
-      networkType: type ?? NetworkErrorType.connectivity,
+      networkType: type ?? NetworkErrorType.unknown,
       url: url,
       timeout: timeout,
     );
@@ -62,14 +62,14 @@ class ErrorMigrationHelper {
     String? details,
     Map<String, dynamic>? metadata,
   }) {
-    final error = ClientError(
+    final error = ClientError.withMetadata(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: message,
       stackTrace: StackTrace.current.toString(),
       componentName: 'SyncService',
       metadata: {
         if (details != null) 'details': details,
-        ...?metadata,
+        ...?metadata ?? {},
       },
     );
     _errorService.showError(error);
@@ -81,7 +81,7 @@ class ErrorMigrationHelper {
     String? operation,
     Map<String, dynamic>? customerData,
   }) {
-    final error = ClientError(
+    final error = ClientError.withMetadata(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: message,
       stackTrace: StackTrace.current.toString(),
@@ -112,12 +112,12 @@ class ErrorMigrationHelper {
       );
       _errorService.showError(error);
     } else {
-      final error = ClientError(
+      final error = ClientError.withMetadata(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         message: message,
         stackTrace: StackTrace.current.toString(),
         componentName: 'Authentication',
-        metadata: requestData,
+        metadata: requestData ?? {},
       );
       _errorService.showError(error);
     }
@@ -129,14 +129,14 @@ class ErrorMigrationHelper {
     String? operation,
     Map<String, dynamic>? metadata,
   }) {
-    final error = NetworkError(
+    final error = NetworkError.withMetadata(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: message,
       networkType: NetworkErrorType.websocket,
       metadata: {
         if (channel != null) 'channel': channel,
         if (operation != null) 'operation': operation,
-        ...?metadata,
+        ...metadata ?? {},
       },
     );
     _errorService.showError(error);
@@ -152,7 +152,6 @@ class ErrorMigrationHelper {
       message: errorMessage,
       stackTrace: StackTrace.current.toString(),
       componentName: context,
-      severity: severity,
     );
     _errorService.showError(error);
   }

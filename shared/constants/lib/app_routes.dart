@@ -7,4 +7,9 @@ class AppRoutes {
   static const settings = '/settings';
   static String liquorKilnControlPath(String id) => '/liquorKilnControl/$id';
 
+  // Customer management routes
+  static const customers = '/customers';
+  static const customerAdd = '/customers/add';
+  static const customerSelectionDemo = '/customers/selection-demo';
+  static String customerEdit(String id) => '/customers/$id/edit';
 }

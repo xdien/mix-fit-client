@@ -3,7 +3,6 @@ import 'package:mockito/mockito.dart';
 import 'package:data/websocket/services/websocket_monitor.dart';
 import 'package:data/websocket/models/websocket_connection_state.dart';
 import 'package:data/websocket/models/websocket_metrics.dart';
-import 'package:data/websocket/interfaces/i_websocket_service.dart';
 
 import '../stores/websocket_aware_store_test.mocks.dart';
 

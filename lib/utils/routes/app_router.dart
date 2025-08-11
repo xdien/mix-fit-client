@@ -14,8 +14,7 @@ import '../../presentation/login/login.dart';
 import '../../presentation/register/register_screen.dart';
 import '../../presentation/settings/setting_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
-import '../../presentation/customer/customer_list_screen.dart';
-import '../../presentation/customer/customer_form_screen.dart';
+
 import '../../presentation/widgets/app_layout.dart';
 import 'module_manager.dart';
 
@@ -34,30 +33,11 @@ class AppRouter {
       );
     },
     routes: [
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => HomeScreen(),
-      ),
       ...ModuleManager.instance.getModuleRoutes(),
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) {
           return SettingsScreen();
-        },
-      ),
-      GoRoute(
-        path: '/customers',
-        builder: (context, state) => const CustomerListScreen(),
-      ),
-      GoRoute(
-        path: '/customers/add',
-        builder: (context, state) => const CustomerFormScreen(),
-      ),
-      GoRoute(
-        path: '/customers/:id/edit',
-        builder: (context, state) {
-          final customerId = state.pathParameters['id'];
-          return CustomerFormScreen(customerId: customerId);
         },
       ),
     ],

@@ -24,6 +24,7 @@ class ModuleManager {
 
     _registerModule(HomeScreenModule());
     _registerModule(IotModule());
+    _registerModule(CustomerManagementModule());
 
     // Load và đăng ký các module động
     await _loadPrivateModules();
@@ -33,6 +34,7 @@ class ModuleManager {
   void _registerBuiltInModuleFactories() {
     ModuleFactory.register('home_screen', () => HomeScreenModule());
     ModuleFactory.register('iot', () => IotModule());
+    ModuleFactory.register('customer_management', () => CustomerManagementModule());
   }
 
   Future<void> _loadPrivateModules() async {
