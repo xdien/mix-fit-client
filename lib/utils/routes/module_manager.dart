@@ -50,6 +50,15 @@ class ModuleManager {
           // Sync with shared module management
           ModuleManagement.instance.setModuleAvailability('sales_dashboard', true);
         }
+        
+        // Check if vehicle_repair_entry module directory exists
+        final vehicleRepairEntryDir = Directory('modules/cms/vehicle_repair_entry');
+        if (await vehicleRepairEntryDir.exists()) {
+          ModuleFactory.register('vehicle_repair_entry', () => VehicleRepairEntryModule());
+          _registerModule(VehicleRepairEntryModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('vehicle_repair_entry', true);
+        }
       }
     } catch (e) {
       print('Error checking CMS modules: $e');

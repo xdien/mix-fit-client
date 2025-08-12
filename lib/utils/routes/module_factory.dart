@@ -55,6 +55,8 @@ class ModuleFactory {
           return CmsSalesDashboardModule();
       case 'customer_management':
           return CustomerManagementModule();
+      case 'vehicle_repair_entry':
+          return VehicleRepairEntryModule();
         
       default:
         print('No specific handler for module type: $moduleName');

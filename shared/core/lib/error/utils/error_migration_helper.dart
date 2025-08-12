@@ -155,4 +155,19 @@ class ErrorMigrationHelper {
     );
     _errorService.showError(error);
   }
+
+  /// Generic error migration method
+  void migrateError(dynamic error, {
+    String? context,
+    Map<String, dynamic>? metadata,
+  }) {
+    if (error is Exception) {
+      migrateException(error, context: context, metadata: metadata);
+    } else if (error is String) {
+      replaceErrorStoreUsage(error, context: context);
+    } else {
+      final errorMessage = error.toString();
+      replaceErrorStoreUsage(errorMessage, context: context);
+    }
+  }
 }
