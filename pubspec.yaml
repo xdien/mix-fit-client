@@ -34,8 +34,6 @@ dependencies:
     path: modules/iot
   customer_management:
     path: modules/cms/customer_management
-  vehicle_repair_entry:
-    path: modules/cms/vehicle_repair_entry
   app_config:
     path: shared/app_config
   websocket_service:
