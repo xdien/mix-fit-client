@@ -22,6 +22,15 @@ class RepositoryModule {
       authentication: OAuth(accessToken: await getIt<SharedPreferenceHelper>().authToken ?? ''))
     );
 
+    // Register specific API classes
+    getIt.registerLazySingleton<VehicleRepairEntryApi>(
+      () => VehicleRepairEntryApi(getIt<ApiClient>()),
+    );
+    
+    getIt.registerLazySingleton<CustomerManagementApi>(
+      () => CustomerManagementApi(getIt<ApiClient>()),
+    );
+
     getIt.registerSingleton<AuthRepository>(UserRepositoryImpl(
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
