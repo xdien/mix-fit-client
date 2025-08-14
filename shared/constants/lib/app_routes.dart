@@ -12,4 +12,12 @@ class AppRoutes {
   static const customerAdd = '/customers/add';
   static const customerSelectionDemo = '/customers/selection-demo';
   static String customerEdit(String id) => '/customers/$id/edit';
+
+  // Vehicle repair entry routes
+  static const vehicleEntries = '/vehicle-entries';
+  static const vehicleEntryAdd = '/vehicle-entries/add';
+  static String vehicleEntryEdit(String id) => '/vehicle-entries/$id/edit';
+  static String vehicleEntryHistory(String id) => '/vehicle-entries/$id/history';
+  static String vehicleEntryByLicense(String licensePlate) => '/vehicle-entries/by-license/$licensePlate';
+  static String vehicleEntryByVin(String vin) => '/vehicle-entries/by-vin/$vin';
 }
