@@ -1,29 +1,27 @@
 import 'package:flutter/foundation.dart';
 import '../services/environment_config_service.dart';
-import '../adapters/legacy_config_adapter.dart';
+import '../utils/environment_variables.dart';
 
-/// Helper class to manage integration between old and new configuration systems
+/// Helper class to manage environment configuration system
 class ConfigIntegrationHelper {
   static final ConfigIntegrationHelper _instance = ConfigIntegrationHelper._internal();
   factory ConfigIntegrationHelper() => _instance;
   ConfigIntegrationHelper._internal();
 
   final EnvironmentConfigService _configService = EnvironmentConfigService();
-  final LegacyConfigAdapter _legacyAdapter = LegacyConfigAdapter();
 
-  /// Initialize configuration system with proper fallbacks
+  /// Initialize configuration system
   Future<void> initialize([String? environment]) async {
     try {
-      // Try to initialize environment configuration first
+      // Initialize environment configuration
       await _configService.initialize(environment);
       debugPrint('Environment configuration system initialized successfully');
     } catch (e) {
       debugPrint('Environment configuration initialization failed: $e');
-      debugPrint('Falling back to legacy configuration system');
     }
   }
 
-  /// Get API base URL with proper fallback chain
+  /// Get API base URL with fallback
   String getApiBaseUrl() {
     try {
       if (_configService.isInitialized) {
@@ -33,10 +31,11 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get API base URL from environment config: $e');
     }
     
-    return _legacyAdapter.endpoint;
+    // Fallback to environment variable
+    return EnvironmentVariables.apiEndpoint;
   }
 
-  /// Get WebSocket URL with proper fallback chain
+  /// Get WebSocket URL with fallback
   String? getWebSocketUrl() {
     try {
       if (_configService.isInitialized) {
@@ -46,10 +45,11 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get WebSocket URL from environment config: $e');
     }
     
-    return _legacyAdapter.websocketUrl;
+    // Fallback to environment variable
+    return EnvironmentVariables.websocketUrl;
   }
 
-  /// Get app name with proper fallback chain
+  /// Get app name with fallback
   String getAppName() {
     try {
       if (_configService.isInitialized) {
@@ -59,10 +59,10 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get app name from environment config: $e');
     }
     
-    return _legacyAdapter.appName;
+    return EnvironmentVariables.appName;
   }
 
-  /// Get bundle ID with proper fallback chain
+  /// Get bundle ID with fallback
   String getBundleId() {
     try {
       if (_configService.isInitialized) {
@@ -72,10 +72,10 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get bundle ID from environment config: $e');
     }
     
-    return _legacyAdapter.bundleId;
+    return EnvironmentVariables.bundleId;
   }
 
-  /// Get network timeout with proper fallback chain
+  /// Get network timeout with fallback
   int getTimeout() {
     try {
       if (_configService.isInitialized) {
@@ -85,10 +85,10 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get timeout from environment config: $e');
     }
     
-    return _legacyAdapter.timeout;
+    return EnvironmentVariables.networkTimeout;
   }
 
-  /// Get environment name with proper fallback chain
+  /// Get environment name with fallback
   String getEnvironmentName() {
     try {
       if (_configService.isInitialized) {
@@ -98,7 +98,7 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get environment name from environment config: $e');
     }
     
-    return _legacyAdapter.environmentName;
+    return EnvironmentVariables.environment;
   }
 
   /// Check if debug mode is enabled
@@ -111,13 +111,13 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to get debug mode from environment config: $e');
     }
     
-    return _legacyAdapter.debugMode;
+    return kDebugMode;
   }
 
-  /// Check if any configuration system is available
+  /// Check if configuration system is available
   bool isConfigurationAvailable() {
     try {
-      return _configService.isInitialized || _legacyAdapter.isConfigured;
+      return _configService.isInitialized;
     } catch (e) {
       return false;
     }
@@ -127,7 +127,6 @@ class ConfigIntegrationHelper {
   Map<String, dynamic> getConfigurationSummary() {
     return {
       'environmentConfigAvailable': _configService.isInitialized,
-      'legacyConfigAvailable': _legacyAdapter.isConfigured,
       'apiBaseUrl': getApiBaseUrl(),
       'websocketUrl': getWebSocketUrl(),
       'appName': getAppName(),
@@ -148,7 +147,7 @@ class ConfigIntegrationHelper {
       debugPrint('Failed to validate environment configuration: $e');
     }
     
-    // Basic validation for legacy config
+    // Basic validation for fallback config
     final apiUrl = getApiBaseUrl();
     return apiUrl.isNotEmpty && Uri.tryParse(apiUrl) != null;
   }

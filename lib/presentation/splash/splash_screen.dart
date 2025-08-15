@@ -2,6 +2,7 @@ import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
 import 'package:constants/app_routes.dart';
 import 'package:core/domain/usecase/use_case.dart';
 import 'package:data/websocket/websocket.dart';
+import 'package:data/sharedpref/shared_preference_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../di/service_locator.dart';
@@ -51,16 +52,26 @@ class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver
       print('Initializing WebSocket connection...');
       _webSocketManager = getIt<WebSocketManager>();
       
+      // Get the actual authentication token
+      final sharedPrefHelper = getIt<SharedPreferenceHelper>();
+      String? authToken = await sharedPrefHelper.authToken;
+      
+      if (authToken == null || authToken.isEmpty) {
+        print('No authentication token available, using development token for WebSocket');
+        // Use development token for testing
+        authToken = 'development-token';
+      }
+      
       // Initialize with proper configuration
       _webSocketManager!.initialize(
         config: const WebSocketConfig(
-          url: 'ws://localhost:3000/socket.io', // Use correct WebSocket URL
+          url: 'http://localhost:3000/socket.io', // Use correct Socket.IO URL
           reconnectInterval: Duration(seconds: 5),
           maxReconnectAttempts: 5,
           heartbeatInterval: Duration(seconds: 30),
           autoReconnect: true,
         ),
-        getAuthToken: () async => 'mock-token', // TODO: Replace with actual auth token
+        getAuthToken: () async => authToken, // Use actual auth token
       );
       
       // Listen to connection state changes

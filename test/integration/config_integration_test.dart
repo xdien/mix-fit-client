@@ -4,6 +4,7 @@ import 'package:app_config/app_config.dart';
 void main() {
   // Initialize Flutter binding for tests
   TestWidgetsFlutterBinding.ensureInitialized();
+  
   group('Configuration Integration Tests', () {
     late ConfigIntegrationHelper integrationHelper;
 
@@ -69,86 +70,41 @@ void main() {
     });
   });
 
-  group('Legacy Config Adapter Tests', () {
-    late LegacyConfigAdapter adapter;
+  group('AppConfig Backward Compatibility Tests', () {
+    late AppConfig appConfig;
 
     setUp(() {
-      adapter = LegacyConfigAdapter();
+      appConfig = AppConfig();
+      appConfig.reset(); // Reset for each test
     });
 
-    test('should provide endpoint configuration', () {
-      final endpoint = adapter.endpoint;
-      
-      expect(endpoint, isNotEmpty);
-      expect(Uri.tryParse(endpoint), isNotNull);
-    });
-
-    test('should provide WebSocket URL', () {
-      final websocketUrl = adapter.websocketUrl;
-      
-      expect(websocketUrl, isNotEmpty);
-    });
-
-    test('should provide app configuration', () {
-      final appName = adapter.appName;
-      final bundleId = adapter.bundleId;
-      
-      expect(appName, isNotEmpty);
-      expect(bundleId, isNotEmpty);
-      expect(bundleId, contains('.'));
-    });
-
-    test('should provide network timeout', () {
-      final timeout = adapter.timeout;
-      
-      expect(timeout, greaterThan(0));
-    });
-
-    test('should convert to map for debugging', () {
-      final map = adapter.toMap();
-      
-      expect(map, isA<Map<String, dynamic>>());
-      expect(map.containsKey('endpoint'), isTrue);
-      expect(map.containsKey('appName'), isTrue);
-      expect(map.containsKey('bundleId'), isTrue);
-    });
-  });
-
-  group('Backward Compatibility Tests', () {
-    late AppConfig legacyConfig;
-
-    setUp(() {
-      legacyConfig = AppConfig();
-      legacyConfig.reset(); // Reset for each test
-    });
-
-    test('should maintain backward compatibility with legacy AppConfig', () async {
+    test('should maintain backward compatibility with AppConfig', () async {
       try {
-        await legacyConfig.load('development');
+        await appConfig.load('development');
         
-        expect(legacyConfig.endpoint, isNotEmpty);
-        expect(legacyConfig.debugMode, isA<bool>());
-        expect(legacyConfig.isLoaded, isTrue);
+        expect(appConfig.endpoint, isNotEmpty);
+        expect(appConfig.debugMode, isA<bool>());
+        expect(appConfig.isLoaded, isTrue);
       } catch (e) {
-        // If legacy config fails, it should fallback to environment config
-        expect(legacyConfig.endpoint, isNotEmpty);
+        // If config fails, it should fallback to environment config
+        expect(appConfig.endpoint, isNotEmpty);
       }
     });
 
     test('should provide getValue method for backward compatibility', () async {
-      await legacyConfig.load('development');
+      await appConfig.load('development');
       
-      final endpoint = legacyConfig.getValue<String>('endpoint', 'default');
-      final debugMode = legacyConfig.getValue<bool>('debugMode', false);
+      final endpoint = appConfig.getValue<String>('endpoint', 'default');
+      final debugMode = appConfig.getValue<bool>('debugMode', false);
       
       expect(endpoint, isNotEmpty);
       expect(debugMode, isA<bool>());
     });
 
     test('should provide config map access', () async {
-      await legacyConfig.load('development');
+      await appConfig.load('development');
       
-      final config = legacyConfig.config;
+      final config = appConfig.config;
       
       expect(config, isA<Map<String, dynamic>>());
       expect(config.isNotEmpty, isTrue);

@@ -15,7 +15,7 @@ fi
 
 # Get environment from argument or default to development
 ENVIRONMENT=${1:-development}
-CONFIG_FILE="config/environments/$ENVIRONMENT.yaml"
+CONFIG_FILE="shared/app_config/config/environments/$ENVIRONMENT.yaml"
 
 echo "📋 Using environment: $ENVIRONMENT"
 
@@ -23,7 +23,7 @@ echo "📋 Using environment: $ENVIRONMENT"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "❌ Error: Config file not found: $CONFIG_FILE"
     echo "Available environments:"
-    ls -1 config/environments/*.yaml | sed 's|config/environments/||' | sed 's|.yaml||'
+    ls -1 shared/app_config/config/environments/*.yaml | sed 's|shared/app_config/config/environments/||' | sed 's|.yaml||'
     exit 1
 fi
 

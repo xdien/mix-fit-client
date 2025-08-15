@@ -15,7 +15,7 @@ fi
 
 # Get environment from argument, environment variable, or default to development
 ENVIRONMENT=${1:-${ENVIRONMENT:-development}}
-CONFIG_FILE="config/environments/$ENVIRONMENT.yaml"
+CONFIG_FILE="shared/app_config/config/environments/$ENVIRONMENT.yaml"
 
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "❌ Error: Config file not found: $CONFIG_FILE"

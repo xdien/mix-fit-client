@@ -18,25 +18,27 @@ class ConfigModule {
       );
     }
 
-    // Legacy AppConfig for backward compatibility
+    // AppConfig for backward compatibility
     if (!getIt.isRegistered<AppConfig>()) {
-      final legacyConfig = AppConfig();
+      final appConfig = AppConfig();
       try {
-        // Try to load legacy config if it exists
+        // Try to load app config with environment name
         final configService = getIt<EnvironmentConfigService>();
         if (configService.isInitialized) {
-          // Use environment config values for legacy config
-          await legacyConfig.load(configService.environmentName);
+          await appConfig.load(configService.environmentName);
+        } else {
+          await appConfig.load('development');
         }
       } catch (e) {
-        // If environment config fails, try to load legacy config
+        debugPrint('Failed to load app config: $e');
+        // Load with default environment
         try {
-          await legacyConfig.load('development');
-        } catch (legacyError) {
-          debugPrint('Failed to load legacy config: $legacyError');
+          await appConfig.load('development');
+        } catch (fallbackError) {
+          debugPrint('Failed to load app config with fallback: $fallbackError');
         }
       }
-      getIt.registerSingleton<AppConfig>(legacyConfig);
+      getIt.registerSingleton<AppConfig>(appConfig);
     }
   }
 }

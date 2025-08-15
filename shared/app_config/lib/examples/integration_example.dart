@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../app_config.dart';
 
-/// Example demonstrating how to use the integrated configuration system
+/// Example demonstrating how to use the environment configuration system
 class ConfigurationIntegrationExample extends StatefulWidget {
   const ConfigurationIntegrationExample({Key? key}) : super(key: key);
 
@@ -11,8 +11,7 @@ class ConfigurationIntegrationExample extends StatefulWidget {
 
 class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrationExample> {
   final ConfigIntegrationHelper _integrationHelper = ConfigIntegrationHelper();
-  final LegacyConfigAdapter _legacyAdapter = LegacyConfigAdapter();
-  final AppConfig _legacyConfig = AppConfig();
+  final AppConfig _appConfig = AppConfig();
   
   Map<String, dynamic>? _configSummary;
   bool _isLoading = true;
@@ -34,8 +33,8 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
       // Initialize the integration helper
       await _integrationHelper.initialize('development');
       
-      // Also initialize legacy config for comparison
-      await _legacyConfig.load('development');
+      // Also initialize app config for comparison
+      await _appConfig.load('development');
 
       // Get configuration summary
       final summary = _integrationHelper.getConfigurationSummary();
@@ -83,9 +82,7 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
                     children: [
                       _buildConfigurationCard(),
                       const SizedBox(height: 16),
-                      _buildLegacyConfigCard(),
-                      const SizedBox(height: 16),
-                      _buildAdapterCard(),
+                      _buildAppConfigCard(),
                       const SizedBox(height: 16),
                       _buildActionsCard(),
                     ],
@@ -122,7 +119,7 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
     );
   }
 
-  Widget _buildLegacyConfigCard() {
+  Widget _buildAppConfigCard() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -130,40 +127,14 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Legacy Configuration (Backward Compatibility)',
+              'App Configuration (Backward Compatibility)',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildConfigItem('Endpoint', _legacyConfig.endpoint),
-            _buildConfigItem('API Key', _legacyConfig.apiKey.isNotEmpty ? '***' : 'Not set'),
-            _buildConfigItem('Debug Mode', _legacyConfig.debugMode),
-            _buildConfigItem('Is Loaded', _legacyConfig.isLoaded),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAdapterCard() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Legacy Adapter',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            _buildConfigItem('Endpoint', _legacyAdapter.endpoint),
-            _buildConfigItem('WebSocket URL', _legacyAdapter.websocketUrl),
-            _buildConfigItem('App Name', _legacyAdapter.appName),
-            _buildConfigItem('Bundle ID', _legacyAdapter.bundleId),
-            _buildConfigItem('Environment', _legacyAdapter.environmentName),
-            _buildConfigItem('Timeout', '${_legacyAdapter.timeout}ms'),
-            _buildConfigItem('Debug Mode', _legacyAdapter.debugMode),
-            _buildConfigItem('Is Configured', _legacyAdapter.isConfigured),
+            _buildConfigItem('Endpoint', _appConfig.endpoint),
+            _buildConfigItem('API Key', _appConfig.apiKey.isNotEmpty ? '***' : 'Not set'),
+            _buildConfigItem('Debug Mode', _appConfig.debugMode),
+            _buildConfigItem('Is Loaded', _appConfig.isLoaded),
           ],
         ),
       ),
@@ -273,8 +244,10 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
               const Text('Integration Helper:', style: TextStyle(fontWeight: FontWeight.bold)),
               Text(_integrationHelper.toString()),
               const SizedBox(height: 16),
-              const Text('Legacy Adapter:', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(_legacyAdapter.toString()),
+              const Text('App Config:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Endpoint: ${_appConfig.endpoint}'),
+              Text('Debug Mode: ${_appConfig.debugMode}'),
+              Text('Is Loaded: ${_appConfig.isLoaded}'),
             ],
           ),
         ),
@@ -292,14 +265,14 @@ class _ConfigurationIntegrationExampleState extends State<ConfigurationIntegrati
 /// Usage example for API client integration
 class ApiClientIntegrationExample {
   static void demonstrateApiClientIntegration() {
-    // Example of how to use the integrated configuration in API client
+    // Example of how to use the environment configuration in API client
     final integrationHelper = ConfigIntegrationHelper();
     
-    // Get API base URL (with fallback chain)
+    // Get API base URL (with fallback)
     final apiBaseUrl = integrationHelper.getApiBaseUrl();
     print('API Base URL: $apiBaseUrl');
     
-    // Get WebSocket URL (with fallback chain)
+    // Get WebSocket URL (with fallback)
     final websocketUrl = integrationHelper.getWebSocketUrl();
     print('WebSocket URL: $websocketUrl');
     
@@ -337,24 +310,24 @@ class ApiClientIntegrationExample {
   }
 }
 
-/// Usage example for legacy compatibility
-class LegacyCompatibilityExample {
-  static Future<void> demonstrateLegacyCompatibility() async {
-    // Legacy AppConfig usage (still works)
-    final legacyConfig = AppConfig();
-    await legacyConfig.load('development');
+/// Usage example for backward compatibility
+class BackwardCompatibilityExample {
+  static Future<void> demonstrateBackwardCompatibility() async {
+    // AppConfig usage (backward compatibility)
+    final appConfig = AppConfig();
+    await appConfig.load('development');
     
-    print('Legacy Endpoint: ${legacyConfig.endpoint}');
-    print('Legacy Debug Mode: ${legacyConfig.debugMode}');
+    print('App Config Endpoint: ${appConfig.endpoint}');
+    print('App Config Debug Mode: ${appConfig.debugMode}');
     
     // New environment configuration usage
     final configService = EnvironmentConfigService();
     await configService.initialize('development');
     
-    print('New API Base URL: ${configService.apiBaseUrl}');
-    print('New App Name: ${configService.appName}');
+    print('Environment API Base URL: ${configService.apiBaseUrl}');
+    print('Environment App Name: ${configService.appName}');
     
     // Both should provide the same values (with fallback)
-    assert(legacyConfig.endpoint == configService.apiBaseUrl);
+    assert(appConfig.endpoint == configService.apiBaseUrl);
   }
 }

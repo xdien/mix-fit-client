@@ -190,10 +190,10 @@ class EnvironmentConfigUsageExample {
     
     print('Initial environment: ${service.environmentName}');
     
-    // Reload with different environment
-    await service.reload('production');
-    
-    print('After reload: ${service.environmentName}');
+    // Reload configuration
+    print('\n--- Reloading Configuration ---');
+    await service.reload();
+    print('Configuration reloaded');
   }
   
   /// Example 10: Using with custom loader (for testing)

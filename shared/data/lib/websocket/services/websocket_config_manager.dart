@@ -130,7 +130,8 @@ class WebSocketConfigManager {
         return false;
       }
       
-      if (!config.url.startsWith('ws://') && !config.url.startsWith('wss://')) {
+      if (!config.url.startsWith('ws://') && !config.url.startsWith('wss://') && 
+          !config.url.startsWith('http://') && !config.url.startsWith('https://')) {
         debugPrint('WebSocket configuration validation failed: Invalid URL scheme');
         return false;
       }

@@ -64,16 +64,15 @@ class WebSocketFactory {
       final appConfig = AppConfig.instance;
       final baseUrl = appConfig.endpoint;
       
-      // Convert HTTP URL to WebSocket URL
-      if (baseUrl.startsWith('https://')) {
-        webSocketUrl = baseUrl.replaceFirst('https://', 'wss://');
-      } else if (baseUrl.startsWith('http://')) {
-        webSocketUrl = baseUrl.replaceFirst('http://', 'ws://');
+      // Socket.IO client expects HTTP/HTTPS URLs, not WebSocket URLs
+      // The library handles the WebSocket upgrade automatically
+      if (baseUrl.startsWith('https://') || baseUrl.startsWith('http://')) {
+        webSocketUrl = baseUrl;
       } else {
-        webSocketUrl = 'ws://$baseUrl';
+        webSocketUrl = 'http://$baseUrl';
       }
       
-      // Add WebSocket path if not present
+      // Add Socket.IO path if not present
       if (!webSocketUrl.endsWith('/socket.io')) {
         webSocketUrl = '$webSocketUrl/socket.io';
       }
@@ -82,7 +81,7 @@ class WebSocketFactory {
     } catch (error) {
       developer.log('Error getting WebSocket URL from config: $error', name: 'WebSocketFactory');
       // Fallback to localhost for development
-      webSocketUrl = 'ws://localhost:3000/socket.io';
+      webSocketUrl = 'http://localhost:3000/socket.io';
     }
 
     return WebSocketConfig(
@@ -97,7 +96,7 @@ class WebSocketFactory {
   /// Create development WebSocket configuration
   static WebSocketConfig createDevelopmentConfig() {
     return const WebSocketConfig(
-      url: 'ws://localhost:3000/socket.io',
+      url: 'http://localhost:3000/socket.io',
       reconnectInterval: Duration(seconds: 2),
       maxReconnectAttempts: 5,
       heartbeatInterval: Duration(seconds: 15),
@@ -108,12 +107,11 @@ class WebSocketFactory {
   /// Create production WebSocket configuration
   static WebSocketConfig createProductionConfig(String baseUrl) {
     String webSocketUrl;
-    if (baseUrl.startsWith('https://')) {
-      webSocketUrl = baseUrl.replaceFirst('https://', 'wss://');
-    } else if (baseUrl.startsWith('http://')) {
-      webSocketUrl = baseUrl.replaceFirst('http://', 'ws://');
+    // Socket.IO client expects HTTP/HTTPS URLs, not WebSocket URLs
+    if (baseUrl.startsWith('https://') || baseUrl.startsWith('http://')) {
+      webSocketUrl = baseUrl;
     } else {
-      webSocketUrl = 'wss://$baseUrl';
+      webSocketUrl = 'https://$baseUrl';
     }
     
     if (!webSocketUrl.endsWith('/socket.io')) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:api_client/api.dart';
 import 'package:auth/domain/repository/auth/auth_repository.dart';
 import 'package:core/domain/repository/websocket_repository.dart';
@@ -34,9 +35,17 @@ class RepositoryModule {
     getIt.registerSingleton<AuthRepository>(UserRepositoryImpl(
       getIt<SharedPreferenceHelper>(),getIt<ApiClient>(),
     ));
+    
     // Register WebSocket repository using WebSocketManager
-    getIt.registerSingleton<WebSocketRepository>(
-      WebSocketRepositoryImpl(WebSocketManager.instance.webSocketService!),
-    );
+    // Check if WebSocketManager is initialized before registering
+    final webSocketService = WebSocketManager.instance.webSocketService;
+    if (webSocketService != null) {
+      getIt.registerSingleton<WebSocketRepository>(
+        WebSocketRepositoryImpl(webSocketService),
+      );
+    } else {
+      // Register a null WebSocket repository if WebSocket is not available
+      debugPrint('WebSocket service not available, skipping WebSocket repository registration');
+    }
   }
 }

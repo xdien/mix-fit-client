@@ -13,7 +13,7 @@ abstract class EnvironmentConfigLoader {
 class YamlEnvironmentConfigLoader implements EnvironmentConfigLoader {
   final String configPath;
 
-  YamlEnvironmentConfigLoader({this.configPath = 'config/environments'});
+  YamlEnvironmentConfigLoader({this.configPath = 'shared/app_config/config/environments'});
 
   @override
   Future<EnvironmentConfig> loadConfig(String environment) async {

@@ -7,7 +7,7 @@ class WebSocketModule {
     // WebSocket configuration
     getIt.registerSingleton<WebSocketConfig>(
       const WebSocketConfig(
-        url: 'ws://localhost:3000', // This will be environment-specific later
+        url: 'http://localhost:3000/socket.io', // This will be environment-specific later
         reconnectInterval: Duration(seconds: 5),
         maxReconnectAttempts: 5,
         heartbeatInterval: Duration(seconds: 30),
@@ -20,10 +20,7 @@ class WebSocketModule {
       WebSocketManager.instance,
     );
     
-    // Initialize WebSocketManager with authentication callbacks
-    WebSocketManager.instance.initialize(
-      config: getIt<WebSocketConfig>(),
-      getAuthToken: () async => await getIt<SharedPreferenceHelper>().authToken,
-    );
+    // Note: WebSocketManager will be initialized later in the app lifecycle
+    // to avoid conflicts with different configurations
   }
 }

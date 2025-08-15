@@ -104,7 +104,7 @@ Future<void> _initializeEnvironmentConfig() async {
 
 **File**: `frontend/shared/app_config/lib/app_config.dart`
 
-The legacy `AppConfig` class has been updated to work with the new environment configuration system while maintaining backward compatibility:
+The `AppConfig` class has been updated to work with the new environment configuration system while maintaining backward compatibility:
 
 ```dart
 class AppConfig {
@@ -112,29 +112,36 @@ class AppConfig {
   
   Future<void> load(String env) async {
     try {
-      // Try to load from legacy JSON config first
-      final configFile = 'assets/config/${env}_config.json';
-      final configString = await rootBundle.loadString(configFile);
+      debugPrint('Loading configuration using environment configuration system for $env environment');
       
-      // Parse JSON and set values
-      // ...
-    } catch (e) {
-      // Fallback to environment configuration adapter
-      debugPrint('Failed to load legacy config, using environment configuration: $e');
+      // Use centralized environment variables
+      _endpoint = EnvironmentVariables.apiEndpoint;
+      _apiKey = EnvironmentVariables.apiKey;
+      _debugMode = kDebugMode;
       
-      _endpoint = _adapter.endpoint;
-      _apiKey = _adapter.apiKey;
-      _debugMode = _adapter.debugMode;
-      
-      // Create a mock config map for backward compatibility
+      // Create config map from environment configuration
       _config = {
         'endpoint': _endpoint,
         'apiKey': _apiKey,
         'debugMode': _debugMode,
-        'environment': _adapter.environmentName,
-        'appName': _adapter.appName,
-        'bundleId': _adapter.bundleId,
-        'timeout': _adapter.timeout,
+        'environment': env,
+        'appName': EnvironmentVariables.appName,
+        'bundleId': EnvironmentVariables.bundleId,
+        'timeout': EnvironmentVariables.networkTimeout,
+        'websocketUrl': EnvironmentVariables.websocketUrl,
+      };
+    } catch (e) {
+      debugPrint('Failed to load configuration: $e');
+      // Fallback configuration using centralized environment variables
+      _config = {
+        'endpoint': EnvironmentVariables.apiEndpoint,
+        'apiKey': EnvironmentVariables.apiKey,
+        'debugMode': kDebugMode,
+        'environment': env,
+        'appName': EnvironmentVariables.appName,
+        'bundleId': EnvironmentVariables.bundleId,
+        'timeout': EnvironmentVariables.networkTimeout,
+        'websocketUrl': EnvironmentVariables.websocketUrl,
       };
     }
   }
@@ -160,19 +167,21 @@ final appName = integrationHelper.getAppName();
 final timeout = integrationHelper.getTimeout();
 ```
 
-### LegacyConfigAdapter
+### EnvironmentVariables
 
-**File**: `frontend/shared/app_config/lib/adapters/legacy_config_adapter.dart`
+**File**: `frontend/shared/app_config/lib/utils/environment_variables.dart`
 
-Bridges the gap between legacy configuration expectations and the new environment configuration system:
+Centralized management of all environment variables. This class provides a single source of truth for all environment variable access:
 
 ```dart
-final adapter = LegacyConfigAdapter();
+// Access environment variables directly
+final apiUrl = EnvironmentVariables.apiEndpoint;
+final appName = EnvironmentVariables.appName;
+final bundleId = EnvironmentVariables.bundleId;
+final timeout = EnvironmentVariables.networkTimeout;
 
-// Access configuration with automatic fallback
-final endpoint = adapter.endpoint;
-final websocketUrl = adapter.websocketUrl;
-final debugMode = adapter.debugMode;
+// Get all variables as a map for debugging
+final allVars = EnvironmentVariables.toMap();
 ```
 
 ## Configuration Flow
@@ -181,15 +190,15 @@ final debugMode = adapter.debugMode;
 2. **Service Registration**: Configuration services are registered in dependency injection
 3. **API Client Setup**: Endpoints class uses environment configuration for URLs
 4. **WebSocket Setup**: Socket service uses environment configuration for connection
-5. **Fallback Chain**: If environment config fails, system falls back to environment variables or defaults
+5. **Fallback Chain**: If environment config fails, system falls back to centralized environment variables
 
 ## Fallback Strategy
 
 The integration implements a robust fallback strategy:
 
 1. **Primary**: Environment configuration from YAML files
-2. **Secondary**: Environment variables (compile-time)
-3. **Tertiary**: Hard-coded defaults
+2. **Secondary**: Centralized environment variables via `EnvironmentVariables` class
+3. **Tertiary**: Hard-coded defaults in `EnvironmentVariables` class
 
 This ensures the application continues to work even if configuration files are missing or invalid.
 
@@ -206,15 +215,24 @@ final apiUrl = integrationHelper.getApiBaseUrl();
 final isDebug = integrationHelper.isDebugMode();
 ```
 
-### For Legacy Code
+### For Direct Environment Variable Access
 
 ```dart
-// Legacy code continues to work unchanged
-final legacyConfig = AppConfig();
-await legacyConfig.load('development');
+// Direct access to centralized environment variables
+final apiUrl = EnvironmentVariables.apiEndpoint;
+final appName = EnvironmentVariables.appName;
+final timeout = EnvironmentVariables.networkTimeout;
+```
 
-final endpoint = legacyConfig.endpoint;
-final debugMode = legacyConfig.debugMode;
+### For Backward Compatibility
+
+```dart
+// Backward compatibility code continues to work unchanged
+final appConfig = AppConfig();
+await appConfig.load('development');
+
+final endpoint = appConfig.endpoint;
+final debugMode = appConfig.debugMode;
 ```
 
 ### For Direct Environment Config Access
@@ -240,7 +258,7 @@ The integration includes comprehensive tests in `frontend/test/integration/confi
 
 ## Environment Files
 
-The system uses YAML configuration files located in `frontend/config/environments/`:
+The system uses YAML configuration files located in `frontend/shared/app_config/config/environments/`:
 
 - `development.yaml` - Development environment configuration
 - `staging.yaml` - Staging environment configuration  
@@ -248,44 +266,10 @@ The system uses YAML configuration files located in `frontend/config/environment
 
 ## Benefits
 
-1. **Seamless Integration**: Existing code continues to work without changes
+1. **Single Source of Truth**: All environment variables are managed in one place
 2. **Modern Configuration**: New code can use the advanced environment configuration system
 3. **Robust Fallbacks**: Multiple fallback levels ensure reliability
-4. **Easy Migration**: Gradual migration path from legacy to new configuration
+4. **Easy Migration**: Gradual migration path from old to new configuration
 5. **Environment Awareness**: Proper support for different deployment environments
 6. **Type Safety**: Strong typing for configuration values
-7. **Validation**: Built-in configuration validation
-
-## Migration Guide
-
-To migrate existing code to use the new configuration system:
-
-1. **Replace direct endpoint usage**:
-   ```dart
-   // Old
-   const apiUrl = 'http://localhost:3000';
-   
-   // New
-   final apiUrl = ConfigIntegrationHelper().getApiBaseUrl();
-   ```
-
-2. **Update service initialization**:
-   ```dart
-   // Old
-   final service = ApiService(baseUrl: 'http://localhost:3000');
-   
-   // New
-   final integrationHelper = ConfigIntegrationHelper();
-   final service = ApiService(baseUrl: integrationHelper.getApiBaseUrl());
-   ```
-
-3. **Use environment-aware configuration**:
-   ```dart
-   // Old
-   final isDebug = kDebugMode;
-   
-   // New
-   final isDebug = ConfigIntegrationHelper().isDebugMode();
-   ```
-
-This integration ensures that the Flutter app can seamlessly work with the Fastlane environment configuration system while maintaining full backward compatibility with existing code.
+7. **Centralized Management**: No more scattered `String.fromEnvironment` calls

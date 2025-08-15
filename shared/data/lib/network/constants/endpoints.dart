@@ -1,4 +1,5 @@
 import 'package:app_config/app_config.dart';
+import 'package:app_config/utils/environment_variables.dart';
 
 class Endpoints {
   Endpoints._();
@@ -15,7 +16,7 @@ class Endpoints {
     } catch (e) {
       // Fallback to environment variable if config service is not available
     }
-    return const String.fromEnvironment("BASE_URL", defaultValue: "http://localhost:3000");
+    return EnvironmentVariables.apiBaseUrl;
   }
 
   // WebSocket URL - use environment config if available
@@ -27,7 +28,7 @@ class Endpoints {
     } catch (e) {
       // Fallback to environment variable if config service is not available
     }
-    return const String.fromEnvironment("WEBSOCKET_URL", defaultValue: "ws://localhost:3001");
+    return EnvironmentVariables.websocketUrl;
   }
 
   // receiveTimeout - use environment config if available
@@ -39,7 +40,7 @@ class Endpoints {
     } catch (e) {
       // Fallback to default if config service is not available
     }
-    return const int.fromEnvironment("RECEIVE_TIMEOUT", defaultValue: 15000);
+    return EnvironmentVariables.receiveTimeout;
   }
 
   // connectTimeout - use environment config if available
@@ -51,6 +52,6 @@ class Endpoints {
     } catch (e) {
       // Fallback to default if config service is not available
     }
-    return const int.fromEnvironment("CONNECTION_TIMEOUT", defaultValue: 30000);
+    return EnvironmentVariables.connectionTimeout;
   }
 }

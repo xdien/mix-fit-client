@@ -34,7 +34,7 @@ class _ConfiguredAppState extends State<ConfiguredApp> {
         // Use new environment configuration system
         await EnvironmentConfigService().initialize(widget.environment);
       } else {
-        // Use legacy configuration system
+        // Use AppConfig for backward compatibility
         await AppConfig().load(widget.environment);
       }
       

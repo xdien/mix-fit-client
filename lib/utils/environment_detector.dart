@@ -1,21 +1,19 @@
 import 'package:flutter/foundation.dart';
+import 'package:app_config/app_config.dart';
 
 /// Environment detector service
 /// Automatically detects the current environment from build configuration
 class EnvironmentDetector {
-  static const String _environmentKey = 'ENVIRONMENT';
-  static const String _flavorKey = 'FLAVOR';
-  
   /// Get current environment from build configuration
   static String getCurrentEnvironment() {
-    // Try to get from dart-define first
-    final envFromDefine = const String.fromEnvironment(_environmentKey, defaultValue: '');
+    // Use centralized environment variables
+    final envFromDefine = EnvironmentVariables.environment;
     if (envFromDefine.isNotEmpty) {
       return envFromDefine;
     }
     
     // Try to get from flavor
-    final flavor = const String.fromEnvironment(_flavorKey, defaultValue: '');
+    final flavor = EnvironmentVariables.buildFlavor;
     if (flavor.isNotEmpty) {
       return flavor;
     }
@@ -61,8 +59,8 @@ class EnvironmentDetector {
       'isDevelopment': isDevelopment,
       'isStaging': isStaging,
       'isProduction': isProduction,
-      'dartDefine': const String.fromEnvironment(_environmentKey, defaultValue: 'not_set'),
-      'flavor': const String.fromEnvironment(_flavorKey, defaultValue: 'not_set'),
+      'dartDefine': EnvironmentVariables.environment,
+      'flavor': EnvironmentVariables.buildFlavor,
     };
   }
 } 

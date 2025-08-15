@@ -14,25 +14,25 @@ if [ ! -f "pubspec.yaml" ]; then
 fi
 
 # Check if development.yaml already exists
-if [ -f "config/environments/development.yaml" ]; then
+if [ -f "shared/app_config/config/environments/development.yaml" ]; then
     echo "✅ Development config already exists"
     echo "   If you want to reset it, delete the file and run this script again"
     exit 0
 fi
 
 # Check if example file exists
-if [ ! -f "config/environments/development.yaml.example" ]; then
-    echo "❌ Error: Example file not found at config/environments/development.yaml.example"
+if [ ! -f "shared/app_config/config/environments/development.yaml.example" ]; then
+    echo "❌ Error: Example file not found at shared/app_config/config/environments/development.yaml.example"
     exit 1
 fi
 
 # Copy example to development.yaml
 echo "📋 Copying development.yaml.example to development.yaml..."
-cp config/environments/development.yaml.example config/environments/development.yaml
+cp shared/app_config/config/environments/development.yaml.example shared/app_config/config/environments/development.yaml
 
 echo "✅ Development configuration created successfully!"
 echo ""
-echo "📝 You can now customize the configuration in config/environments/development.yaml"
+echo "📝 You can now customize the configuration in shared/app_config/config/environments/development.yaml"
 echo "   - Update API endpoints for your local backend"
 echo "   - Update WebSocket URL for your local server"
 echo "   - Adjust other settings as needed"

@@ -3,6 +3,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'environment_config.freezed.dart';
 part 'environment_config.g.dart';
 
+// Alias for backward compatibility with tests
+typedef AppConfig = AppEnvironmentConfig;
+
 @freezed
 class EnvironmentConfig with _$EnvironmentConfig {
   @JsonSerializable(explicitToJson: true)

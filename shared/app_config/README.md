@@ -199,12 +199,12 @@ This configuration system is designed to work with Fastlane for automated builds
 3. **Signing Configuration**: Code signing is configured per environment
 4. **Distribution Settings**: Upload targets are environment-specific
 
-## Migration from Legacy System
+## Migration from JSON Configuration
 
 The new system maintains backward compatibility with the existing JSON configuration:
 
 ```dart
-// Legacy usage (still supported)
+// JSON config usage (still supported)
 await AppConfig().load('development');
 final endpoint = AppConfig().endpoint;
 
@@ -234,8 +234,8 @@ shared/app_config/
 │   └── config/
 │       ├── schema/
 │       │   └── environment_config_schema.json
-│       ├── development_config.json          # Legacy config
-│       └── production_config.json           # Legacy config
+│       ├── development_config.json          # JSON config (deprecated)
+│       └── production_config.json           # JSON config (deprecated)
 └── test/
     ├── simple_test.dart                     # Basic tests
     └── yaml_loader_test.dart                # Loader tests

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import '../models/environment_config.dart';
 import '../services/environment_config_service.dart';
+import '../utils/environment_variables.dart';
 import 'build_config_manager.dart';
 
 /// Factory for creating BuildConfigManager instances
@@ -162,8 +163,8 @@ class BuildConfigFactory {
       return envVar;
     }
 
-    // Check compile-time environment
-    const compileTimeEnv = String.fromEnvironment('ENVIRONMENT');
+    // Check centralized environment variables
+    final compileTimeEnv = EnvironmentVariables.environment;
     if (compileTimeEnv.isNotEmpty) {
       return compileTimeEnv;
     }

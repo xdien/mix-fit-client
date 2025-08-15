@@ -10,7 +10,7 @@ flavors:
     ios:
       bundleId: "com.xdien.mixfit.dev"
     assets:
-      - "config/environments/development.yaml"
+      - "shared/app_config/config/environments/development.yaml"
     android:
       signingConfig:
         storeFile: null
@@ -29,7 +29,7 @@ flavors:
     ios:
       bundleId: "com.xdien.mixfit.staging"
     assets:
-      - "config/environments/staging.yaml"
+      - "shared/app_config/config/environments/staging.yaml"
     android:
       signingConfig:
         storeFile: null
@@ -48,7 +48,7 @@ flavors:
     ios:
       bundleId: "com.xdien.mixfit"
     assets:
-      - "config/environments/production.yaml"
+      - "shared/app_config/config/environments/production.yaml"
     android:
       signingConfig:
         storeFile: null
