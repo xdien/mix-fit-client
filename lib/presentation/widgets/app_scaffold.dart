@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:core/error/stores/error_store.dart';
@@ -115,7 +116,7 @@ class _CombinedAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             // Show error status bar if needed
             if (errorStore.shouldShowErrorBar)
-              ErrorStatusBarWidget(),
+              ErrorStatusBarWidget(errorStore: errorStore),
             // Original AppBar
             originalAppBar,
           ],
@@ -158,7 +159,7 @@ class _ErrorOnlyAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Theme.of(context).scaffoldBackgroundColor,
           child: SafeArea(
             bottom: false,
-            child: ErrorStatusBarWidget(),
+            child: ErrorStatusBarWidget(errorStore: errorStore),
           ),
         );
       },

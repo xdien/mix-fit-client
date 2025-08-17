@@ -1,6 +1,7 @@
 import '../models/route_configuration.dart';
 import '../models/permission_configuration.dart';
 import 'configuration_parser.dart';
+import '../errors/deeplink_error.dart';
 
 /// Manages deeplink configuration loading, caching, and environment handling
 /// Provides centralized access to route and permission configurations

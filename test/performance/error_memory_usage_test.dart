@@ -32,7 +32,7 @@ void main() {
     group('Memory Leak Prevention', () {
       test('should not leak memory when adding and removing errors', () async {
         // Force garbage collection before test
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         final initialErrorCount = errorStore.activeErrors.length;
@@ -63,14 +63,14 @@ void main() {
           
           // Force garbage collection periodically
           if (cycle % 10 == 0) {
-            developer.gc();
+            // developer.gc(); // Not available in all environments
             await Future.delayed(const Duration(milliseconds: 50));
           }
         }
         
         // Final cleanup and GC
         errorService.clearAllErrors();
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Assert no memory leaks
@@ -80,7 +80,7 @@ void main() {
       });
 
       test('should handle large error objects without excessive memory usage', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Create errors with progressively larger data
@@ -123,7 +123,7 @@ void main() {
           errorService.clearError(error.id);
         }
         
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         print('Handled 10 progressively larger error objects efficiently');
@@ -164,7 +164,7 @@ void main() {
         }
         
         // Force garbage collection
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 200));
         
         // Verify all references are cleaned up
@@ -176,7 +176,7 @@ void main() {
 
     group('Memory Efficiency', () {
       test('should reuse error objects when possible', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Create similar errors that could be deduplicated
@@ -212,7 +212,7 @@ void main() {
       });
 
       test('should handle error queue overflow without memory bloat', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Fill queue well beyond capacity
@@ -241,14 +241,14 @@ void main() {
         expect(errorStore.activeErrors.length, equals(5));
         
         // Force GC and verify no excessive memory usage
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         print('Handled 1000 errors with queue overflow without memory bloat');
       });
 
       test('should efficiently manage error metadata', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Create errors with varying metadata sizes
@@ -286,7 +286,7 @@ void main() {
         // Verify efficient metadata management
         expect(errorStore.activeErrors.length, lessThanOrEqualTo(5));
         
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         print('Efficiently managed metadata for 100 errors with varying sizes');
@@ -295,7 +295,7 @@ void main() {
 
     group('Memory Pressure Handling', () {
       test('should handle simulated memory pressure gracefully', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Phase 1: Normal operation
@@ -339,7 +339,7 @@ void main() {
         
         // Phase 3: Recovery
         largeObjects.clear(); // Release large objects
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 200));
         
         // Add normal errors after pressure relief
@@ -360,7 +360,7 @@ void main() {
       });
 
       test('should maintain performance under sustained load', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         final performanceMetrics = <int>[];
@@ -411,7 +411,7 @@ void main() {
 
     group('Cleanup and Disposal', () {
       test('should properly dispose of error resources', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         final errorIds = <String>[];
@@ -441,7 +441,7 @@ void main() {
         errorService.clearAllErrors();
         
         // Force garbage collection
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 200));
         
         // Verify proper disposal
@@ -451,7 +451,7 @@ void main() {
       });
 
       test('should handle service disposal without memory leaks', () async {
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 100));
         
         // Create multiple service instances (simulated)
@@ -484,7 +484,7 @@ void main() {
         }
         
         // Force garbage collection
-        developer.gc();
+        // developer.gc(); // Not available in all environments
         await Future.delayed(const Duration(milliseconds: 300));
         
         // Verify no lingering references

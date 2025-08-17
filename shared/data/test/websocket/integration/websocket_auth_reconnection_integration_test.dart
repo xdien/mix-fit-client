@@ -74,7 +74,7 @@ void main() {
         expect(authEvents, hasLength(1));
 
         // Verify token was retrieved
-        verify(mockSharedPreferenceHelper.authToken).called(atLeast(1));
+        verify(mockSharedPreferenceHelper.authToken).called(greaterThan(0));
 
         await subscription.cancel();
       });
@@ -114,7 +114,7 @@ void main() {
         expect(webSocketService.currentState, WebSocketConnectionState.connected);
 
         // Verify multiple auth attempts
-        verify(mockSharedPreferenceHelper.authToken).called(atLeast(2));
+        verify(mockSharedPreferenceHelper.authToken).called(greaterThan(1));
 
         await subscription.cancel();
       });

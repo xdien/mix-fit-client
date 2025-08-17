@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
@@ -52,7 +53,11 @@ void main() {
       );
 
       // Create synchronizer and lifecycle manager
-      synchronizer = MissedUpdateSynchronizer(webSocketService);
+      synchronizer = MissedUpdateSynchronizer(
+        fetchMissedUpdates: (from, to) async => [],
+        processBatchUpdates: (updates) async {},
+        performFullRefresh: () async {},
+      );
       lifecycleManager = AppLifecycleManager(
         webSocketService,
         synchronizer,

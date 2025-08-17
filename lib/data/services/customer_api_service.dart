@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import '../../../shared/data/lib/websocket/stores/customer_websocket_store.dart';
+import 'package:customer_management/customer_management.dart';
 
 class CustomerApiService {
   final Dio _dio;
@@ -110,31 +110,28 @@ class CustomerApiService {
   // Convert API response to Customer model
   Customer _mapToCustomer(Map<String, dynamic> data) {
     return Customer(
-      id: data['id'] ?? '',
+      id: data['id'],
       name: data['name'] ?? '',
-      email: data['email'] ?? '',
       phone: data['phone'] ?? '',
-      address: data['address'] ?? '',
+      email: data['email'],
+      address: data['address'],
       status: _mapStatus(data['status']),
-      isVip: data['isVip'] ?? false,
+      isApproved: data['isApproved'] ?? false,
       createdAt: DateTime.parse(data['createdAt']),
-      lastUpdated: DateTime.parse(data['updatedAt']),
-      version: data['version'] ?? 1,
+      updatedAt: DateTime.parse(data['updatedAt']),
     );
   }
 
   CustomerStatus _mapStatus(String? status) {
     switch (status) {
-      case 'active':
-        return CustomerStatus.active;
-      case 'inactive':
-        return CustomerStatus.inactive;
-      case 'suspended':
-        return CustomerStatus.suspended;
-      case 'vip':
-        return CustomerStatus.vip;
+      case 'synced':
+        return CustomerStatus.synced;
+      case 'pendingSync':
+        return CustomerStatus.pendingSync;
+      case 'syncError':
+        return CustomerStatus.syncError;
       default:
-        return CustomerStatus.active;
+        return CustomerStatus.draft;
     }
   }
 
