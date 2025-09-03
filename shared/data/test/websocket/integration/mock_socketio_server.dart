@@ -75,8 +75,10 @@ class MockSocketIOServer {
     }
 
     _clients.add(webSocket);
+    final clientId = webSocket.hashCode.toString();
+    
     if (!_eventController.isClosed) {
-      _eventController.add(MockServerEvent.clientConnected(webSocket.hashCode.toString()));
+      _eventController.add(MockServerEvent.clientConnected(clientId));
     }
 
     webSocket.listen(
@@ -89,12 +91,27 @@ class MockSocketIOServer {
     await _sendSocketIOMessage(webSocket, {
       'type': 0, // CONNECT
       'data': {
-        'sid': 'mock-session-${webSocket.hashCode}',
+        'sid': 'mock-session-$clientId',
         'upgrades': [],
         'pingInterval': 25000,
         'pingTimeout': 60000,
       },
     });
+
+    // Auto-authenticate for testing (simulate successful auth)
+    if (!shouldRejectAuth) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      await _sendSocketIOMessage(webSocket, {
+        'type': 3, // EVENT
+        'data': ['authenticated', {
+          'userId': 'user-$clientId',
+          'status': 'success',
+        }],
+      });
+      if (!_eventController.isClosed) {
+        _eventController.add(MockServerEvent.authSuccess(clientId));
+      }
+    }
   }
 
   /// Handle Socket.IO messages
@@ -204,6 +221,12 @@ class MockSocketIOServer {
         case 'leave':
           await _handleSocketIOLeave(webSocket, eventData);
           break;
+        case 'subscribe':
+          await _handleSocketIOSubscribe(webSocket, eventData);
+          break;
+        case 'unsubscribe':
+          await _handleSocketIOUnsubscribe(webSocket, eventData);
+          break;
         case 'message':
           await _handleSocketIOMessageEvent(webSocket, eventData);
           break;
@@ -299,6 +322,57 @@ class MockSocketIOServer {
     });
     if (!_eventController.isClosed) {
       _eventController.add(MockServerEvent.channelUnsubscribed(clientId, room));
+    }
+  }
+
+  /// Handle Socket.IO subscribe event
+  Future<void> _handleSocketIOSubscribe(WebSocket webSocket, dynamic data) async {
+    final clientId = webSocket.hashCode.toString();
+    final channel = data is Map ? data['channel'] as String? : null;
+    
+    if (channel != null) {
+      // Add client to channel subscription
+      _roomSubscriptions.putIfAbsent(channel, () => <String>[]);
+      if (!_roomSubscriptions[channel]!.contains(clientId)) {
+        _roomSubscriptions[channel]!.add(clientId);
+      }
+      
+      // Send subscription confirmation
+      await _sendSocketIOMessage(webSocket, {
+        'type': 3, // EVENT
+        'data': ['subscribed', {
+          'channel': channel,
+          'status': 'success',
+        }],
+      });
+      
+      if (!_eventController.isClosed) {
+        _eventController.add(MockServerEvent.channelSubscribed(clientId, channel));
+      }
+    }
+  }
+
+  /// Handle Socket.IO unsubscribe event
+  Future<void> _handleSocketIOUnsubscribe(WebSocket webSocket, dynamic data) async {
+    final clientId = webSocket.hashCode.toString();
+    final channel = data is Map ? data['channel'] as String? : null;
+    
+    if (channel != null) {
+      // Remove client from channel subscription
+      _roomSubscriptions[channel]?.remove(clientId);
+      
+      // Send unsubscription confirmation
+      await _sendSocketIOMessage(webSocket, {
+        'type': 3, // EVENT
+        'data': ['unsubscribed', {
+          'channel': channel,
+          'status': 'success',
+        }],
+      });
+      
+      if (!_eventController.isClosed) {
+        _eventController.add(MockServerEvent.channelUnsubscribed(clientId, channel));
+      }
     }
   }
 
@@ -416,7 +490,7 @@ class MockSocketIOServer {
     for (final client in clients) {
       await _sendSocketIOMessage(client, {
         'type': 3, // EVENT
-        'data': ['message', {
+        'data': [room, {
           ...message,
           'room': room,
           'timestamp': DateTime.now().toIso8601String(),

@@ -59,6 +59,15 @@ class ModuleManager {
           // Sync with shared module management
           ModuleManagement.instance.setModuleAvailability('vehicle_repair_entry', true);
         }
+        
+        // Check if repair_quote_entry module directory exists
+        final repairQuoteEntryDir = Directory('modules/cms/repair_quote_entry');
+        if (await repairQuoteEntryDir.exists()) {
+          ModuleFactory.register('repair_quote_entry', () => RepairQuoteEntryModule());
+          _registerModule(RepairQuoteEntryModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('repair_quote_entry', true);
+        }
       }
     } catch (e) {
       print('Error checking CMS modules: $e');

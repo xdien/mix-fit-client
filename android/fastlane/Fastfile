@@ -18,6 +18,11 @@ require_relative 'signing_manager'
 require_relative 'certificate_validator'
 require_relative 'credential_manager'
 require_relative 'version_manager'
+require_relative 'ci_environment_manager'
+require_relative 'ci_artifact_manager'
+require_relative 'error_handler'
+require_relative 'build_logger'
+require_relative 'debug_tools'
 
 default_platform(:android)
 
@@ -28,55 +33,177 @@ platform :android do
     build_type = options[:build_type] || options[:type]
     upload = options[:upload] || false
     
-    UI.header("🚀 Building #{environment} environment")
+    # Initialize error handler and build logger
+    error_handler = ErrorHandler.new(environment, ENV['FASTLANE_DEBUG'] == 'true')
+    build_logger = BuildLogger.new(environment, build_type)
     
-    begin
+    error_handler.with_error_handling(operation: 'build', environment: environment) do
       # Load and validate environment configuration
-      config = ConfigLoader.load_environment_config(environment)
-      
-      # Setup and validate signing credentials
-      credential_manager = CredentialManager.new(environment)
-      credential_manager.setup_secure_environment
-      credential_manager.validate_environment_variables(config['signing'])
-      credential_manager.audit_credential_access
-      
-      # Setup code signing
-      signing_manager = SigningManager.new(config)
-      signing_manager.setup_signing
-      
-      # Setup environment variables for Flutter
-      ConfigLoader.setup_flutter_environment(config)
-      
-      # Build the Flutter app
-      build_flutter_app(config, build_type)
-      
-      # Create build info
-      build_info = ConfigLoader.create_build_info(config, build_type)
-      
-      # Copy and rename APK
-      organize_build_artifacts(config, build_type)
-      
-      # Upload if requested
-      if upload
-        upload_app(config)
+      config = error_handler.with_error_handling(operation: 'config_loading') do
+        config_path = File.join(Dir.pwd, '..', '..', 'config', 'environments', "#{environment}.yaml")
+        
+        # Enhanced configuration validation
+        unless File.exist?(config_path)
+          raise ConfigValidationError.new("Configuration file not found: #{config_path}")
+        end
+        
+        config = YAML.load_file(config_path)
+        error_handler.validate_configuration(config, config_path)
+        
+        build_logger.log_config_loading(config_path, config)
+        config
       end
       
-      # Send notifications
-      send_build_notifications(config, build_info, true)
+      # Start build logging
+      build_logger.start_build(config)
       
-      # Cleanup sensitive data
-      credential_manager.cleanup_credentials
-      
-      UI.success("✅ Build completed successfully for #{environment} environment")
-      
-    rescue => e
-      UI.error("❌ Build failed: #{e.message}")
-      send_build_notifications(config, nil, false, e.message) if config
-      
-      # Cleanup sensitive data even on failure
-      credential_manager.cleanup_credentials if credential_manager
-      
-      raise e
+      begin
+        # Setup CI environment if running in CI
+        if ENV['CI'] == 'true'
+          build_logger.execute_step('CI Environment Setup', 'Setting up CI/CD environment') do
+            CIEnvironmentManager.setup_ci_environment(environment)
+          end
+        end
+        
+        # Setup and validate signing credentials
+        credential_manager = build_logger.execute_step('Credential Setup', 'Setting up signing credentials') do
+          manager = CredentialManager.new(environment)
+          manager.setup_secure_environment
+          manager.validate_environment_variables(config['signing'])
+          manager.audit_credential_access
+          
+          build_logger.log_signing_setup(
+            File.join(Dir.pwd, '..', 'keystores', config['signing']['store_file']),
+            config['signing']['key_alias']
+          )
+          
+          manager
+        end
+        
+        # Setup code signing
+        signing_manager = build_logger.execute_step('Code Signing Setup', 'Configuring code signing') do
+          manager = SigningManager.new(config)
+          manager.setup_signing
+          manager
+        end
+        
+        # Setup environment variables for Flutter
+        build_logger.execute_step('Environment Configuration', 'Setting up Flutter environment variables') do
+          ConfigLoader.setup_flutter_environment(config)
+          
+          # Log environment setup (without sensitive values)
+          env_vars = {
+            'API_BASE_URL' => ENV['API_BASE_URL'],
+            'WEBSOCKET_URL' => ENV['WEBSOCKET_URL'],
+            'APP_NAME' => ENV['APP_NAME'],
+            'BUNDLE_ID' => ENV['BUNDLE_ID'],
+            'ENVIRONMENT' => ENV['ENVIRONMENT'],
+            'BUILD_FLAVOR' => ENV['BUILD_FLAVOR'],
+            'BUILD_TYPE' => ENV['BUILD_TYPE']
+          }.compact
+          
+          build_logger.log_environment_setup(env_vars)
+        end
+        
+        # Build the Flutter app
+        build_logger.execute_step('Flutter Build', 'Building Flutter application') do
+          build_flutter_app_with_logging(config, build_type, build_logger)
+        end
+        
+        # Create build info
+        build_info = build_logger.execute_step('Build Info Generation', 'Creating build metadata') do
+          ConfigLoader.create_build_info(config, build_type)
+        end
+        
+        # Organize build artifacts (CI-aware)
+        artifact_info = build_logger.execute_step('Artifact Organization', 'Organizing build artifacts') do
+          if ENV['CI'] == 'true'
+            CIArtifactManager.organize_ci_artifacts(environment, build_type)
+          else
+            ConfigLoader.organize_build_artifacts(config, build_type)
+          end
+        end
+        
+        # Log artifact generation
+        if artifact_info && artifact_info[:metadata] && artifact_info[:metadata][:artifacts]
+          artifacts = []
+          
+          artifact_info[:metadata][:artifacts][:apk_files].each do |apk|
+            artifacts << { type: 'APK', path: apk[:path] }
+          end
+          
+          artifact_info[:metadata][:artifacts][:aab_files].each do |aab|
+            artifacts << { type: 'AAB', path: aab[:path] }
+          end
+          
+          build_logger.log_artifact_generation(artifacts) if artifacts.any?
+        end
+        
+        # Upload if requested
+        if upload
+          build_logger.execute_step('App Upload', 'Uploading to distribution platform') do
+            upload_app(config)
+          end
+        end
+        
+        # Send notifications with artifact info
+        build_logger.execute_step('Notifications', 'Sending build notifications') do
+          send_build_notifications(config, build_info, true, nil, artifact_info)
+        end
+        
+        # Generate CI report if in CI environment
+        if ENV['CI'] == 'true'
+          build_logger.execute_step('CI Report Generation', 'Generating CI/CD reports') do
+            CIEnvironmentManager.generate_ci_report(environment)
+          end
+        end
+        
+        # Log performance metrics
+        build_result = build_logger.end_build(true)
+        if build_result[:performance_metrics]
+          build_logger.log_performance_metrics(build_result[:performance_metrics])
+        end
+        
+        error_handler.log_info("Build completed successfully", {
+          environment: environment,
+          build_type: build_type,
+          duration: build_result[:duration_seconds],
+          build_id: build_logger.build_id
+        })
+        
+      rescue => build_error
+        # Log build failure
+        build_logger.end_build(false, build_error)
+        
+        # Send failure notifications
+        send_build_notifications(config, nil, false, build_error.message) if config
+        
+        # Generate debug information on failure
+        error_handler.generate_debug_info({
+          operation: 'build',
+          environment: environment,
+          build_type: build_type,
+          error_class: build_error.class.name,
+          error_message: build_error.message
+        })
+        
+        raise build_error
+        
+      ensure
+        # Cleanup sensitive data
+        if credential_manager
+          build_logger.execute_step('Credential Cleanup', 'Cleaning up sensitive data') do
+            credential_manager.cleanup_credentials
+          end
+        end
+        
+        # Cleanup CI environment if needed
+        if ENV['CI'] == 'true'
+          build_logger.execute_step('CI Cleanup', 'Cleaning up CI environment') do
+            CIEnvironmentManager.cleanup_ci_environment
+          end
+        end
+      end
     end
   end
   
@@ -266,40 +393,121 @@ platform :android do
     UI.success("✅ Flutter app built successfully")
   end
   
-  private_lane :organize_build_artifacts do |config, build_type|
-    UI.message("📦 Organizing build artifacts...")
-    
-    environment = config['environment']['name']
-    output_filename = ConfigLoader.get_output_filename(config, build_type)
-    
-    # Create environment-specific build directory
-    build_dir = File.join(Dir.pwd, '..', '..', 'build', 'android', environment)
-    FileUtils.mkdir_p(build_dir)
-    
-    # Find the built APK
-    apk_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'flutter-apk', 'app-release.apk')
-    if build_type == 'debug'
-      apk_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'flutter-apk', 'app-debug.apk')
-    end
-    
-    if File.exist?(apk_path)
-      # Copy APK with environment-specific name
-      target_path = File.join(build_dir, output_filename)
-      FileUtils.cp(apk_path, target_path)
-      UI.success("📱 APK copied to #{target_path}")
-    else
-      UI.error("❌ APK not found at #{apk_path}")
-    end
-    
-    # Also check for AAB files
-    aab_path = File.join(Dir.pwd, '..', '..', 'build', 'app', 'outputs', 'bundle', 'release', 'app-release.aab')
-    if File.exist?(aab_path)
-      aab_filename = output_filename.gsub('.apk', '.aab')
-      target_aab_path = File.join(build_dir, aab_filename)
-      FileUtils.cp(aab_path, target_aab_path)
-      UI.success("📦 AAB copied to #{target_aab_path}")
+  private_lane :build_flutter_app_with_logging do |config, build_type, build_logger|
+    # Change to Flutter project root
+    Dir.chdir("../..") do
+      # Get dependencies
+      build_logger.execute_step('Dependencies', 'Installing Flutter dependencies') do
+        command = "flutter pub get"
+        build_logger.log_flutter_command(command, Dir.pwd)
+        
+        output = `#{command} 2>&1`
+        exit_status = $?.exitstatus
+        
+        build_logger.log_command_output(command, output, exit_status)
+        
+        if exit_status != 0
+          raise BuildError.new("Failed to get Flutter dependencies: #{output}")
+        end
+        
+        { dependencies_installed: true }
+      end
+      
+      # Generate code if needed
+      if File.exist?("pubspec.yaml") && File.read("pubspec.yaml").include?("build_runner")
+        build_logger.execute_step('Code Generation', 'Running build_runner for code generation') do
+          command = "flutter packages pub run build_runner build --delete-conflicting-outputs"
+          build_logger.log_flutter_command(command, Dir.pwd)
+          
+          output = `#{command} 2>&1`
+          exit_status = $?.exitstatus
+          
+          build_logger.log_command_output(command, output, exit_status)
+          
+          if exit_status != 0
+            build_logger.log_warning("Code generation failed, continuing build", { 
+              command: command, 
+              output: output 
+            })
+          end
+          
+          { code_generation_completed: true }
+        end
+      end
+      
+      # Increment build number for release builds
+      if build_type == 'release'
+        build_logger.execute_step('Version Management', 'Incrementing build number for release') do
+          version_manager = VersionManager.new(config['environment']['name'], config)
+          old_version = version_manager.get_current_version_info
+          
+          version_manager.increment_build_number
+          
+          new_version = version_manager.get_current_version_info
+          build_logger.log_version_update(
+            "#{old_version[:version_name]} (#{old_version[:version_code]})",
+            "#{new_version[:version_name]} (#{new_version[:version_code]})",
+            'build_number'
+          )
+          
+          { 
+            old_version: old_version,
+            new_version: new_version
+          }
+        end
+      end
+      
+      # Build the app
+      build_logger.execute_step('Flutter Compilation', 'Compiling Flutter application') do
+        build_command = ConfigLoader.get_build_command(config, build_type)
+        build_logger.log_flutter_command(build_command, Dir.pwd)
+        
+        # Execute with real-time output capture
+        output_lines = []
+        exit_status = nil
+        
+        Open3.popen2e(build_command) do |stdin, stdout_err, wait_thr|
+          stdout_err.each_line do |line|
+            output_lines << line
+            # Log important build progress in real-time
+            if line.include?('Building') || line.include?('Compiling') || line.include?('Linking')
+              build_logger.log_debug("Build progress: #{line.strip}")
+            end
+          end
+          exit_status = wait_thr.value.exitstatus
+        end
+        
+        full_output = output_lines.join
+        build_logger.log_command_output(build_command, full_output, exit_status)
+        
+        if exit_status != 0
+          # Analyze build failure
+          if full_output.include?('Gradle')
+            raise BuildError.new("Gradle build failed. Check Android configuration and dependencies.")
+          elsif full_output.include?('Flutter')
+            raise BuildError.new("Flutter compilation failed. Check Dart code and dependencies.")
+          else
+            raise BuildError.new("Build failed with exit status #{exit_status}: #{full_output}")
+          end
+        end
+        
+        # Check if APK/AAB files were generated
+        build_dir = File.join(Dir.pwd, 'build', 'app', 'outputs')
+        apk_files = Dir.glob(File.join(build_dir, '**', '*.apk'))
+        aab_files = Dir.glob(File.join(build_dir, '**', '*.aab'))
+        
+        {
+          build_command: build_command,
+          exit_status: exit_status,
+          apk_files_generated: apk_files.count,
+          aab_files_generated: aab_files.count,
+          output_directory: build_dir
+        }
+      end
     end
   end
+  
+
   
   private_lane :upload_app do |config|
     UI.message("📤 Uploading app...")
@@ -314,7 +522,7 @@ platform :android do
     end
   end
   
-  private_lane :send_build_notifications do |config, build_info, success, error_message = nil|
+  private_lane :send_build_notifications do |config, build_info, success, error_message = nil, artifact_info = nil|
     return unless config && config['notifications']
     
     notifications = config['notifications']
@@ -327,6 +535,29 @@ platform :android do
         message += "\n🔢 Version: #{build_info[:version_name]} (#{build_info[:version_code]})"
         message += "\n🏗️ Build Type: #{build_info[:build_type]}"
         message += "\n⏰ Build Time: #{build_info[:build_time]}"
+      end
+      
+      # Add artifact information if available
+      if artifact_info && artifact_info[:metadata]
+        artifacts = artifact_info[:metadata][:artifacts]
+        if artifacts[:apk_files].any?
+          message += "\n\n📦 APK Files:"
+          artifacts[:apk_files].each do |apk|
+            message += "\n  • #{apk[:filename]} (#{apk[:size_human]})"
+          end
+        end
+        if artifacts[:aab_files].any?
+          message += "\n\n📦 AAB Files:"
+          artifacts[:aab_files].each do |aab|
+            message += "\n  • #{aab[:filename]} (#{aab[:size_human]})"
+          end
+        end
+        
+        # Add build directory info
+        if artifact_info[:build_directory]
+          relative_path = artifact_info[:build_directory].gsub(Dir.pwd + '/../..', '.')
+          message += "\n\n📁 Build Directory: #{relative_path}"
+        end
       end
     else
       message = "❌ Build failed for #{environment} environment"
@@ -424,6 +655,57 @@ platform :android do
     version_manager.show_current_version
   end
   
+  desc "Show version history"
+  lane :version_history do |options|
+    environment = options[:env] || options[:environment] || "development"
+    limit = options[:limit] || 10
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.show_version_history(limit)
+  end
+  
+  desc "Show version statistics"
+  lane :version_stats do |options|
+    environment = options[:env] || options[:environment] || "development"
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.show_version_statistics
+  end
+  
+  desc "Generate changelog from version history"
+  lane :generate_changelog do |options|
+    environment = options[:env] || options[:environment] || "development"
+    since_version = options[:since]
+    output_file = options[:output]
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.generate_changelog(since_version, output_file)
+  end
+  
+  desc "Export version history"
+  lane :export_version_history do |options|
+    environment = options[:env] || options[:environment] || "development"
+    format = options[:format] || "json"
+    output_file = options[:output]
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.export_version_history(format, output_file)
+  end
+  
+  desc "Clean up old version history"
+  lane :cleanup_version_history do |options|
+    environment = options[:env] || options[:environment] || "development"
+    keep_days = options[:keep_days] || 90
+    config = ConfigLoader.load_environment_config(environment)
+    
+    version_manager = VersionManager.new(environment, config)
+    version_manager.cleanup_version_history(keep_days)
+  end
+  
   # Enhanced Security Lanes
   
   desc "Encrypt credentials file"
@@ -498,6 +780,93 @@ platform :android do
     UI.success("✅ Security report generated")
   end
   
+  # CI/CD Integration Lanes
+  
+  desc "Setup CI/CD environment"
+  lane :setup_ci do |options|
+    environment = options[:env] || "development"
+    
+    CIEnvironmentManager.setup_ci_environment(environment)
+  end
+  
+  desc "Validate CI/CD secrets"
+  lane :validate_ci_secrets do |options|
+    environment = options[:env] || "development"
+    
+    CIEnvironmentManager.validate_secrets(environment)
+  end
+  
+  desc "Build for CI/CD with full pipeline"
+  lane :ci_build do |options|
+    environment = options[:env] || "development"
+    build_type = options[:build_type] || "release"
+    upload = options[:upload] || false
+    
+    UI.header("🤖 CI/CD Build Pipeline for #{environment}")
+    
+    begin
+      # Setup CI environment
+      CIEnvironmentManager.setup_ci_environment(environment)
+      
+      # Validate CI secrets
+      CIEnvironmentManager.validate_secrets(environment)
+      
+      # Run the build
+      build(env: environment, build_type: build_type, upload: upload)
+      
+      # Validate artifacts
+      CIArtifactManager.validate_ci_artifacts(environment)
+      
+      # Generate reports
+      CIEnvironmentManager.generate_ci_report(environment)
+      CIArtifactManager.generate_ci_artifact_report(environment)
+      
+      UI.success("✅ CI/CD build pipeline completed successfully")
+      
+    rescue => e
+      UI.error("❌ CI/CD build pipeline failed: #{e.message}")
+      
+      # Cleanup on failure
+      CIEnvironmentManager.cleanup_ci_environment
+      
+      raise e
+    end
+  end
+  
+  desc "Validate CI artifacts"
+  lane :validate_ci_artifacts do |options|
+    environment = options[:env] || "development"
+    build_number = options[:build_number]
+    
+    CIArtifactManager.validate_ci_artifacts(environment, build_number)
+  end
+  
+  desc "Generate CI artifact report"
+  lane :ci_artifact_report do |options|
+    environment = options[:env] || "development"
+    
+    CIArtifactManager.generate_ci_artifact_report(environment)
+  end
+  
+  desc "Cleanup old CI artifacts"
+  lane :cleanup_ci_artifacts do |options|
+    days_to_keep = options[:days] || 30
+    
+    CIArtifactManager.cleanup_old_ci_artifacts(days_to_keep)
+  end
+  
+  desc "Generate CI environment report"
+  lane :ci_report do |options|
+    environment = options[:env] || "development"
+    
+    CIEnvironmentManager.generate_ci_report(environment)
+  end
+  
+  desc "Cleanup CI environment"
+  lane :cleanup_ci do
+    CIEnvironmentManager.cleanup_ci_environment
+  end
+  
   desc "Comprehensive certificate validation"
   lane :comprehensive_cert_validation do |options|
     environment = options[:env] || "development"
@@ -532,6 +901,132 @@ platform :android do
     CredentialManager.setup_ci_credentials(environment)
     
     UI.success("✅ CI/CD credentials setup completed")
+  end
+  
+  # Artifact Management Lanes
+  
+  desc "List recent builds for environment"
+  lane :list_builds do |options|
+    environment = options[:env] || options[:environment] || "development"
+    limit = options[:limit] || 10
+    
+    ArtifactManager.list_builds(environment, limit)
+  end
+  
+  desc "Show latest build information"
+  lane :latest_build do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    UI.header("📋 Latest build info for #{environment}")
+    
+    build_info = ArtifactManager.get_latest_build_info(environment)
+    if build_info
+      UI.message("📱 App: #{build_info['app_name']}")
+      UI.message("🔢 Version: #{build_info['version_name']} (#{build_info['version_code']})")
+      UI.message("🏗️ Build Type: #{build_info['build_type']}")
+      UI.message("⏰ Build Time: #{build_info['build_time']}")
+      UI.message("🌐 API URL: #{build_info['api_base_url']}")
+    else
+      UI.message("No build information found for #{environment}")
+    end
+  end
+  
+  desc "Clean up old build artifacts"
+  lane :cleanup_builds do |options|
+    environment = options[:env] || options[:environment] || "development"
+    keep_days = options[:keep_days] || 30
+    
+    ArtifactManager.cleanup_old_builds(environment, keep_days)
+  end
+  
+  desc "Validate build artifacts"
+  lane :validate_artifacts do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    UI.header("🔍 Validating artifacts for #{environment}")
+    
+    latest_dir = File.join(Dir.pwd, '..', '..', 'build', 'android', environment, 'latest')
+    unless File.exist?(latest_dir)
+      UI.error("No builds found for #{environment}")
+      return
+    end
+    
+    # Read metadata and validate
+    metadata_path = File.join(latest_dir, 'metadata', 'build-info.json')
+    unless File.exist?(metadata_path)
+      UI.error("Build metadata not found")
+      return
+    end
+    
+    begin
+      metadata = JSON.parse(File.read(metadata_path))
+      
+      # Create temporary artifact manager for validation
+      config = ConfigLoader.load_environment_config(environment)
+      artifact_manager = ArtifactManager.new(config, metadata['build_info']['build_type'])
+      artifact_manager.send(:validate_artifacts, latest_dir, metadata.transform_keys(&:to_sym))
+      
+      UI.success("✅ All artifacts are valid")
+    rescue => e
+      UI.error("❌ Artifact validation failed: #{e.message}")
+      raise e
+    end
+  end
+  
+  desc "Generate artifact report"
+  lane :artifact_report do |options|
+    environment = options[:env] || options[:environment] || "development"
+    format = options[:format] || "text"
+    
+    UI.header("📊 Generating artifact report for #{environment}")
+    
+    base_dir = File.join(Dir.pwd, '..', '..', 'build', 'android', environment)
+    unless Dir.exist?(base_dir)
+      UI.message("No builds found for #{environment}")
+      return
+    end
+    
+    builds = Dir.glob(File.join(base_dir, '*'))
+                .select { |path| File.directory?(path) && File.basename(path) != 'latest' }
+                .sort_by { |path| File.basename(path) }
+                .reverse
+    
+    if format == "json"
+      report = {
+        environment: environment,
+        total_builds: builds.count,
+        builds: []
+      }
+      
+      builds.each do |build_dir|
+        build_info_path = File.join(build_dir, 'build-info.json')
+        if File.exist?(build_info_path)
+          build_info = JSON.parse(File.read(build_info_path))
+          report[:builds] << build_info
+        end
+      end
+      
+      report_path = File.join(base_dir, "artifact-report-#{Time.now.strftime('%Y%m%d-%H%M%S')}.json")
+      File.write(report_path, JSON.pretty_generate(report))
+      UI.success("📄 JSON report saved to #{report_path}")
+    else
+      # Text format
+      UI.message("Environment: #{environment}")
+      UI.message("Total builds: #{builds.count}")
+      UI.message("")
+      
+      builds.take(20).each do |build_dir|
+        dir_name = File.basename(build_dir)
+        build_info_path = File.join(build_dir, 'build-info.json')
+        
+        if File.exist?(build_info_path)
+          build_info = JSON.parse(File.read(build_info_path))
+          UI.message("#{dir_name}: v#{build_info['version_name']} (#{build_info['build_type']})")
+        else
+          UI.message("#{dir_name}: (no info)")
+        end
+      end
+    end
   end
   
   desc "Security audit for signing process"
@@ -579,6 +1074,240 @@ platform :android do
     end
   end
   
+  # Error Handling and Debugging Lanes
+  
+  desc "Diagnose environment configuration and setup"
+  lane :diagnose do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    DebugTools.diagnose_environment(environment)
+  end
+  
+  desc "Validate build environment and tools"
+  lane :validate_build_env do
+    DebugTools.validate_build_environment
+  end
+  
+  desc "Analyze recent build failure"
+  lane :analyze_failure do |options|
+    log_file = options[:log_file]
+    
+    DebugTools.analyze_build_failure(log_file)
+  end
+  
+  desc "Check configuration file integrity"
+  lane :check_config do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    DebugTools.check_configuration_integrity(environment)
+  end
+  
+  desc "Test signing configuration"
+  lane :test_signing do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    DebugTools.test_signing_configuration(environment)
+  end
+  
+  desc "Generate comprehensive debug package"
+  lane :debug_package do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    DebugTools.generate_debug_package(environment)
+  end
+  
+  desc "Build with enhanced error handling and recovery"
+  lane :build_safe do |options|
+    environment = options[:env] || options[:environment] || "development"
+    build_type = options[:build_type] || options[:type] || "debug"
+    upload = options[:upload] || false
+    
+    error_handler = ErrorHandler.new(environment, true) # Enable debug mode
+    
+    UI.header("🛡️  Safe build with enhanced error handling for #{environment}")
+    
+    begin
+      # Pre-build diagnostics
+      UI.message("🔍 Running pre-build diagnostics...")
+      diagnosis = DebugTools.diagnose_environment(environment)
+      
+      if diagnosis[:issues].any?
+        high_severity_issues = diagnosis[:issues].select { |issue| issue[:severity] == 'high' }
+        
+        if high_severity_issues.any?
+          UI.error("❌ Found #{high_severity_issues.count} high-severity issues that must be resolved:")
+          high_severity_issues.each do |issue|
+            UI.error("   • #{issue[:message]}")
+          end
+          
+          UI.user_error!("Please resolve high-severity issues before building")
+        else
+          UI.important("⚠️  Found #{diagnosis[:issues].count} issues, but continuing build...")
+        end
+      end
+      
+      # Run the build with error handling
+      build(env: environment, build_type: build_type, upload: upload)
+      
+    rescue => e
+      UI.error("❌ Safe build failed: #{e.message}")
+      
+      # Generate debug package on failure
+      UI.message("📦 Generating debug package for troubleshooting...")
+      debug_package = DebugTools.generate_debug_package(environment)
+      
+      UI.important("🔍 Debug package created at: #{debug_package[:package_dir]}")
+      UI.important("📋 Please review the debug package for troubleshooting information")
+      
+      # Analyze the failure
+      UI.message("🔍 Analyzing build failure...")
+      DebugTools.analyze_build_failure
+      
+      raise e
+    end
+  end
+  
+  desc "Clean build with error recovery"
+  lane :clean_build do |options|
+    environment = options[:env] || options[:environment] || "development"
+    build_type = options[:build_type] || options[:type] || "debug"
+    
+    error_handler = ErrorHandler.new(environment)
+    
+    UI.header("🧹 Clean build with error recovery for #{environment}")
+    
+    error_handler.with_error_handling(operation: 'clean_build') do
+      # Clean everything
+      UI.message("🧹 Cleaning build artifacts...")
+      clean
+      
+      # Clean Flutter cache
+      Dir.chdir("../..") do
+        sh("flutter clean")
+        sh("flutter pub get")
+        
+        # Clear build cache
+        if Dir.exist?("build")
+          FileUtils.rm_rf("build")
+        end
+        
+        # Clear .dart_tool cache
+        if Dir.exist?(".dart_tool")
+          FileUtils.rm_rf(".dart_tool")
+        end
+      end
+      
+      # Clean Android cache
+      Dir.chdir("..") do
+        sh("./gradlew clean") if File.exist?("gradlew")
+      end
+      
+      UI.success("✅ Clean completed successfully")
+      
+      # Run build
+      UI.message("🚀 Starting fresh build...")
+      build(env: environment, build_type: build_type, upload: false)
+    end
+  end
+  
+  desc "Validate and fix common configuration issues"
+  lane :fix_config do |options|
+    environment = options[:env] || options[:environment] || "development"
+    
+    UI.header("🔧 Validating and fixing configuration for #{environment}")
+    
+    error_handler = ErrorHandler.new(environment)
+    
+    begin
+      # Check configuration integrity
+      integrity = DebugTools.check_configuration_integrity(environment)
+      
+      if integrity[:issues].any?
+        UI.message("🔧 Found configuration issues, attempting to fix...")
+        
+        integrity[:issues].each do |issue|
+          case issue[:type]
+          when 'missing_file'
+            UI.message("📄 Creating missing configuration file...")
+            # Create template configuration file
+            create_config_template(environment)
+          when 'missing_section'
+            UI.message("📝 Configuration file exists but has missing sections")
+            UI.important("Please manually add missing sections to the configuration file")
+          when 'invalid_format'
+            UI.message("⚠️  Invalid format detected in configuration")
+            UI.important("Please manually fix format issues in the configuration file")
+          end
+        end
+      else
+        UI.success("✅ Configuration is valid")
+      end
+      
+      # Check signing setup
+      signing_test = DebugTools.test_signing_configuration(environment)
+      
+      if signing_test[:issues].any?
+        UI.message("🔐 Found signing issues, attempting to fix...")
+        
+        signing_test[:issues].each do |issue|
+          case issue[:type]
+          when 'missing_keystore'
+            if environment == 'development'
+              UI.message("🔑 Generating debug keystore...")
+              generate_debug_keystore
+            else
+              UI.important("Please provide keystore file for #{environment} environment")
+            end
+          when 'missing_env_vars'
+            UI.important("Please set required environment variables for signing")
+          end
+        end
+      else
+        UI.success("✅ Signing configuration is valid")
+      end
+      
+    rescue => e
+      error_handler.handle_error(e, { operation: 'fix_config', environment: environment })
+    end
+  end
+  
+  desc "Show detailed build logs"
+  lane :show_logs do |options|
+    environment = options[:env] || options[:environment] || "development"
+    lines = options[:lines] || 50
+    
+    log_dir = File.join(Dir.pwd, '..', '..', 'build', 'build_logs')
+    
+    if Dir.exist?(log_dir)
+      log_files = Dir.glob(File.join(log_dir, "*#{environment}*.log")).sort_by { |f| File.mtime(f) }
+      
+      if log_files.any?
+        latest_log = log_files.last
+        UI.header("📋 Latest build log for #{environment} (#{File.basename(latest_log)})")
+        
+        content = File.readlines(latest_log).last(lines.to_i).join
+        UI.message(content)
+      else
+        UI.message("No build logs found for #{environment}")
+      end
+    else
+      UI.message("Build logs directory not found")
+    end
+  end
+  
+  desc "Enable debug mode for next build"
+  lane :enable_debug do
+    ENV['FASTLANE_DEBUG'] = 'true'
+    UI.success("✅ Debug mode enabled for this session")
+    UI.message("Run any build command to see detailed debug output")
+  end
+  
+  desc "Disable debug mode"
+  lane :disable_debug do
+    ENV['FASTLANE_DEBUG'] = 'false'
+    UI.success("✅ Debug mode disabled")
+  end
+  
   desc "Build with version increment and tag creation"
   lane :build_with_version do |options|
     environment = options[:env] || options[:environment] || "development"
@@ -603,5 +1332,58 @@ platform :android do
       UI.error("❌ Build with version management failed: #{e.message}")
       raise e
     end
+  end
+  
+  # Helper methods for error handling and debugging
+  
+  private_lane :create_config_template do |environment|
+    config_dir = File.join(Dir.pwd, '..', '..', 'config', 'environments')
+    FileUtils.mkdir_p(config_dir)
+    
+    config_file = File.join(config_dir, "#{environment}.yaml")
+    
+    template = <<~YAML
+      # Configuration for #{environment} environment
+      environment:
+        name: "#{environment}"
+        display_name: "CMS #{environment.capitalize}"
+      
+      app:
+        name: "CMS Business"
+        bundle_id: "com.placeholder.module.#{environment}"
+        version_name: "1.0.0"
+        version_code: 1
+      
+      network:
+        api_base_url: "https://api-#{environment}.placeholder.com"
+        websocket_url: "wss://ws-#{environment}.placeholder.com"
+        timeout: 30000
+      
+      build:
+        flavor: "#{environment}"
+        build_type: "#{environment == 'development' ? 'debug' : 'release'}"
+        obfuscate: #{environment == 'production'}
+        shrink_resources: #{environment == 'production'}
+      
+      signing:
+        store_file: "#{environment == 'development' ? 'debug.keystore' : environment + '.keystore'}"
+        store_password_env: "STORE_PASSWORD_#{environment.upcase}"
+        key_alias: "#{environment == 'development' ? 'androiddebugkey' : environment}"
+        key_password_env: "KEY_PASSWORD_#{environment.upcase}"
+      
+      distribution:
+        platform: "google_play"
+        track: "#{environment == 'production' ? 'production' : 'internal'}"
+      
+      notifications:
+        slack_webhook: "SLACK_WEBHOOK_URL"
+        email_recipients: ["dev@placeholder.com"]
+    YAML
+    
+    File.write(config_file, template)
+    UI.success("✅ Created configuration template: #{config_file}")
+    UI.important("📝 Please update the configuration with your actual values")
+    
+    config_file
   end
 end

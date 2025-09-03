@@ -24,6 +24,7 @@ class AppDrawer extends StatelessWidget {
     final hasCustomerManagement = moduleManagement.hasModule('customer_management');
     final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
     final hasVehicleRepairEntry = moduleManagement.hasModule('vehicle_repair_entry');
+    final hasRepairQuoteEntry = moduleManagement.hasModule('repair_quote_entry');
     
     return Drawer(
       child: ListView(
@@ -57,7 +58,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           // Only show Business Management section if CMS modules exist
-          if (hasCustomerManagement || hasSalesDashboard || hasVehicleRepairEntry) ...[
+          if (hasCustomerManagement || hasSalesDashboard || hasVehicleRepairEntry || hasRepairQuoteEntry) ...[
             Divider(),
             _buildSectionHeader('Business Management'),
             if (hasCustomerManagement)
@@ -87,6 +88,16 @@ class AppDrawer extends StatelessWidget {
                 title: 'Vehicle Repair Entry',
                 onTap: () {
                   context.go(AppRoutes.vehicleEntries);
+                  context.canPop();
+                },
+              ),
+            if (hasRepairQuoteEntry)
+              _buildMenuItem(
+                context: context,
+                icon: Icons.build_circle,
+                title: 'Repair & Quote Management',
+                onTap: () {
+                  context.go(AppRoutes.repairQuotes);
                   context.canPop();
                 },
               ),

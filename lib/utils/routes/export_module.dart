@@ -7,3 +7,4 @@ export 'package:cms_auth/cms_auth_module.dart';
 export 'package:sales_dashboard/sales_dashboard_module.dart';
 export 'package:customer_management/customer_management_module.dart';
 export 'package:vehicle_repair_entry/vehicle_repair_entry_module.dart';
+export 'package:repair_quote_entry/repair_quote_entry_module.dart';

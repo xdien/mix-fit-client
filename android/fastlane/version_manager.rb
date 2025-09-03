@@ -1,28 +1,40 @@
 require 'yaml'
 require 'json'
+require_relative 'version_history_manager'
 
 class VersionManager
   def initialize(environment, config)
     @environment = environment
     @config = config
     @project_root = File.join(Dir.pwd, '..', '..')
+    @history_manager = VersionHistoryManager.new(@project_root)
   end
 
   # Increment build number for the current build
   def increment_build_number
     UI.header("🔄 Incrementing build number")
     
-    current_version = get_current_version
-    new_build_number = current_version[:build_number] + 1
+    old_version = get_current_version
+    new_build_number = old_version[:build_number] + 1
     
-    UI.message("Current build number: #{current_version[:build_number]}")
+    UI.message("Current build number: #{old_version[:build_number]}")
     UI.message("New build number: #{new_build_number}")
     
-    update_version_files(new_build_number)
-    commit_version_changes(new_build_number)
-    
-    UI.success("✅ Build number incremented to #{new_build_number}")
-    new_build_number
+    begin
+      update_version_files(new_build_number)
+      commit_version_changes(new_build_number)
+      
+      # Record in history
+      new_version = get_current_version
+      @history_manager.record_version_change(old_version, new_version, 'build_increment', @environment)
+      
+      UI.success("✅ Build number incremented to #{new_build_number}")
+      new_build_number
+    rescue => e
+      UI.error("❌ Failed to increment build number: #{e.message}")
+      UI.message("⚠️ Continuing with current version as per requirement 5.5")
+      old_version[:build_number]
+    end
   end
 
   # Update version name according to semantic versioning
@@ -33,47 +45,110 @@ class VersionManager
       UI.user_error!("Invalid version format: #{version_name}. Expected format: X.Y.Z")
     end
     
-    current_version = get_current_version
+    old_version = get_current_version
     new_version = {
       version_name: version_name,
-      build_number: current_version[:build_number]
+      build_number: old_version[:build_number]
     }
     
-    update_version_files(new_version[:build_number], new_version[:version_name])
-    commit_version_changes(new_version[:build_number], new_version[:version_name])
-    
-    UI.success("✅ Version updated to #{version_name}")
-    new_version
+    begin
+      update_version_files(new_version[:build_number], new_version[:version_name])
+      commit_version_changes(new_version[:build_number], new_version[:version_name])
+      
+      # Record in history
+      @history_manager.record_version_change(old_version, new_version, 'manual', @environment)
+      
+      UI.success("✅ Version updated to #{version_name}")
+      new_version
+    rescue => e
+      UI.error("❌ Failed to update version: #{e.message}")
+      UI.message("⚠️ Continuing with current version as per requirement 5.5")
+      old_version
+    end
   end
 
   # Increment patch version (1.0.0 -> 1.0.1)
   def increment_patch
-    current_version = get_current_version
-    version_parts = current_version[:version_name].split('.')
+    old_version = get_current_version
+    version_parts = old_version[:version_name].split('.')
     new_patch = version_parts[2].to_i + 1
-    new_version = "#{version_parts[0]}.#{version_parts[1]}.#{new_patch}"
+    new_version_name = "#{version_parts[0]}.#{version_parts[1]}.#{new_patch}"
     
-    update_version_name(new_version)
+    begin
+      new_version = {
+        version_name: new_version_name,
+        build_number: old_version[:build_number]
+      }
+      
+      update_version_files(new_version[:build_number], new_version[:version_name])
+      commit_version_changes(new_version[:build_number], new_version[:version_name])
+      
+      # Record in history
+      @history_manager.record_version_change(old_version, new_version, 'patch', @environment)
+      
+      UI.success("✅ Patch version incremented to #{new_version_name}")
+      new_version
+    rescue => e
+      UI.error("❌ Failed to increment patch version: #{e.message}")
+      UI.message("⚠️ Continuing with current version as per requirement 5.5")
+      old_version
+    end
   end
 
   # Increment minor version (1.0.0 -> 1.1.0)
   def increment_minor
-    current_version = get_current_version
-    version_parts = current_version[:version_name].split('.')
+    old_version = get_current_version
+    version_parts = old_version[:version_name].split('.')
     new_minor = version_parts[1].to_i + 1
-    new_version = "#{version_parts[0]}.#{new_minor}.0"
+    new_version_name = "#{version_parts[0]}.#{new_minor}.0"
     
-    update_version_name(new_version)
+    begin
+      new_version = {
+        version_name: new_version_name,
+        build_number: old_version[:build_number]
+      }
+      
+      update_version_files(new_version[:build_number], new_version[:version_name])
+      commit_version_changes(new_version[:build_number], new_version[:version_name])
+      
+      # Record in history
+      @history_manager.record_version_change(old_version, new_version, 'minor', @environment)
+      
+      UI.success("✅ Minor version incremented to #{new_version_name}")
+      new_version
+    rescue => e
+      UI.error("❌ Failed to increment minor version: #{e.message}")
+      UI.message("⚠️ Continuing with current version as per requirement 5.5")
+      old_version
+    end
   end
 
   # Increment major version (1.0.0 -> 2.0.0)
   def increment_major
-    current_version = get_current_version
-    version_parts = current_version[:version_name].split('.')
+    old_version = get_current_version
+    version_parts = old_version[:version_name].split('.')
     new_major = version_parts[0].to_i + 1
-    new_version = "#{new_major}.0.0"
+    new_version_name = "#{new_major}.0.0"
     
-    update_version_name(new_version)
+    begin
+      new_version = {
+        version_name: new_version_name,
+        build_number: old_version[:build_number]
+      }
+      
+      update_version_files(new_version[:build_number], new_version[:version_name])
+      commit_version_changes(new_version[:build_number], new_version[:version_name])
+      
+      # Record in history
+      @history_manager.record_version_change(old_version, new_version, 'major', @environment)
+      
+      UI.success("✅ Major version incremented to #{new_version_name}")
+      new_version
+    rescue => e
+      UI.error("❌ Failed to increment major version: #{e.message}")
+      UI.message("⚠️ Continuing with current version as per requirement 5.5")
+      old_version
+    end
   end
 
   # Create Git tag for the current version
@@ -131,6 +206,7 @@ class VersionManager
     UI.message("Version Name: #{current_version[:version_name]}")
     UI.message("Build Number: #{current_version[:build_number]}")
     UI.message("Full Version: #{current_version[:version_name]}+#{current_version[:build_number]}")
+    UI.message("Environment: #{@environment}")
     
     # Get Git information
     begin
@@ -142,6 +218,90 @@ class VersionManager
     rescue => e
       UI.message("Git Info: Not available")
     end
+    
+    # Show recent version history
+    show_version_history(5)
+  end
+
+  # Show version history
+  def show_version_history(limit = 10)
+    UI.header("📚 Recent version history (last #{limit} changes)")
+    
+    history = @history_manager.get_history(limit)
+    
+    if history.empty?
+      UI.message("No version history available")
+      return
+    end
+    
+    history.reverse.each_with_index do |change, index|
+      timestamp = Time.parse(change['timestamp']).strftime('%Y-%m-%d %H:%M')
+      old_ver = "#{change['old_version']['version_name']}+#{change['old_version']['build_number']}"
+      new_ver = "#{change['new_version']['version_name']}+#{change['new_version']['build_number']}"
+      
+      UI.message("#{index + 1}. #{timestamp} - #{old_ver} → #{new_ver} (#{change['change_type']}) [#{change['environment']}]")
+    end
+  end
+
+  # Show version statistics
+  def show_version_statistics
+    UI.header("📊 Version statistics")
+    
+    stats = @history_manager.get_statistics
+    
+    UI.message("Total version changes: #{stats['total_changes']}")
+    UI.message("Build increments: #{stats['build_increments']}")
+    UI.message("Patch releases: #{stats['patch_releases']}")
+    UI.message("Minor releases: #{stats['minor_releases']}")
+    UI.message("Major releases: #{stats['major_releases']}")
+    UI.message("Manual updates: #{stats['manual_updates']}")
+    
+    if stats['first_recorded']
+      first_date = Time.parse(stats['first_recorded']).strftime('%Y-%m-%d')
+      UI.message("First recorded change: #{first_date}")
+    end
+    
+    if stats['average_days_between_changes']
+      UI.message("Average days between changes: #{stats['average_days_between_changes']}")
+    end
+  end
+
+  # Generate and save changelog
+  def generate_changelog(since_version = nil, output_file = nil)
+    UI.header("📝 Generating changelog")
+    
+    changelog = @history_manager.generate_changelog(since_version)
+    
+    output_file ||= File.join(@project_root, 'CHANGELOG.md')
+    File.write(output_file, changelog)
+    
+    UI.success("✅ Changelog generated: #{output_file}")
+    output_file
+  end
+
+  # Export version history
+  def export_version_history(format = 'json', output_file = nil)
+    UI.header("📤 Exporting version history")
+    
+    exported_file = @history_manager.export_history(format, output_file)
+    UI.success("✅ Version history exported to #{exported_file}")
+    
+    exported_file
+  end
+
+  # Clean up old version history
+  def cleanup_version_history(keep_days = 90)
+    UI.header("🧹 Cleaning up version history")
+    
+    removed_count = @history_manager.cleanup_history(keep_days)
+    
+    if removed_count > 0
+      UI.success("✅ Removed #{removed_count} old version history entries")
+    else
+      UI.message("No old entries to clean up")
+    end
+    
+    removed_count
   end
 
   private
@@ -400,6 +560,158 @@ module Fastlane
 
       def self.description
         "Show current version information"
+      end
+
+      def self.authors
+        ["Version Manager"]
+      end
+
+      def self.is_supported?(platform)
+        [:ios, :android].include?(platform)
+      end
+    end
+
+    class ShowVersionHistoryAction < Action
+      def self.run(params)
+        environment = params[:environment] || "development"
+        limit = params[:limit] || 10
+        config = ConfigLoader.load_environment_config(environment)
+        
+        version_manager = VersionManager.new(environment, config)
+        version_manager.show_version_history(limit)
+      end
+
+      def self.available_options
+        [
+          FastlaneCore::ConfigItem.new(key: :environment, env_name: "FL_ENVIRONMENT", description: "Environment name", optional: true, default_value: "development"),
+          FastlaneCore::ConfigItem.new(key: :limit, env_name: "FL_HISTORY_LIMIT", description: "Number of history entries to show", optional: true, default_value: 10, type: Integer)
+        ]
+      end
+
+      def self.description
+        "Show version history"
+      end
+
+      def self.authors
+        ["Version Manager"]
+      end
+
+      def self.is_supported?(platform)
+        [:ios, :android].include?(platform)
+      end
+    end
+
+    class ShowVersionStatsAction < Action
+      def self.run(params)
+        environment = params[:environment] || "development"
+        config = ConfigLoader.load_environment_config(environment)
+        
+        version_manager = VersionManager.new(environment, config)
+        version_manager.show_version_statistics
+      end
+
+      def self.available_options
+        [
+          FastlaneCore::ConfigItem.new(key: :environment, env_name: "FL_ENVIRONMENT", description: "Environment name", optional: true, default_value: "development")
+        ]
+      end
+
+      def self.description
+        "Show version statistics"
+      end
+
+      def self.authors
+        ["Version Manager"]
+      end
+
+      def self.is_supported?(platform)
+        [:ios, :android].include?(platform)
+      end
+    end
+
+    class GenerateChangelogAction < Action
+      def self.run(params)
+        environment = params[:environment] || "development"
+        since_version = params[:since_version]
+        output_file = params[:output_file]
+        config = ConfigLoader.load_environment_config(environment)
+        
+        version_manager = VersionManager.new(environment, config)
+        version_manager.generate_changelog(since_version, output_file)
+      end
+
+      def self.available_options
+        [
+          FastlaneCore::ConfigItem.new(key: :environment, env_name: "FL_ENVIRONMENT", description: "Environment name", optional: true, default_value: "development"),
+          FastlaneCore::ConfigItem.new(key: :since_version, env_name: "FL_SINCE_VERSION", description: "Generate changelog since this version", optional: true),
+          FastlaneCore::ConfigItem.new(key: :output_file, env_name: "FL_CHANGELOG_OUTPUT", description: "Output file path", optional: true)
+        ]
+      end
+
+      def self.description
+        "Generate changelog from version history"
+      end
+
+      def self.authors
+        ["Version Manager"]
+      end
+
+      def self.is_supported?(platform)
+        [:ios, :android].include?(platform)
+      end
+    end
+
+    class ExportVersionHistoryAction < Action
+      def self.run(params)
+        environment = params[:environment] || "development"
+        format = params[:format] || "json"
+        output_file = params[:output_file]
+        config = ConfigLoader.load_environment_config(environment)
+        
+        version_manager = VersionManager.new(environment, config)
+        version_manager.export_version_history(format, output_file)
+      end
+
+      def self.available_options
+        [
+          FastlaneCore::ConfigItem.new(key: :environment, env_name: "FL_ENVIRONMENT", description: "Environment name", optional: true, default_value: "development"),
+          FastlaneCore::ConfigItem.new(key: :format, env_name: "FL_EXPORT_FORMAT", description: "Export format (json, csv, markdown)", optional: true, default_value: "json"),
+          FastlaneCore::ConfigItem.new(key: :output_file, env_name: "FL_EXPORT_OUTPUT", description: "Output file path", optional: true)
+        ]
+      end
+
+      def self.description
+        "Export version history to file"
+      end
+
+      def self.authors
+        ["Version Manager"]
+      end
+
+      def self.is_supported?(platform)
+        [:ios, :android].include?(platform)
+      end
+    end
+
+    class CleanupVersionHistoryAction < Action
+      def self.run(params)
+        environment = params[:environment] || "development"
+        keep_days = params[:keep_days] || 90
+        config = ConfigLoader.load_environment_config(environment)
+        
+        version_manager = VersionManager.new(environment, config)
+        version_manager.cleanup_version_history(keep_days)
+      end
+
+      def self.available_options
+        [
+          FastlaneCore::ConfigItem.new(key: :environment, env_name: "FL_ENVIRONMENT", description: "Environment name", optional: true, default_value: "development"),
+          FastlaneCore::ConfigItem.new(key: :keep_days, env_name: "FL_KEEP_DAYS", description: "Number of days to keep in history", optional: true, default_value: 90, type: Integer)
+        ]
+      end
+
+      def self.description
+        "Clean up old version history entries"
       end
 
       def self.authors

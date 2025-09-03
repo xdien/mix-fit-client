@@ -175,6 +175,46 @@ Create Git tag for current version
 
 Show current version information
 
+### android version_history
+
+```sh
+[bundle exec] fastlane android version_history
+```
+
+Show version history
+
+### android version_stats
+
+```sh
+[bundle exec] fastlane android version_stats
+```
+
+Show version statistics
+
+### android generate_changelog
+
+```sh
+[bundle exec] fastlane android generate_changelog
+```
+
+Generate changelog from version history
+
+### android export_version_history
+
+```sh
+[bundle exec] fastlane android export_version_history
+```
+
+Export version history
+
+### android cleanup_version_history
+
+```sh
+[bundle exec] fastlane android cleanup_version_history
+```
+
+Clean up old version history
+
 ### android encrypt_credentials
 
 ```sh
@@ -222,6 +262,46 @@ Comprehensive certificate validation
 ```
 
 Setup CI/CD credentials
+
+### android list_builds
+
+```sh
+[bundle exec] fastlane android list_builds
+```
+
+List recent builds for environment
+
+### android latest_build
+
+```sh
+[bundle exec] fastlane android latest_build
+```
+
+Show latest build information
+
+### android cleanup_builds
+
+```sh
+[bundle exec] fastlane android cleanup_builds
+```
+
+Clean up old build artifacts
+
+### android validate_artifacts
+
+```sh
+[bundle exec] fastlane android validate_artifacts
+```
+
+Validate build artifacts
+
+### android artifact_report
+
+```sh
+[bundle exec] fastlane android artifact_report
+```
+
+Generate artifact report
 
 ### android security_audit
 
