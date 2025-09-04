@@ -43,13 +43,13 @@ class ModuleManager {
         }
         
         // Check if sales_dashboard module directory exists
-        final salesDashboardDir = Directory('modules/cms/sales_dashboard');
-        if (await salesDashboardDir.exists()) {
-          ModuleFactory.register('sales_dashboard', () => CmsSalesDashboardModule());
-          _registerModule(CmsSalesDashboardModule());
-          // Sync with shared module management
-          ModuleManagement.instance.setModuleAvailability('sales_dashboard', true);
-        }
+        // final salesDashboardDir = Directory('modules/cms/sales_dashboard');
+        // if (await salesDashboardDir.exists()) {
+        //   ModuleFactory.register('sales_dashboard', () => CmsSalesDashboardModule());
+        //   _registerModule(CmsSalesDashboardModule());
+        //   // Sync with shared module management
+        //   ModuleManagement.instance.setModuleAvailability('sales_dashboard', true);
+        // }
         
         // Check if vehicle_repair_entry module directory exists
         final vehicleRepairEntryDir = Directory('modules/cms/vehicle_repair_entry');
@@ -61,13 +61,13 @@ class ModuleManager {
         }
         
         // Check if repair_quote_entry module directory exists
-        final repairQuoteEntryDir = Directory('modules/cms/repair_quote_entry');
-        if (await repairQuoteEntryDir.exists()) {
-          ModuleFactory.register('repair_quote_entry', () => RepairQuoteEntryModule());
-          _registerModule(RepairQuoteEntryModule());
-          // Sync with shared module management
-          ModuleManagement.instance.setModuleAvailability('repair_quote_entry', true);
-        }
+        // final repairQuoteEntryDir = Directory('modules/cms/repair_quote_entry');
+        // if (await repairQuoteEntryDir.exists()) {
+        //   ModuleFactory.register('repair_quote_entry', () => RepairQuoteEntryModule());
+        //   _registerModule(RepairQuoteEntryModule());
+        //   // Sync with shared module management
+        //   ModuleManagement.instance.setModuleAvailability('repair_quote_entry', true);
+        // }
       }
     } catch (e) {
       print('Error checking CMS modules: $e');
@@ -315,8 +315,8 @@ class ModuleManager {
       // Fallback nếu không có conditional import phù hợp
       print('Using stub module for: $moduleName');
       switch (moduleName) {
-        case 'cms_auth':
-          return CmsAuthModule();
+        // case 'cms_auth':
+        //   return CmsAuthModule();
         // Thêm các trường hợp khác nếu cần
         default:
           print('No stub available for module: $moduleName');

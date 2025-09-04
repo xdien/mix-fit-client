@@ -1,5 +1,7 @@
 import 'package:core/base_module.dart';
 import 'export_module.dart';
+import 'stub_modules/cms_auth_stub.dart';
+import 'stub_modules/cms_sales_dashboard_stub.dart';
 
 class ModuleFactory {
   static final Map<String, BaseModule Function()> _factories = {};

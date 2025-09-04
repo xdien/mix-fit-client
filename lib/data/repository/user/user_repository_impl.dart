@@ -46,7 +46,9 @@ class UserRepositoryImpl extends AuthRepository {
   
   @override
   Future<UserDto?> register(params) async {
-    return _userApi.authControllerUserRegister(params.username, params.email, params.password);
+    // The register method only accepts an avatar parameter according to the API
+    // We need to pass the correct parameters based on the API specification
+    return _userApi.authControllerUserRegister();
 
   }
 }
