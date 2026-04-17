@@ -1,0 +1,23 @@
+name: iot
+publish_to: 'none'
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  go_router: ^14.8.0
+  get_it: ^8.0.3
+  fl_chart: ^0.70.2
+  flutter_mobx: ^2.0.6+5
+  mobx: ^2.1.4
+  core:
+    path: ../../shared/core
+  api_client:
+    path: ../../shared/api_client
+  setting:
+    path: ../../shared/setting
+  app_drawer:
+    path: ../../shared/app_drawer
+
+dev_dependencies:
+  mobx_codegen: ^2.2.0
+  build_runner: ^2.1.4

@@ -1,10 +1,10 @@
+import 'package:auth/domain/usecase/is_logged_in_usecase.dart';
+import 'package:constants/app_routes.dart';
+import 'package:core/domain/usecase/use_case.dart';
+import 'package:core/managers/connection_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mix_fit/constants/app_routes.dart';
-
-import '../../core/managers/connection_manager.dart';
 import '../../di/service_locator.dart';
-import '../login/store/login_store.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,8 +12,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final IsLoggedInUseCase isLoggedInUseCase = getIt<IsLoggedInUseCase>();
+
   @override
-  final UserStore _userStore = getIt<UserStore>();
   void initState() {
     super.initState();
     _checkAuthAndNavigate();
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final ConnectionManager connectionManager = getIt<ConnectionManager>();
     await Future.delayed(Duration(seconds: 2));
 
-    if (_userStore.isLoggedIn) {
+    if (await isLoggedInUseCase.call(params: NoParams())) {
       connectionManager.initialize();
       context.go(AppRoutes.home);
     } else {

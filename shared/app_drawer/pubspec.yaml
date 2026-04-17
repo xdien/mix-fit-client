@@ -1,0 +1,24 @@
+name: app_drawer
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  flutter_mobx: ^2.0.6+5
+  mobx: ^2.1.4
+
+  flutter:
+    sdk: flutter
+  data:
+    path: ../data
+  constants:
+    path: ../constants
+  setting:
+    path: ../setting
+  iot:
+    path: ../../modules/iot
+
+dev_dependencies:
+  drift_dev: ^2.23.0
+  mobx_codegen: ^2.2.0
+  build_runner: ^2.1.4
