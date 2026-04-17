@@ -1,0 +1,107 @@
+{
+  "routes": {
+    "iot": {
+      "device-list": {
+        "screen": "DeviceListScreen",
+        "permissions": ["iot.view"],
+        "parameters": {
+          "type": {
+            "required": false,
+            "type": "string",
+            "description": "Filter devices by type"
+          },
+          "status": {
+            "required": false,
+            "type": "string",
+            "description": "Filter devices by status"
+          }
+        },
+        "requiresAuth": true
+      },
+      "device-detail": {
+        "screen": "DeviceDetailScreen",
+        "permissions": ["iot.view"],
+        "parameters": {
+          "id": {
+            "required": true,
+            "type": "string",
+            "description": "Device ID to display"
+          }
+        },
+        "requiresAuth": true
+      },
+      "monitoring": {
+        "screen": "MonitoringScreen",
+        "permissions": ["iot.monitor"],
+        "parameters": {
+          "dashboard": {
+            "required": false,
+            "type": "string",
+            "defaultValue": "main",
+            "description": "Dashboard to display"
+          },
+          "timerange": {
+            "required": false,
+            "type": "string",
+            "defaultValue": "24h",
+            "pattern": "^(1h|6h|12h|24h|7d|30d)$",
+            "description": "Time range for monitoring data"
+          }
+        },
+        "requiresAuth": true
+      }
+    },
+    "settings": {
+      "preferences": {
+        "screen": "PreferencesScreen",
+        "permissions": ["settings.view"],
+        "parameters": {},
+        "requiresAuth": true
+      },
+      "profile": {
+        "screen": "ProfileScreen",
+        "permissions": ["user.profile"],
+        "parameters": {},
+        "requiresAuth": true
+      }
+    },
+    "cms": {
+      "nhan-su": {
+        "screen": "NhanSuScreen",
+        "permissions": ["cms.nhansu.view"],
+        "parameters": {
+          "tab": {
+            "required": false,
+            "type": "string",
+            "defaultValue": "list",
+            "description": "Tab to display (list, add, edit)"
+          }
+        },
+        "requiresAuth": true
+      },
+      "kinh-doanh": {
+        "screen": "KinhDoanhScreen",
+        "permissions": ["cms.kinhdoanh.view"],
+        "parameters": {
+          "module": {
+            "required": false,
+            "type": "string",
+            "description": "Business module to display"
+          }
+        },
+        "requiresAuth": true
+      }
+    }
+  },
+  "fallbacks": {
+    "default": "DashboardScreen",
+    "permission_denied": "AccessDeniedScreen",
+    "not_found": "NotFoundScreen",
+    "error": "ErrorScreen"
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Cross-platform deeplink route configuration",
+    "lastUpdated": "2025-01-08"
+  }
+}

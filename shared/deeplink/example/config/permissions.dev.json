@@ -1,0 +1,72 @@
+{
+  "permissions": {
+    "iot.view": {
+      "description": "View IoT devices and data",
+      "category": "iot",
+      "roles": ["dev_user"]
+    },
+    "iot.monitor": {
+      "description": "Access IoT monitoring features",
+      "category": "iot",
+      "roles": ["dev_user"]
+    },
+    "iot.control": {
+      "description": "Control IoT devices",
+      "category": "iot",
+      "roles": ["dev_user"]
+    },
+    "settings.view": {
+      "description": "View application settings",
+      "category": "settings",
+      "roles": ["dev_user"]
+    },
+    "settings.edit": {
+      "description": "Edit application settings",
+      "category": "settings",
+      "roles": ["dev_user"]
+    },
+    "user.profile": {
+      "description": "Access user profile",
+      "category": "user",
+      "roles": ["dev_user"]
+    },
+    "cms.nhansu.view": {
+      "description": "View human resources module",
+      "category": "cms",
+      "roles": ["dev_user"]
+    },
+    "cms.nhansu.edit": {
+      "description": "Edit human resources data",
+      "category": "cms",
+      "roles": ["dev_user"]
+    },
+    "cms.kinhdoanh.view": {
+      "description": "View business management module",
+      "category": "cms",
+      "roles": ["dev_user"]
+    },
+    "cms.kinhdoanh.edit": {
+      "description": "Edit business management data",
+      "category": "cms",
+      "roles": ["dev_user"]
+    },
+    "debug.access": {
+      "description": "Access debug features",
+      "category": "debug",
+      "roles": ["dev_user"]
+    }
+  },
+  "roles": {
+    "dev_user": {
+      "permissions": ["*"],
+      "description": "Development user with full access for testing",
+      "isSystem": false
+    }
+  },
+  "metadata": {
+    "version": "1.0.0-dev",
+    "description": "Development environment deeplink permission configuration",
+    "lastUpdated": "2025-01-08",
+    "environment": "development"
+  }
+}

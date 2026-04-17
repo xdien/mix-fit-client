@@ -1,4 +1,4 @@
-platform :osx, '10.14'
+platform :osx, '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -39,5 +39,15 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_macos_build_settings(target)
+    
+    # Fix SQLite MIN macro conflict on macOS
+    if target.name == 'sqlite3'
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'MIN(a,b)=((a)<(b)?(a):(b))'
+        config.build_settings['OTHER_CFLAGS'] ||= []
+        config.build_settings['OTHER_CFLAGS'] << '-Wno-ambiguous-macro'
+      end
+    end
   end
 end

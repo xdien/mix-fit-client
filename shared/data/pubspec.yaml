@@ -13,3 +13,23 @@ dependencies:
   event_bus: ^2.0.0
   flutter_mobx: ^2.0.6+5
   mobx: ^2.1.4
+  socket_io_client: ^3.0.2
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
+  drift: ^2.23.0
+  drift_flutter: ^0.2.4
+  path_provider: ^2.0.14
+  path: ^1.8.3
+  uuid: ^4.5.1
+  app_config:
+    path: ../app_config
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.4.7
+  json_serializable: ^6.7.1
+  build_runner: ^2.4.7
+  drift_dev: ^2.23.0
+  mockito: ^5.4.6
+  mobx_codegen: ^2.1.1

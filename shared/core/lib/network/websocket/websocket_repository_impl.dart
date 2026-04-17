@@ -1,8 +1,8 @@
 import '../../domain/repository/websocket_repository.dart';
-import 'websocket_service.dart';
+import 'package:data/websocket/websocket.dart';
 
 class WebSocketRepositoryImpl implements WebSocketRepository {
-  final SocketService _service;
+  final IWebSocketService _service;
 
   WebSocketRepositoryImpl(this._service);
 
@@ -19,13 +19,13 @@ class WebSocketRepositoryImpl implements WebSocketRepository {
 
   @override
   Stream<bool> getConnectionStatus() {
-    return _service.statusStream.map((status) => 
-      status == SocketStatus.connected
+    return _service.connectionState.map((state) => 
+      state == WebSocketConnectionState.connected
     );
   }
 
   @override
-  Future<bool> isConnected() {
-    throw _service.status == SocketStatus.connected;
+  Future<bool> isConnected() async {
+    return _service.currentState == WebSocketConnectionState.connected;
   }
 }

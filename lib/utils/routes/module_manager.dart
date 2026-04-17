@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:core/base_module.dart';
+import 'package:core/module_management.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_screen/home_screen_module.dart';
@@ -24,15 +25,64 @@ class ModuleManager {
 
     _registerModule(HomeScreenModule());
     _registerModule(IotModule());
-
-    // Load và đăng ký các module động
+    
+    // Only register CMS modules if they actually exist
     await _loadPrivateModules();
+    
+    // Register built-in CMS modules only if the private modules directory exists
+    try {
+      final privateModulesDir = Directory('modules/cms');
+      if (await privateModulesDir.exists()) {
+        // Check if customer_management module directory exists
+        final customerManagementDir = Directory('modules/cms/customer_management');
+        if (await customerManagementDir.exists()) {
+          ModuleFactory.register('customer_management', () => CustomerManagementModule());
+          _registerModule(CustomerManagementModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('customer_management', true);
+        }
+        
+        // Check if sales_dashboard module directory exists
+        // final salesDashboardDir = Directory('modules/cms/sales_dashboard');
+        // if (await salesDashboardDir.exists()) {
+        //   ModuleFactory.register('sales_dashboard', () => CmsSalesDashboardModule());
+        //   _registerModule(CmsSalesDashboardModule());
+        //   // Sync with shared module management
+        //   ModuleManagement.instance.setModuleAvailability('sales_dashboard', true);
+        // }
+        
+        // Check if vehicle_repair_entry module directory exists
+        final vehicleRepairEntryDir = Directory('modules/cms/vehicle_repair_entry');
+        if (await vehicleRepairEntryDir.exists()) {
+          ModuleFactory.register('vehicle_repair_entry', () => VehicleRepairEntryModule());
+          _registerModule(VehicleRepairEntryModule());
+          // Sync with shared module management
+          ModuleManagement.instance.setModuleAvailability('vehicle_repair_entry', true);
+        }
+        
+        // Check if repair_quote_entry module directory exists
+        // final repairQuoteEntryDir = Directory('modules/cms/repair_quote_entry');
+        // if (await repairQuoteEntryDir.exists()) {
+        //   ModuleFactory.register('repair_quote_entry', () => RepairQuoteEntryModule());
+        //   _registerModule(RepairQuoteEntryModule());
+        //   // Sync with shared module management
+        //   ModuleManagement.instance.setModuleAvailability('repair_quote_entry', true);
+        // }
+      }
+    } catch (e) {
+      print('Error checking CMS modules: $e');
+    }
+    
+    // Always set IoT module as available
+    ModuleManagement.instance.setModuleAvailability('iot', true);
+    ModuleManagement.instance.setModuleAvailability('home_screen', true);
   }
 
   // Đăng ký các built-in modules vào factory
   void _registerBuiltInModuleFactories() {
     ModuleFactory.register('home_screen', () => HomeScreenModule());
     ModuleFactory.register('iot', () => IotModule());
+    // CMS modules will be registered conditionally when they exist
   }
 
   Future<void> _loadPrivateModules() async {
@@ -265,8 +315,8 @@ class ModuleManager {
       // Fallback nếu không có conditional import phù hợp
       print('Using stub module for: $moduleName');
       switch (moduleName) {
-        case 'cms_auth':
-          return CmsAuthModule();
+        // case 'cms_auth':
+        //   return CmsAuthModule();
         // Thêm các trường hợp khác nếu cần
         default:
           print('No stub available for module: $moduleName');

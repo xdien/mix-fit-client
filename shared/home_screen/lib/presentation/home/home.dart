@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:core/module_management.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).translate('home_tv_posts')),
-      // actions: _buildActions(context),
+      actions: _buildActions(context),
     );
   }
 
@@ -90,22 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _showDialog<String>(
       context: context,
       child: AlertDialog(
-        // borderRadius: 5.0,
-        // enableFullWidth: true,
-
         title: Text(
           AppLocalizations.of(context).translate('home_tv_choose_language'),
         ),
-        // headerColor: Theme.of(context).primaryColor,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        // closeButtonColor: Colors.white,
-        // enableCloseButton: true,
-        // enableBackButton: false,
-        // onCloseButtonClicked: () {
-        //   Navigator.of(context).pop();
-        // },
         actions: _languageStore.supportedLanguages
-            // children: _languageStore.supportedLanguages
             .map(
               (object) => ListTile(
                 dense: true,
@@ -122,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pop();
-                  // change user language based on selected locale
                   _languageStore.changeLanguage(object.locale);
                 },
               ),
@@ -142,18 +131,314 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _bodyBuilder() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Welcome section
+          _buildWelcomeSection(),
+          SizedBox(height: 32.0),
+          
+          // Module Overview
+          _buildModuleOverview(),
+          SizedBox(height: 32.0),
+          
+          // Quick Actions
+          _buildQuickActions(),
+          SizedBox(height: 32.0),
+          
+          // System Overview
+          _buildSystemOverview(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWelcomeSection() {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: [
+          Icon(
+            Icons.dashboard,
+            size: 64,
+            color: Colors.blue[600],
+          ),
+          SizedBox(height: 16),
           Text(
             AppLocalizations.of(context).translate('home_tv_welcome'),
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 28.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[600],
+            ),
+          ),
+          SizedBox(height: 8.0),
+          Text(
+            'System Management Dashboard',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModuleOverview() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
+    
+    // Build list of available modules
+    final List<Widget> moduleCards = [
+      _buildModuleCard(
+        title: 'IoT Dashboard',
+        subtitle: 'Device monitoring and control',
+        icon: Icons.sensors,
+        color: Colors.blue,
+        onTap: () => context.go('/iot-dashboard'),
+      ),
+    ];
+
+    // Add CMS modules only if they exist
+    if (hasCustomerManagement) {
+      moduleCards.add(
+        _buildModuleCard(
+          title: 'Customer Management',
+          subtitle: 'Manage customer data',
+          icon: Icons.people,
+          color: Colors.green,
+          onTap: () => context.push(AppRoutes.customers),
+        ),
+      );
+    }
+
+    if (hasSalesDashboard) {
+      moduleCards.add(
+        _buildModuleCard(
+          title: 'Sales Dashboard',
+          subtitle: 'Business analytics',
+          icon: Icons.analytics,
+          color: Colors.orange,
+          onTap: () => context.go('/sales_dashboard'),
+        ),
+      );
+    }
+
+    // Always add settings
+    moduleCards.add(
+      _buildModuleCard(
+        title: 'System Settings',
+        subtitle: 'Configure application',
+        icon: Icons.settings,
+        color: Colors.purple,
+        onTap: () => context.push(AppRoutes.settings),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Available Modules',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 1.2,
+          children: moduleCards,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModuleCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  size: 32,
+                  color: color,
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Actions',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionButton(
+                title: 'IoT Dashboard',
+                icon: Icons.sensors,
+                onTap: () => context.go('/iot-dashboard'),
+              ),
+            ),
+            if (hasCustomerManagement) ...[
+              SizedBox(width: 16),
+              Expanded(
+                child: _buildActionButton(
+                  title: 'Customers',
+                  icon: Icons.people,
+                  onTap: () => context.push(AppRoutes.customers),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(title),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSystemOverview() {
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
+    
+    // Count active modules
+    int activeModules = 1; // IoT module is always available
+    if (hasCustomerManagement) activeModules++;
+    if (hasSalesDashboard) activeModules++;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'System Overview',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _buildOverviewRow('Active Modules', '$activeModules', Colors.green),
+                Divider(),
+                _buildOverviewRow('Total Users', '12', Colors.blue),
+                Divider(),
+                _buildOverviewRow('System Status', 'Online', Colors.green),
+                Divider(),
+                _buildOverviewRow('Last Update', 'Just now', Colors.blue),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverviewRow(String label, String value, Color valueColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              color: valueColor,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20.0)
         ],
       ),
     );

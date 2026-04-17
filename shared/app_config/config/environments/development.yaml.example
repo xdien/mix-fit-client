@@ -1,0 +1,52 @@
+environment:
+  name: development
+  display_name: Development
+
+app:
+  name: Mix Fit
+  bundle_id: com.xdien.mixfit.dev
+  version_name: 1.0.0
+  version_code: 1
+
+network:
+  api_base_url: http://localhost:3000/api
+  websocket_url: http://localhost:3000
+  timeout: 30000
+
+websocket:
+  enabled: true
+  auto_connect: true
+  reconnect_interval: 5000
+  max_reconnect_attempts: 5
+  heartbeat_interval: 30000
+  connection_timeout: 10000
+  message_queue_size: 1000
+  channels:
+    - "iot"
+    - "notifications"
+    - "system"
+  features:
+    real_time_updates: true
+    offline_support: true
+    background_sync: true
+    push_notifications: true
+
+build:
+  flavor: development
+  build_type: debug
+  obfuscate: false
+  shrink_resources: false
+
+signing:
+  store_file: null
+  store_password_env: null
+  key_alias: null
+  key_password_env: null
+
+distribution:
+  platform: null
+  track: null
+
+notifications:
+  slack_webhook: null
+  email_recipients: []

@@ -14,6 +14,8 @@ import '../../presentation/login/login.dart';
 import '../../presentation/register/register_screen.dart';
 import '../../presentation/settings/setting_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
+
+import '../../presentation/widgets/app_layout.dart';
 import 'module_manager.dart';
 
 class AppRouter {
@@ -23,18 +25,14 @@ class AppRouter {
   // Shell route cho layout chung (drawer, bottom nav...)
   static final shellRoute = ShellRoute(
     builder: (context, state, child) {
-      return Scaffold(
+      return AppLayout(
         drawer: AppDrawer(
           themeStore: GetIt.instance<ThemeStore>(),
         ),
-        body: child,
+        child: child,
       );
     },
     routes: [
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => HomeScreen(),
-      ),
       ...ModuleManager.instance.getModuleRoutes(),
       GoRoute(
         path: AppRoutes.settings,

@@ -4,6 +4,7 @@ inputSpec: http://localhost:3000/documentation-json
 generatorName: dart
 globalProperties:
   generateGitIgnoreFile: true
+  skipValidateSpec: true
 additionalProperties:
   pubName: api_client
   pubVersion: 1.0.0

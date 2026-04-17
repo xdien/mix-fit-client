@@ -78,23 +78,69 @@ lib/
 git clone https://github.com/xdien/mit-fix.git
 ```
 
-2. Install dependencies:
+2. Setup development configuration:
+
+```bash
+cd frontend
+./scripts/setup_dev_config.sh
+```
+
+3. Install dependencies:
 
 ```bash
 flutter pub get
 ```
 
-3. Run code generation:
+4. Run code generation:
 
 ```bash
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
-4. Run the app:
+5. Start backend services (in another terminal):
 
 ```bash
-flutter run
+cd ../backend
+./start-ankhanh.sh
+yarn start:dev
 ```
+
+6. Run the app:
+
+```bash
+flutter run -d linux
+```
+
+## 🔧 Development Configuration
+
+The application uses environment-specific configuration files located in `config/environments/`:
+
+- `development.yaml.example` - Template for development environment
+- `development.yaml` - Your local development configuration (gitignored)
+- `staging.yaml` - Staging environment configuration (gitignored)
+- `production.yaml` - Production environment configuration (gitignored)
+
+### Initial Setup
+
+### WebSocket Configuration
+
+For local development with WebSocket support:
+
+1. **Ensure backend is running** on `localhost:3000`
+2. **Verify WebSocket configuration** in `config/environments/development.yaml`:
+   ```yaml
+   network:
+     api_base_url: http://localhost:3000/api
+     websocket_url: ws://localhost:3000
+   ```
+
+3. **Test WebSocket connection**:
+   ```bash
+   # From backend directory
+   node test-ankhanh-websocket.js
+   ```
+
+For more details, see [Environment Configuration Guide](config/environments/README.md).
 
 ## 🧪 Testing
 

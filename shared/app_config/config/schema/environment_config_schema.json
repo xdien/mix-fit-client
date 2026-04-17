@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["environment", "app", "network"],
+  "properties": {
+    "environment": {
+      "type": "object",
+      "required": ["name", "display_name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["development", "staging", "production"]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "app": {
+      "type": "object",
+      "required": ["name", "bundle_id"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bundle_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+[0-9a-z_]$"
+        },
+        "version_name": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "version_code": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": ["api_base_url"],
+      "properties": {
+        "api_base_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "websocket_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1000
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "flavor": {
+          "type": "string",
+          "enum": ["development", "staging", "production"]
+        },
+        "build_type": {
+          "type": "string",
+          "enum": ["debug", "release"]
+        },
+        "obfuscate": {
+          "type": "boolean"
+        },
+        "shrink_resources": {
+          "type": "boolean"
+        }
+      }
+    },
+    "signing": {
+      "type": "object",
+      "properties": {
+        "store_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "store_password_env": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_password_env": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "distribution": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": ["google_play", "internal", "firebase"]
+        },
+        "track": {
+          "type": "string",
+          "enum": ["production", "internal", "alpha", "beta"]
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "slack_webhook": {
+          "type": "string",
+          "minLength": 1
+        },
+        "email_recipients": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    }
+  }
+}

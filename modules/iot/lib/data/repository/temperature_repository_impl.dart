@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:api_client/api.dart';
-import 'package:core/network/websocket/websocket_service.dart';
+import 'package:data/websocket/websocket.dart';
 
 import '../../domain/repository/i_liquor_kiln_repostitory.dart';
 
 class TemperatureRepositoryImpl implements ILiquorKilnRepository {
-  final SocketService _service;
+  final IWebSocketService _service;
   final _temperatureController =
       StreamController<SensorDataEventDto>.broadcast();
   final _onlineStatus =
@@ -37,13 +37,13 @@ class TemperatureRepositoryImpl implements ILiquorKilnRepository {
   
   @override
   Stream<SensorDataEventDto> getLiquorKilnKStream(String deviceId) {
-    _service.on(IoTEvents.sensorDataMonitoring.value+"/" + deviceId, _handleTemperatureEvent);
+    _service.subscribe(IoTEvents.sensorDataMonitoring.value+"/" + deviceId, _handleTemperatureEvent);
     return _temperatureController.stream;
   }
   
   @override
   Stream<DeviceStatusEventDto> getDeviceOnlineStatus(String deviceId) {
-    _service.on(IoTEvents.controlStatus.value+"/" + deviceId, _handleOnlineStatusEvent);
+    _service.subscribe(IoTEvents.controlStatus.value+"/" + deviceId, _handleOnlineStatusEvent);
     return _onlineStatus.stream;
   }
   

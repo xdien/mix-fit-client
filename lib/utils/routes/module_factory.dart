@@ -1,5 +1,7 @@
 import 'package:core/base_module.dart';
 import 'export_module.dart';
+import 'stub_modules/cms_auth_stub.dart';
+import 'stub_modules/cms_sales_dashboard_stub.dart';
 
 class ModuleFactory {
   static final Map<String, BaseModule Function()> _factories = {};
@@ -53,6 +55,10 @@ class ModuleFactory {
           return CmsAuthModule();
       case 'sales_dashboard':
           return CmsSalesDashboardModule();
+      case 'customer_management':
+          return CustomerManagementModule();
+      case 'vehicle_repair_entry':
+          return VehicleRepairEntryModule();
         
       default:
         print('No specific handler for module type: $moduleName');

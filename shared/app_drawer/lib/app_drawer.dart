@@ -2,12 +2,12 @@
 import 'package:constants/app_routes.dart';
 import 'package:data/sharedpref/constants/preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:iot/iot_routes.dart';
 import 'package:setting/locale/app_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:setting/theme_store.dart';
+import 'package:core/module_management.dart';
 
 class AppDrawer extends StatelessWidget {
   final ThemeStore themeStore;
@@ -20,6 +20,12 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final moduleManagement = ModuleManagement.instance;
+    final hasCustomerManagement = moduleManagement.hasModule('customer_management');
+    final hasSalesDashboard = moduleManagement.hasModule('sales_dashboard');
+    final hasVehicleRepairEntry = moduleManagement.hasModule('vehicle_repair_entry');
+    final hasRepairQuoteEntry = moduleManagement.hasModule('repair_quote_entry');
+    
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -31,23 +37,72 @@ class AppDrawer extends StatelessWidget {
             title: localizations.translate('home_title'),
             onTap: () => context.canPop(),
           ),
+          Divider(),
+          _buildSectionHeader('IoT Management'),
+          _buildMenuItem(
+            context: context,
+            icon: Icons.sensors,
+            title: 'IoT Dashboard',
+            onTap: () {
+              context.go('/iot-dashboard');
+              context.canPop();
+            },
+          ),
           _buildMenuItem(
             context: context,
             icon: Icons.attractions_sharp,
             title: localizations.translate('app_drawer_liquor_kiln'),
             onTap: () {
-              context.go(IotRoutes.liquorKiln);
-            },
-          ),
-          _buildMenuItem(
-            context: context,
-            icon: Icons.dashboard,
-            title: "Sales dashboard",
-            onTap: () {
-              context.go("/sales_dashboard");
+              context.go('/liquor-kiln');
               context.canPop();
             },
           ),
+          // Only show Business Management section if CMS modules exist
+          if (hasCustomerManagement || hasSalesDashboard || hasVehicleRepairEntry || hasRepairQuoteEntry) ...[
+            Divider(),
+            _buildSectionHeader('Business Management'),
+            if (hasCustomerManagement)
+              _buildMenuItem(
+                context: context,
+                icon: Icons.people,
+                title: 'Customer Management',
+                onTap: () {
+                  context.go(AppRoutes.customers);
+                  context.canPop();
+                },
+              ),
+            if (hasSalesDashboard)
+              _buildMenuItem(
+                context: context,
+                icon: Icons.dashboard,
+                title: "Sales Dashboard",
+                onTap: () {
+                  context.go("/sales_dashboard");
+                  context.canPop();
+                },
+              ),
+            if (hasVehicleRepairEntry)
+              _buildMenuItem(
+                context: context,
+                icon: Icons.car_repair,
+                title: 'Vehicle Repair Entry',
+                onTap: () {
+                  context.go(AppRoutes.vehicleEntries);
+                  context.canPop();
+                },
+              ),
+            if (hasRepairQuoteEntry)
+              _buildMenuItem(
+                context: context,
+                icon: Icons.build_circle,
+                title: 'Repair & Quote Management',
+                onTap: () {
+                  context.go(AppRoutes.repairQuotes);
+                  context.canPop();
+                },
+              ),
+          ],
+          Divider(),
           _buildMenuItem(
             context: context,
             icon: Icons.settings,
@@ -91,6 +146,20 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[600],
+        ),
       ),
     );
   }

@@ -1,9 +1,10 @@
-import 'package:core/managers/connection_manager.dart';
+import 'package:dio/dio.dart';
 import 'package:core/network/dio/configs/dio_configs.dart';
 import 'package:core/network/dio/dio_client.dart';
 import 'package:core/network/dio/interceptors/auth_interceptor.dart';
 import 'package:core/network/dio/interceptors/logging_interceptor.dart';
-import 'package:core/network/websocket/websocket_service.dart';
+import 'package:core/network/dio/interceptors/retry_interceptor.dart';
+import 'package:core/error/interceptors/error_service_interceptor.dart';
 import 'package:data/network/constants/endpoints.dart';
 import 'package:data/network/interceptors/error_interceptor.dart';
 import 'package:data/sharedpref/shared_preference_helper.dart';
@@ -26,34 +27,37 @@ class NetworkModule {
 
     // dio:---------------------------------------------------------------------
     getIt.registerSingleton<DioConfigs>(
-      const DioConfigs(
+      DioConfigs(
         baseUrl: Endpoints.baseUrl,
         connectionTimeout: Endpoints.connectionTimeout,
-        receiveTimeout:Endpoints.receiveTimeout,
+        receiveTimeout: Endpoints.receiveTimeout,
       ),
     );
+    // Create DioClient instance
+    final dioClient = DioClient(dioConfigs: getIt());
+    
+    // Register the Dio instance for direct access
+    getIt.registerSingleton<Dio>(dioClient.dio);
+    
+    // Register ErrorServiceInterceptor after Dio is available
+    getIt.registerSingleton<ErrorServiceInterceptor>(ErrorServiceInterceptor());
+    
     getIt.registerSingleton<DioClient>(
-      DioClient(dioConfigs: getIt())
+      dioClient
         ..addInterceptors(
           [
             getIt<AuthInterceptor>(),
-            getIt<ErrorInterceptor>(),
+            RetryInterceptor(
+              dio: dioClient.dio,
+              options: const RetryOptions(retries: 3),
+            ),
+            getIt<ErrorServiceInterceptor>(),
+            getIt<ErrorInterceptor>(), // Keep existing for backward compatibility
             getIt<LoggingInterceptor>(),
           ],
         ),
     );
-    getIt.registerSingleton<SocketService>(
-      SocketService(
-         url: Endpoints.baseUrl,
-         tokenProvider: () async => await getIt<SharedPreferenceHelper>().authToken,
-      ),
-    );
-    // Register ConnectionManager as singleton
-    getIt.registerSingleton<ConnectionManager>(
-      ConnectionManager(
-        socketService: getIt<SocketService>(),
-        sharedPreferenceHelper: getIt<SharedPreferenceHelper>(),
-      ),
-    );
+    
+    // WebSocket is now managed by WebSocketManager in websocket_module.dart
   }
 }
