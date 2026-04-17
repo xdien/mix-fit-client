@@ -1,6 +1,6 @@
 # Mix-Fit Project
 
-Mix-Fit is a personal Flutter project that implements clean architecture principles and industry best practices in mobile development. Built upon established architectural patterns, this project showcases how to structure a real-world application that is scalable, maintainable, and testable.
+Mix-Fit is a personal Flutter project that implements clean architecture principles and industry best practices in mobile development. Built upon established architectural patterns, this project showcases how to structure a real-world application that is scalable, maintainable, and testable. [Test commit]
 
 ## 🎯 Project Overview
 
